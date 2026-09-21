@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Наставничество ВолгГМУ | Твой путь в медицину</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <a href="https://www.volgmed.ru/" target="_blank"> 
+                    <img src="https://www.volgmed.ru/upload/constructor/60a/e7rx7lwdqeb24vkn64t1fz1wakazwq82.svg" alt="Лого" class="header-logo-img">
+                </a>  
+            </div>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="https://www.volgmed.ru/university/" target="_blank">ОБ УНИВЕРСИТЕТЕ</a></li>
+                    <li><a href="https://www.volgmed.ru/education/" target="_blank">ОБРАЗОВАНИЕ</a></li>
+                    <li><a href="https://www.volgmed.ru/medicine/" target="_blank">МЕДИЦИНА</a></li>
+                    <li><a href="https://www.volgmed.ru/science/" target="_blank">НАУКА</a></li>
+                </ul>
+            </nav>
+
+<div class="header-right" id="headerRight">
+    <button class="search-btn">🔍</button> 
+    <span class="lang-switch">  
+        <a href="index.html">RU</a> / <a href="indexENG.html">EN</a> 
+    </span>
+    <a href="profile1.html" class="profile-link profile-link-always">👤 КАБИНЕТ</a>
+    <a href="chats.html" class="profile-link">💬 ЧАТЫ</a>
+    <a href="my-requests.html" class="profile-link">📋 ЗАЯВКИ</a>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
+</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="hero-subtitle">ВОЛГГМУ — ТРАДИЦИИ, ОПЫТ И ПОДДЕРЖКА БУДУЩИХ ПОКОЛЕНИЙ ВРАЧЕЙ</span>
+                <h1>ТВОЙ ПУТЬ В МЕДИЦИНУ: С НАСТАВНИКОМ УВЕРЕННЕЕ</h1>
+                
+                <div class="hero-actions">
+                    <button class="vgm-btn vgm-btn-filled hidden-el" onclick="document.getElementById('how-to-find').scrollIntoView({behavior: 'smooth'})">
+                        НАЙТИ НАСТАВНИКА
+                    </button>
+                    <button class="vgm-btn vgm-btn-white hidden-el" onclick="document.getElementById('how-to-become').scrollIntoView({behavior: 'smooth'})">
+                        СТАТЬ НАСТАВНИКОМ
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image-placeholder"></div>
+        </div>
+    </section>
+
+    <section class="programs container">
+        <h2 class="section-title">КЛЮЧЕВЫЕ ПРОГРАММЫ НАСТАВНИЧЕСТВА</h2>
+        
+        <div class="program-grid">
+            
+            <div class="program-card hidden-el">
+                <a href="catalogSS.html" class="program-link">
+                    <div class="icon">👥</div>
+                    <h3>СТУДЕНТ-СТУДЕНТ: ПОМОЩЬ В УЧЕБЕ</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalogO.html" class="program-link">
+                    <div class="icon">⚕️</div>
+                    <h3>ОРДИНАТОР-СТУДЕНТ: ПРАКТИЧЕСКИЕ НАВЫКИ</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalogWW.html" class="program-link">
+                    <div class="icon">👨‍⚕️</div>
+                    <h3>ВРАЧ-СПЕЦИАЛИСТ — МОЛОДОЙ ВРАЧ: КАРЬЕРНЫЙ РОСТ</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalogN.html" class="program-link">
+                    <div class="icon">🔬</div>
+                    <h3>НАУЧНОЕ НАСТАВНИЧЕСТВО: ПОМОЩЬ В ИССЛЕДОВАНИЯХ</h3>
+                </a>
+            </div>
+
+        </div>
+
+        
+    </section>
+        
+    <section id="how-to-find" class="how-to-section hidden-el">
+        <div class="how-to-container">
+            <div class="how-to-title">
+                <h2>Как найти наставника</h2>
+            </div>
+
+            <div class="how-to-steps">
+                <div class="step-item">
+                    <span class="step-badge">Шаг 1</span>
+                    <h3>Выберите наставника</h3>
+                    <p>Найти в нашем каталоге верифицированных наставников подходящего вам специалиста. Вы можете отобрать их в соответствии с направлением, опытом и другими параметрами.</p>
+                </div>
+
+                <div class="step-item">
+                    <span class="step-badge">Шаг 2</span>
+                    <h3>Напишите ему</h3>
+                    <p>Оставьте заявку на сайте. Постарайтесь четко сформулировать свой запрос — это повысит шансы на то, что наставник согласится с вами работать.</p>
+                </div>
+
+                <div class="step-item">
+                    <span class="step-badge">Шаг 3</span>
+                    <h3>Дело за вами</h3>
+                    <p>После того как наставник одобрит вашу заявку, вы сможете договориться о встрече. В системе будет создана ссылка на чат для удобной коммуникации.</p>
+                </div>
+
+                <button class="find-btn" onclick="window.location.href='mentors/catalog.html'">
+                    🔍 Найти наставника
+                </button>
+            </div>
+        </div>
+    </section>
+        
+    <section id="how-to-become" class="become-mentor-section hidden-el">
+        <div class="mentor-container">
+            <div class="mentor-steps">
+                <h2 class="section-title-alt">Как стать <br><span>наставником</span></h2>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Шаг 1</span>
+                    <p>Нажмите на кнопку «Стать наставником». Пройдите регистрацию, выбрав свое направление деятельности и описав опыт.</p>
+                </div>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Шаг 2</span>
+                    <p>Ваша анкета будет проверена модераторами университета на соответствие компетенциям направления.</p>
+                </div>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Шаг 3</span>
+                    <p>После проверки вы появитесь в каталоге. Вы сможете принимать заявки и назначать встречи студентам.</p>
+                </div>
+
+                <a href="profile1.html" class="btn-primary-vgm">Стать наставником</a>
+            </div>
+
+            <div class="mentor-features">
+                <h3 class="features-title">Возможности платформы для наставников</h3>
+
+                <div class="feature-card">
+                    <h4>Сообщество единомышленников</h4>
+                    <p>Объединяйтесь с другими наставниками, делитесь опытом и участвуйте в крупных проектах ВолгГМУ.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Возможности для развития</h4>
+                    <p>Доступ к методическим материалам, курсам и научно-исследовательской базе университета.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Удобные инструменты</h4>
+                    <p>Личный кабинет для управления заявками, чаты со студентами и система мониторинга прогресса.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-logo">
+                <div class="dummy-logo">ВОЛГГМУ</div>
+                <div class="logo-text">ВОЛГОГРАДСКИЙ ГОСУДАРСТВЕННЫЙ МЕДИЦИНСКИЙ УНИВЕРСИТЕТ</div>
+            </div>
+            <div class="footer-contacts">
+                <p>📍 пл. Павших Борцов, 1, г. Волгоград</p>
+                <p>📞 +7 (8442) 38-53-57</p>
+                <p>📧 egora2690@gmail.com</p>
+            </div>
+            <div class="footer-social">
+                <h4>Социальные сети</h4>
+                <div class="social-icons">
+                    <a href="https://vk.com/volggmu" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/VK_Compact_Logo_%282021-present%29.svg/500px-VK_Compact_Logo_%282021-present%29.svg.png" alt="VK" width="30"></a> 
+                    | <a href="https://t.me/volggmu_vuz" target="_blank"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1280px-Telegram_logo.svg.png" alt="TG" width="30"></a> |
+                    <a href="https://max.ru/id3444048472_biz" target="_blank"> <img src="https://static.vecteezy.com/system/resources/previews/069/991/653/large_2x/max-app-icon-on-a-transparent-background-free-png.png" alt="Max" width="30"></a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Проект разработан для ВолгГМУ</p>
+        </div>
+    </footer>
+
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Вход</button>
+                <button class="tab-btn" onclick="switchTab('register')">Регистрация</button>
+                <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+                <h2 id="modalTitle">Авторизуйтесь с помощью</h2>
+                <p class="modal-subtitle">Выберите удобный способ для доступа к платформе</p>
+
+                <div class="social-auth-btns">
+                    <button class="auth-btn vk-btn" onclick="fakeLogin('ВКонтакте')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/VK_Compact_Logo_%282021-present%29.svg" alt="VK">
+                        Войти через VK ID
+                    </button>
+                    <button class="auth-btn tg-btn" onclick="fakeLogin('Telegram')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="TG">
+                        Войти через Telegram
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>Или войти по почте</span>
+                </div>
+
+                <input type="email" placeholder="Ваша почта @volgmed.ru" class="modal-input">
+                <button class="main-submit-btn">Продолжить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Настройка плавного отслеживания появления блоков при скролле
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show-el');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Подключаем все элементы с классом hidden-el к наблюдателю
+        const hiddenElements = document.querySelectorAll('.hidden-el');
+        hiddenElements.forEach((el) => observer.observe(el));
+
+        // Функции модального окна
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchTab(type) {
+            const title = document.getElementById('modalTitle');
+            const btns = document.querySelectorAll('.tab-btn');
+            if(type === 'login') {
+                title.innerText = 'Авторизуйтесь с помощью';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                title.innerText = 'Регистрация наставника';
+                btns[1].classList.add('active');
+                btns[0].classList.remove('active');
+            }
+        }
+
+        function fakeLogin(provider) {
+            localStorage.setItem('userLoggedIn', 'true');
+        }
+     
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target == modal) {
+                closeAuthModal();
+            }
+        }
+
+        document.querySelector(".btn-contained").onclick = function(e) {
+            e.preventDefault();
+            openAuthModal();
+        };
+    </script>
+<script>
+    function toggleMobileMenu() {
+        document.getElementById('headerRight').classList.toggle('menu-open');
+    }
+    // Закрывать меню при клике вне его (только на мобилке)
+    document.addEventListener('click', function(e) {
+        const hr = document.getElementById('headerRight');
+        if (!hr || !hr.classList.contains('menu-open')) return;
+        if (!hr.contains(e.target)) hr.classList.remove('menu-open');
+    });
+    // Закрывать при переходе по ссылке
+    document.querySelectorAll('#headerRight .profile-link').forEach(function(a){
+        a.addEventListener('click', function(){
+            document.getElementById('headerRight').classList.remove('menu-open');
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заявки | ВолгГМУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: #94a3b8;
+        }
+        .tab-btn { transition: all 0.2s; }
+        .tab-btn.active { background-color: #007a5e; color: white; }
+        .tab-btn:not(.active) { background-color: #f1f5f9; color: #64748b; }
+        .tab-btn:not(.active):hover { background-color: #e2e8f0; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900">
+
+    <!-- ХЕДЕР -->
+  <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="profile1.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
+            ← Личный кабинет
+        </a>
+        <h1 class="font-extrabold text-lg vgm-green">МОИ ЗАЯВКИ</h1>
+        <a href="catalog.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">🎓 Каталог</a>
+    </div>
+</header>
+
+    <!-- ВКЛАДКИ -->
+    <div class="max-w-4xl mx-auto px-6 py-6">
+        <div class="flex rounded-xl overflow-hidden border border-slate-200 bg-white">
+            <button onclick="switchTab('incoming')" id="incomingTabBtn" class="tab-btn active flex-1 py-3 text-sm font-bold">
+                📥 Входящие
+            </button>
+            <button onclick="switchTab('outgoing')" id="outgoingTabBtn" class="tab-btn flex-1 py-3 text-sm font-bold">
+                📤 Исходящие
+            </button>
+        </div>
+    </div>
+
+    <!-- СПИСОК ЗАЯВОК -->
+    <main class="max-w-4xl mx-auto px-6 pb-16">
+
+        <div id="loadingState" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+            <p class="text-slate-500 mt-4">Загрузка заявок...</p>
+        </div>
+
+        <div id="requestsList" class="hidden space-y-4"></div>
+
+        <div id="emptyState" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">📭</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">Заявок пока нет</h3>
+            <p class="text-slate-500 mb-6">Здесь появятся заявки от студентов</p>
+            <a href="catalog.html" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition inline-block">Найти наставника</a>
+        </div>
+
+        <div id="authError" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">🔒</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">Вы не авторизованы</h3>
+            <p class="text-slate-500 mb-6">Войдите, чтобы посмотреть заявки</p>
+            <a href="profile1.html" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition inline-block">Войти</a>
+        </div>
+
+    </main>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+        let allRequests = [];
+        let currentTab = 'incoming';
+
+        // Проверка авторизации
+        function checkAuth() {
+            const saved = localStorage.getItem('vgm_current_user');
+            if (!saved) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('authError').classList.remove('hidden');
+                return false;
+            }
+            currentUser = JSON.parse(saved);
+            return true;
+        }
+
+        // Переключение вкладок
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('incomingTabBtn').classList.toggle('active', tab === 'incoming');
+            document.getElementById('outgoingTabBtn').classList.toggle('active', tab === 'outgoing');
+            renderRequests();
+        }
+
+        // Загрузка заявок
+        async function loadRequests() {
+            if (!checkAuth()) return;
+
+            try {
+                const response = await fetch(`${API_URL}/requests/${currentUser.id}`);
+                const data = await response.json();
+                allRequests = data;
+                renderRequests();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loadingState').innerHTML = 
+                    '<p class="text-red-500 font-bold">Ошибка загрузки заявок</p>';
+            }
+        }
+
+        // Рендер заявок
+        function renderRequests() {
+            const list = document.getElementById('requestsList');
+            const empty = document.getElementById('emptyState');
+            const loading = document.getElementById('loadingState');
+
+            loading.classList.add('hidden');
+
+            // Фильтруем по вкладке
+            let filtered;
+            if (currentTab === 'incoming') {
+                filtered = allRequests.filter(r => r.to_user_id === currentUser.id);
+            } else {
+                filtered = allRequests.filter(r => r.from_user_id === currentUser.id);
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = '';
+                list.classList.add('hidden');
+                empty.classList.remove('hidden');
+                // Меняем текст для пустого состояния
+                document.querySelector('#emptyState h3').innerText = 
+                    currentTab === 'incoming' ? 'Входящих заявок нет' : 'Вы ещё не отправляли заявки';
+                return;
+            }
+
+            empty.classList.add('hidden');
+            list.classList.remove('hidden');
+
+            list.innerHTML = filtered.map(req => {
+                // Определяем, кто «собеседник»
+                const isIncoming = req.to_user_id === currentUser.id;
+                const otherName = isIncoming ? req.from_name : req.to_name;
+                const otherAvatar = isIncoming ? req.from_avatar : req.to_avatar;
+                const otherId = isIncoming ? req.from_user_id : req.to_user_id;
+
+                // Аватар
+                const avatarHTML = otherAvatar
+                    ? `<img src="${otherAvatar}" class="w-full h-full object-cover">`
+                    : `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+
+                // Статус
+                let statusBadge = '';
+                if (req.status === 'pending') {
+                    statusBadge = '<span class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">⏳ Ожидает</span>';
+                } else if (req.status === 'approved') {
+                    statusBadge = '<span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">✅ Одобрена</span>';
+                } else if (req.status === 'rejected') {
+                    statusBadge = '<span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold">❌ Отклонена</span>';
+                }
+
+                // Кнопки действий
+                let actionsHTML = '';
+                if (isIncoming && req.status === 'pending') {
+                    actionsHTML = `
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="updateRequest(${req.id}, 'approved')" 
+                                class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition">
+                                ✅ Одобрить
+                            </button>
+                            <button onclick="updateRequest(${req.id}, 'rejected')" 
+                                class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl transition">
+                                ❌ Отклонить
+                            </button>
+                        </div>
+                    `;
+                } else if (req.status === 'approved' && req.chat_link) {
+                    actionsHTML = `
+                        <a href="${req.chat_link}" 
+                            class="block mt-4 w-full vgm-bg-green text-white font-bold py-2.5 rounded-xl text-center hover:bg-emerald-700 transition">
+                            💬 Открыть чат
+                        </a>
+                    `;
+                }
+
+                // Дата
+                const date = new Date(req.created_at).toLocaleDateString('ru-RU', {
+                    day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+
+                return `
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                        <div class="flex items-start gap-4">
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden avatar-placeholder flex-shrink-0">
+                                ${avatarHTML}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start gap-3 flex-wrap">
+                                    <div>
+                                        <h3 class="font-extrabold text-lg text-slate-800">${otherName || 'Пользователь'}</h3>
+                                        <p class="text-xs text-slate-400 font-semibold">${isIncoming ? 'хочет работать с вами' : 'вы отправили заявку'}</p>
+                                    </div>
+                                    ${statusBadge}
+                                </div>
+                                <p class="text-xs text-slate-400 mt-2">${date}</p>
+                            </div>
+                        </div>
+
+                        ${req.message ? `
+                            <div class="mt-4 bg-slate-50 rounded-xl p-4">
+                                <p class="text-sm text-slate-700">${req.message}</p>
+                            </div>
+                        ` : ''}
+
+                        ${actionsHTML}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Обновление заявки (одобрить/отклонить)
+        async function updateRequest(id, status) {
+            if (status === 'rejected' && !confirm('Точно отклонить заявку?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/requests/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (status === 'approved') {
+                        alert('Заявка одобрена! Чат создан.');
+                    }
+                    loadRequests(); // Обновляем список
+                } else {
+                    alert(data.error || 'Ошибка');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось обновить заявку');
+            }
+        }
+
+        // Запуск
+        loadRequests();
+    </script>
+
+</body>
+</html>

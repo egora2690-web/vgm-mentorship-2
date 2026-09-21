@@ -1,0 +1,306 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>VolgSMU Mentorship | Your Path in Medicine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <a href="https://www.volgmed.ru/" target="_blank"> 
+                    <img src="https://en.volgmed.ru/upload/constructor/42a/mq5ku3fe97pws7f1izgpe67ej60xexq5/logo%20eng.svg" alt="Logo" class="header-logo-img">
+                </a>  
+            </div>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="https://www.volgmed.ru/university/" target="_blank">ABOUT UNIVERSITY</a></li>
+                    <li><a href="https://www.volgmed.ru/education/" target="_blank">EDUCATION</a></li>
+                    <li><a href="https://www.volgmed.ru/medicine/" target="_blank">MEDICINE</a></li>
+                    <li><a href="https://www.volgmed.ru/science/" target="_blank">SCIENCE</a></li>
+                </ul>
+            </nav>
+
+<div class="header-right" id="headerRight">
+    <button class="search-btn">🔍</button> 
+    <span class="lang-switch">
+        <a href="index.html">RU</a> / <a href="indexENG.html" class="active">EN</a>
+    </span>
+    <a href="profile1ENG.html" class="profile-link profile-link-always">👤 ACCOUNT</a>
+    <a href="chatsENG.html" class="profile-link">💬 CHATS</a>
+    <a href="my-requestsENG.html" class="profile-link">📋 REQUESTS</a>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="hero-subtitle">VOLGSMU — TRADITIONS, EXPERIENCE AND SUPPORT FOR FUTURE GENERATIONS OF DOCTORS</span>
+                <h1>YOUR PATH IN MEDICINE: WITH A MENTOR, IT'S MORE CONFIDENT</h1>
+                
+                <div class="hero-actions">
+                    <button class="vgm-btn vgm-btn-filled hidden-el" onclick="document.getElementById('how-to-find').scrollIntoView({behavior: 'smooth'})">
+                        FIND A MENTOR
+                    </button>
+                    <button class="vgm-btn vgm-btn-white hidden-el" onclick="document.getElementById('how-to-become').scrollIntoView({behavior: 'smooth'})">
+                        BECOME A MENTOR
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image-placeholder"></div>
+        </div>
+    </section>
+
+    <section class="programs container">
+        <h2 class="section-title">KEY MENTORSHIP PROGRAMS</h2>
+        
+        <div class="program-grid">
+            
+            <div class="program-card hidden-el">
+                <a href="catalogSSENG.html" class="program-link">
+                    <div class="icon">👥</div>
+                    <h3>STUDENT-STUDENT: ACADEMIC SUPPORT</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalog0ENG.html" class="program-link">
+                    <div class="icon">⚕️</div>
+                    <h3>RESIDENT-STUDENT: PRACTICAL SKILLS</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalogWWENG.html" class="program-link">
+                    <div class="icon">👨‍⚕️</div>
+                    <h3>SPECIALIST — YOUNG DOCTOR: CAREER GROWTH</h3>
+                </a>
+            </div>
+
+            <div class="program-card hidden-el">
+                <a href="catalogNENG.html" class="program-link">
+                    <div class="icon">🔬</div>
+                    <h3>RESEARCH MENTORSHIP: HELP IN RESEARCH</h3>
+                </a>
+            </div>
+
+        </div>
+
+        
+    </section>
+        
+    <section id="how-to-find" class="how-to-section hidden-el">
+        <div class="how-to-container">
+            <div class="how-to-title">
+                <h2>How to find a mentor</h2>
+            </div>
+
+            <div class="how-to-steps">
+                <div class="step-item">
+                    <span class="step-badge">Step 1</span>
+                    <h3>Choose a mentor</h3>
+                    <p>Find a suitable specialist in our catalog of verified mentors. You can filter them by field, experience, and other criteria.</p>
+                </div>
+
+                <div class="step-item">
+                    <span class="step-badge">Step 2</span>
+                    <h3>Write to them</h3>
+                    <p>Leave a request on the website. Try to clearly formulate your request — this will increase the chances that the mentor will agree to work with you.</p>
+                </div>
+
+                <div class="step-item">
+                    <span class="step-badge">Step 3</span>
+                    <h3>It's up to you</h3>
+                    <p>After the mentor approves your request, you can arrange a meeting. The system will create a chat link for convenient communication.</p>
+                </div>
+
+                <button class="find-btn" onclick="window.location.href='mentors/catalogENG.html'">
+                    🔍 Find a mentor
+                </button>
+            </div>
+        </div>
+    </section>
+        
+    <section id="how-to-become" class="become-mentor-section hidden-el">
+        <div class="mentor-container">
+            <div class="mentor-steps">
+                <h2 class="section-title-alt">How to become <br><span>a mentor</span></h2>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Step 1</span>
+                    <p>Click the "Become a mentor" button. Register by selecting your field of activity and describing your experience.</p>
+                </div>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Step 2</span>
+                    <p>Your profile will be checked by university moderators for compliance with the competencies of the direction.</p>
+                </div>
+
+                <div class="mentor-step-item">
+                    <span class="step-label">Step 3</span>
+                    <p>After verification, you will appear in the catalog. You will be able to accept requests and schedule meetings with students.</p>
+                </div>
+
+                <a href="profile1ENG.html" class="btn-primary-vgm">Become a Mentor</a>
+            </div>
+
+            <div class="mentor-features">
+                <h3 class="features-title">Platform opportunities for mentors</h3>
+
+                <div class="feature-card">
+                    <h4>Community of like-minded people</h4>
+                    <p>Connect with other mentors, share experiences and participate in major VolgSMU projects.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Development opportunities</h4>
+                    <p>Access to teaching materials, courses and the university's research base.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Convenient tools</h4>
+                    <p>Personal account for managing requests, chats with students and a progress monitoring system.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-logo">
+                <div class="dummy-logo">VOLGSMU</div>
+                <div class="logo-text">VOLGOGRAD STATE MEDICAL UNIVERSITY</div>
+            </div>
+            <div class="footer-contacts">
+                <p>📍 1, Pavshikh Bortsov Square, Volgograd</p>
+                <p>📞 +7 (8442) 38-53-57</p>
+                <p>📧 egora2690@gmail.com</p>
+            </div>
+            <div class="footer-social">
+                <h4>Social networks</h4>
+                <div class="social-icons">
+                    <a href="https://vk.com/volggmu" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/VK_Compact_Logo_%282021-present%29.svg/500px-VK_Compact_Logo_%282021-present%29.svg.png" alt="VK" width="30"></a> 
+                    | <a href="https://t.me/volggmu_vuz" target="_blank"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1280px-Telegram_logo.svg.png" alt="TG" width="30"></a> |
+                    <a href="https://max.ru/id3444048472_biz" target="_blank"> <img src="https://static.vecteezy.com/system/resources/previews/069/991/653/large_2x/max-app-icon-on-a-transparent-background-free-png.png" alt="Max" width="30"></a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Project developed for VolgSMU</p>
+        </div>
+    </footer>
+
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+                <h2 id="modalTitle">Sign in with</h2>
+                <p class="modal-subtitle">Choose a convenient way to access the platform</p>
+
+                <div class="social-auth-btns">
+                    <button class="auth-btn vk-btn" onclick="fakeLogin('VKontakte')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/VK_Compact_Logo_%282021-present%29.svg" alt="VK">
+                        Sign in via VK ID
+                    </button>
+                    <button class="auth-btn tg-btn" onclick="fakeLogin('Telegram')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="TG">
+                        Sign in via Telegram
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>Or sign in by email</span>
+                </div>
+
+                <input type="email" placeholder="Your email @volgmed.ru" class="modal-input">
+                <button class="main-submit-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll tracking for blocks appearing on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show-el');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Connect all elements with class hidden-el to the observer
+        const hiddenElements = document.querySelectorAll('.hidden-el');
+        hiddenElements.forEach((el) => observer.observe(el));
+
+        // Modal functions
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchTab(type) {
+            const title = document.getElementById('modalTitle');
+            const btns = document.querySelectorAll('.tab-btn');
+            if(type === 'login') {
+                title.innerText = 'Sign in with';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                title.innerText = 'Mentor registration';
+                btns[1].classList.add('active');
+                btns[0].classList.remove('active');
+            }
+        }
+
+        function fakeLogin(provider) {
+            localStorage.setItem('userLoggedIn', 'true');
+            closeAuthModal();
+        }
+     
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target == modal) {
+                closeAuthModal();
+            }
+        }
+
+        document.querySelector(".btn-contained").onclick = function(e) {
+            e.preventDefault();
+            openAuthModal();
+        };
+    </script>
+<script>
+    function toggleMobileMenu() {
+        document.getElementById('headerRight').classList.toggle('menu-open');
+    }
+    // Закрывать меню при клике вне его (только на мобилке)
+    document.addEventListener('click', function(e) {
+        const hr = document.getElementById('headerRight');
+        if (!hr || !hr.classList.contains('menu-open')) return;
+        if (!hr.contains(e.target)) hr.classList.remove('menu-open');
+    });
+    // Закрывать при переходе по ссылке
+    document.querySelectorAll('#headerRight .profile-link').forEach(function(a){
+        a.addEventListener('click', function(){
+            document.getElementById('headerRight').classList.remove('menu-open');
+        });
+    });
+</script>
+</body>
+</html>

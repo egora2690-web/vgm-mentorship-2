@@ -1,0 +1,822 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | ВолгГМУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #ffffff; }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .card-shadow { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); }
+        .avatar-placeholder { background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8; }
+        .direction-select {
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5rem; padding-right: 3rem;
+        }
+        .direction-select optgroup { font-weight: 800; color: #007a5e; }
+        .direction-select option { font-weight: 400; color: #1e293b; padding: 8px; }
+        .spec-details { background: #f8fafc; border-radius: 16px; padding: 16px; margin-top: 12px; border: 1px solid #e2e8f0; display: none; }
+        .spec-details.show { display: block; }
+        .spec-details .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        .spec-details .detail-row:last-child { border-bottom: none; }
+        .spec-details .detail-label { color: #64748b; font-weight: 600; }
+        .spec-details .detail-value { font-weight: 700; color: #0f172a; }
+        .spec-details .detail-value.code { color: #007a5e; font-family: monospace; font-size: 13px; }
+        .spec-details .detail-description { font-size: 13px; color: #475569; padding: 6px 0; line-height: 1.5; }
+        .tab-btn { transition: all 0.2s; }
+        .tab-btn.active { background-color: #007a5e; color: white; }
+        .tab-btn:not(.active) { background-color: #f1f5f9; color: #64748b; }
+        .tab-btn:not(.active):hover { background-color: #e2e8f0; }
+        .auth-tab { display: none; }
+        .auth-tab.active { display: block; }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <header class="p-4 flex items-center justify-between bg-white border-b border-slate-50 sticky top-0 z-10">
+        <div class="flex items-center">
+            <button onclick="window.location.href='index.html'" class="p-2 hover:bg-slate-50 rounded-full transition">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <h1 class="ml-2 font-bold text-lg">Профиль наставника</h1>
+        </div>
+        <nav class="flex items-center gap-3">
+          <a href="chats.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">💬 Чаты</a>
+<a href="my-requests.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">📋 Заявки</a>
+            <a href="catalog.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">🎓 Каталог</a>
+        </nav>
+    </header>
+
+    <!-- БЛОК АВТОРИЗАЦИИ / РЕГИСТРАЦИИ -->
+    <div id="authBlock" class="max-w-md mx-auto p-6 mt-8">
+        <div class="bg-white rounded-[40px] p-8 card-shadow border border-slate-50">
+            
+            <div class="flex rounded-xl overflow-hidden mb-6 border border-slate-100">
+                <button onclick="switchAuthTab('login')" id="loginTabBtn" class="tab-btn active flex-1 py-3 text-sm font-bold">Вход</button>
+                <button onclick="switchAuthTab('register')" id="registerTabBtn" class="tab-btn flex-1 py-3 text-sm font-bold">Регистрация</button>
+            </div>
+
+            <!-- ВХОД -->
+            <div id="loginTab" class="auth-tab active">
+                <h2 class="text-xl font-extrabold text-slate-800 mb-2">Вход в аккаунт</h2>
+                <p class="text-slate-400 text-sm mb-6">Введите логин и пароль</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Логин</label>
+                        <input type="text" id="login-username" placeholder="Введите логин" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Пароль</label>
+                        <input type="password" id="login-password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+                
+                <button onclick="loginUser()" class="w-full mt-6 vgm-bg-green text-white font-bold py-4 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Войти
+                </button>
+            </div>
+
+            <!-- РЕГИСТРАЦИЯ -->
+            <div id="registerTab" class="auth-tab">
+                <h2 class="text-xl font-extrabold text-slate-800 mb-2">Создать аккаунт</h2>
+                <p class="text-slate-400 text-sm mb-6">Заполните все поля для регистрации</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Логин (email или username)</label>
+                        <input type="text" id="reg-login" placeholder="ivanov@mail.ru" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ваше ФИО</label>
+                        <input type="text" id="reg-name" placeholder="Иван Иванов" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Роль</label>
+                        <select id="reg-role" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                            <option value="Наставник ВолгГМУ">Наставник</option>
+                            <option value="Подопечный">Подопечный</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
+                        <select id="reg-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('reg')">
+                            <option value="">Выберите направление</option>
+                            
+                            <optgroup label="Бакалавриат">
+                                <option value='{"level":"Бакалавриат","name":"Биология","form":"Очная","duration":"4 года"}'>Биология</option>
+                                <option value='{"level":"Бакалавриат","name":"Биотехнические системы и технологии","form":"Очная","duration":"4 года"}'>Биотехнические системы и технологии</option>
+                            </optgroup>
+                            
+                            <optgroup label="Специалитет">
+                                <option value='{"level":"Специалитет","name":"Лечебное дело","form":"Очная","duration":"6 лет","code":"31.05.01","description":"Готовит врачей для оказания первичной медицинской помощи, ведения пациентов с хроническими заболеваниями."}'>Лечебное дело</option>
+                                <option value='{"level":"Специалитет","name":"Педиатрия","form":"Очная","duration":"6 лет","code":"31.05.02","description":"Подготовка врачей-педиатров для профилактики, диагностики и лечения заболеваний у детей и подростков."}'>Педиатрия</option>
+                                <option value='{"level":"Специалитет","name":"Стоматология","form":"Очная","duration":"5 лет","code":"31.05.03","description":"Подготовка врачей-стоматологов для оказания качественной медицинской помощи в области ухода за полостью рта."}'>Стоматология</option>
+                                <option value='{"level":"Специалитет","name":"Медицинская биохимия","form":"Очная","duration":"6 лет","code":"30.05.01","description":"Подготовка специалистов для проведения биохимических исследований, разработки новых медицинских технологий."}'>Медицинская биохимия</option>
+                                <option value='{"level":"Специалитет","name":"Медико-профилактическое дело","form":"Очная","duration":"6 лет","code":"32.05.01","description":"Подготовка специалистов в области общественного здравоохранения, эпидемиологии, санитарии и гигиены."}'>Медико-профилактическое дело</option>
+                                <option value='{"level":"Специалитет","name":"Фармация","form":"Очная","duration":"5 лет","code":"33.05.01","description":"Подготовка фармацевтов для создания, производства и выдачи лекарств, консультирования пациентов."}'>Фармация</option>
+                                <option value='{"level":"Специалитет","name":"Клиническая психология","form":"Очная","duration":"5 лет 6 месяцев","code":"37.05.01","description":"Подготовка клинических психологов для проведения диагностики, психотерапевтического лечения."}'>Клиническая психология</option>
+                            </optgroup>
+                            
+                            <optgroup label="Магистратура">
+                                <option value='{"level":"Магистратура","name":"Биотехнические системы и технологии","form":"Очная","duration":"2 года"}'>Биотехнические системы и технологии</option>
+                                <option value='{"level":"Магистратура","name":"Менеджмент","form":"Заочная","duration":"2 года 6 месяцев"}'>Менеджмент</option>
+                                <option value='{"level":"Магистратура","name":"Общественное здравоохранение","form":"Очно-заочная","duration":"2 года 6 месяцев"}'>Общественное здравоохранение</option>
+                                <option value='{"level":"Магистратура","name":"Биология","form":"Очная","duration":"2 года"}'>Биология</option>
+                            </optgroup>
+
+                            <optgroup label="СПО (Колледж)">
+                                <option value='{"level":"СПО","name":"Медицинская оптика (Медицинский оптик-оптометрист)","form":"Очная","duration":"1 год 10 месяцев"}'>Медицинская оптика</option>
+                                <option value='{"level":"СПО","name":"Стоматологическое дело (Фельдшер стоматологический)","form":"Очная","duration":"2 года 10 месяцев"}'>Стоматологическое дело</option>
+                                <option value='{"level":"СПО","name":"Медицинский администратор","form":"Очно-заочная","duration":"1 год 3 месяца"}'>Медицинский администратор</option>
+                                <option value='{"level":"СПО","name":"Сестринское дело","form":"Очно-заочная","duration":"2 года 10 месяцев"}'>Сестринское дело (очно-заочная)</option>
+                                <option value='{"level":"СПО","name":"Сестринское дело","form":"Очная","duration":"1 год 10 месяцев"}'>Сестринское дело (очная)</option>
+                                <option value='{"level":"СПО","name":"Фармация (Фармацевт)","form":"Очная","duration":"1 год 10 месяцев"}'>Фармация (Фармацевт)</option>
+                                <option value='{"level":"СПО","name":"Стоматология профилактическая (Гигиенист стоматологический)","form":"Очная","duration":"1 год 10 месяцев"}'>Стоматология профилактическая</option>
+                                <option value='{"level":"СПО","name":"Стоматология ортопедическая (Зубной техник)","form":"Очная","duration":"1 год 10 месяцев"}'>Стоматология ортопедическая</option>
+                            </optgroup>
+                            
+                            <optgroup label="Ординатура">
+                                <option value='{"level":"Ординатура","name":"Общая гигиена","form":"Очная","duration":"2 года"}'>Общая гигиена</option>
+                                <option value='{"level":"Ординатура","name":"Рентгенэндоваскулярные диагностика и лечение","form":"Очная","duration":"2 года"}'>Рентгенэндоваскулярные диагностика и лечение</option>
+                                <option value='{"level":"Ординатура","name":"Нефрология","form":"Очная","duration":"2 года"}'>Нефрология</option>
+                                <option value='{"level":"Ординатура","name":"Диетология","form":"Очная","duration":"2 года"}'>Диетология</option>
+                                <option value='{"level":"Ординатура","name":"Гигиена труда","form":"Очная","duration":"2 года"}'>Гигиена труда</option>
+                                <option value='{"level":"Ординатура","name":"Психотерапия","form":"Очная","duration":"2 года"}'>Психотерапия</option>
+                                <option value='{"level":"Ординатура","name":"Физиотерапия","form":"Очная","duration":"2 года"}'>Физиотерапия</option>
+                                <option value='{"level":"Ординатура","name":"Колопроктология","form":"Очная","duration":"2 года"}'>Колопроктология</option>
+                                <option value='{"level":"Ординатура","name":"Физическая и реабилитационная медицина","form":"Очная","duration":"3 года"}'>Физическая и реабилитационная медицина</option>
+                                <option value='{"level":"Ординатура","name":"Мануальная терапия","form":"Очная","duration":"2 года"}'>Мануальная терапия</option>
+                                <option value='{"level":"Ординатура","name":"Гериатрия","form":"Очная","duration":"2 года"}'>Гериатрия</option>
+                                <option value='{"level":"Ординатура","name":"Трансфузиология","form":"Очная","duration":"2 года"}'>Трансфузиология</option>
+                                <option value='{"level":"Ординатура","name":"Рефлексотерапия","form":"Очная","duration":"2 года"}'>Рефлексотерапия</option>
+                                <option value='{"level":"Ординатура","name":"Торакальная хирургия","form":"Очная","duration":"2 года"}'>Торакальная хирургия</option>
+                                <option value='{"level":"Ординатура","name":"Патологическая анатомия","form":"Очная","duration":"2 года"}'>Патологическая анатомия</option>
+                                <option value='{"level":"Ординатура","name":"Нейрохирургия","form":"Очная","duration":"3 года"}'>Нейрохирургия</option>
+                                <option value='{"level":"Ординатура","name":"Гастроэнтерология","form":"Очная","duration":"2 года"}'>Гастроэнтерология</option>
+                                <option value='{"level":"Ординатура","name":"Эпидемиология","form":"Очная","duration":"2 года"}'>Эпидемиология</option>
+                                <option value='{"level":"Ординатура","name":"Челюстно-лицевая хирургия","form":"Очная","duration":"2 года"}'>Челюстно-лицевая хирургия</option>
+                                <option value='{"level":"Ординатура","name":"Управление и экономика фармации","form":"Очная","duration":"2 года"}'>Управление и экономика фармации</option>
+                                <option value='{"level":"Ординатура","name":"Стоматология хирургическая","form":"Очная","duration":"2 года"}'>Стоматология хирургическая</option>
+                                <option value='{"level":"Ординатура","name":"Стоматология ортопедическая","form":"Очная","duration":"2 года"}'>Стоматология ортопедическая</option>
+                                <option value='{"level":"Ординатура","name":"Стоматология общей практики","form":"Очная","duration":"2 года"}'>Стоматология общей практики</option>
+                                <option value='{"level":"Ординатура","name":"Ревматология","form":"Очная","duration":"2 года"}'>Ревматология</option>
+                                <option value='{"level":"Ординатура","name":"Ортодонтия","form":"Очная","duration":"2 года"}'>Ортодонтия</option>
+                                <option value='{"level":"Ординатура","name":"Дерматовенерология","form":"Очная","duration":"2 года"}'>Дерматовенерология</option>
+                                <option value='{"level":"Ординатура","name":"Эндоскопия","form":"Очная","duration":"2 года"}'>Эндоскопия</option>
+                                <option value='{"level":"Ординатура","name":"Эндокринология","form":"Очная","duration":"2 года"}'>Эндокринология</option>
+                                <option value='{"level":"Ординатура","name":"Хирургия","form":"Очная","duration":"2 года"}'>Хирургия</option>
+                                <option value='{"level":"Ординатура","name":"Функциональная диагностика","form":"Очная","duration":"2 года"}'>Функциональная диагностика</option>
+                                <option value='{"level":"Ординатура","name":"Фтизиатрия","form":"Очная","duration":"2 года"}'>Фтизиатрия</option>
+                                <option value='{"level":"Ординатура","name":"Урология","form":"Очная","duration":"2 года"}'>Урология</option>
+                                <option value='{"level":"Ординатура","name":"Ультразвуковая диагностика","form":"Очная","duration":"2 года"}'>Ультразвуковая диагностика</option>
+                                <option value='{"level":"Ординатура","name":"Травматология и ортопедия","form":"Очная","duration":"2 года"}'>Травматология и ортопедия</option>
+                                <option value='{"level":"Ординатура","name":"Терапия","form":"Очная","duration":"2 года"}'>Терапия</option>
+                                <option value='{"level":"Ординатура","name":"Судебно-медицинская экспертиза","form":"Очная","duration":"2 года"}'>Судебно-медицинская экспертиза</option>
+                                <option value='{"level":"Ординатура","name":"Стоматология терапевтическая","form":"Очная","duration":"2 года"}'>Стоматология терапевтическая</option>
+                                <option value='{"level":"Ординатура","name":"Стоматология детская","form":"Очная","duration":"2 года"}'>Стоматология детская</option>
+                                <option value='{"level":"Ординатура","name":"Скорая медицинская помощь","form":"Очная","duration":"2 года"}'>Скорая медицинская помощь</option>
+                                <option value='{"level":"Ординатура","name":"Сердечно-сосудистая хирургия","form":"Очная","duration":"3 года"}'>Сердечно-сосудистая хирургия</option>
+                                <option value='{"level":"Ординатура","name":"Рентгенология","form":"Очная","duration":"2 года"}'>Рентгенология</option>
+                                <option value='{"level":"Ординатура","name":"Радиология","form":"Очная","duration":"2 года"}'>Радиология</option>
+                                <option value='{"level":"Ординатура","name":"Пульмонология","form":"Очная","duration":"2 года"}'>Пульмонология</option>
+                                <option value='{"level":"Ординатура","name":"Психиатрия-наркология","form":"Очная","duration":"2 года"}'>Психиатрия-наркология</option>
+                                <option value='{"level":"Ординатура","name":"Психиатрия","form":"Очная","duration":"2 года"}'>Психиатрия</option>
+                                <option value='{"level":"Ординатура","name":"Офтальмология","form":"Очная","duration":"2 года"}'>Офтальмология</option>
+                                <option value='{"level":"Ординатура","name":"Оториноларингология","form":"Очная","duration":"2 года"}'>Оториноларингология</option>
+                                <option value='{"level":"Ординатура","name":"Организация здравоохранения и общественное здоровье","form":"Очная","duration":"2 года"}'>Организация здравоохранения и общественное здоровье</option>
+                                <option value='{"level":"Ординатура","name":"Онкология","form":"Очная","duration":"2 года"}'>Онкология</option>
+                                <option value='{"level":"Ординатура","name":"Общая врачебная практика","form":"Очная","duration":"2 года"}'>Общая врачебная практика</option>
+                                <option value='{"level":"Ординатура","name":"Неонатология","form":"Очная","duration":"2 года"}'>Неонатология</option>
+                                <option value='{"level":"Ординатура","name":"Неврология","form":"Очная","duration":"2 года"}'>Неврология</option>
+                                <option value='{"level":"Ординатура","name":"Лечебная физкультура и спортивная медицина","form":"Очная","duration":"2 года"}'>Лечебная физкультура и спортивная медицина</option>
+                                <option value='{"level":"Ординатура","name":"Клиническая фармакология","form":"Очная","duration":"2 года"}'>Клиническая фармакология</option>
+                                <option value='{"level":"Ординатура","name":"Клиническая лабораторная диагностика","form":"Очная","duration":"2 года"}'>Клиническая лабораторная диагностика</option>
+                                <option value='{"level":"Ординатура","name":"Кардиология","form":"Очная","duration":"2 года"}'>Кардиология</option>
+                                <option value='{"level":"Ординатура","name":"Инфекционные болезни","form":"Очная","duration":"2 года"}'>Инфекционные болезни</option>
+                                <option value='{"level":"Ординатура","name":"Детская эндокринология","form":"Очная","duration":"2 года"}'>Детская эндокринология</option>
+                                <option value='{"level":"Ординатура","name":"Детская хирургия","form":"Очная","duration":"2 года"}'>Детская хирургия</option>
+                                <option value='{"level":"Ординатура","name":"Детская онкология","form":"Очная","duration":"2 года"}'>Детская онкология</option>
+                                <option value='{"level":"Ординатура","name":"Детская кардиология","form":"Очная","duration":"2 года"}'>Детская кардиология</option>
+                                <option value='{"level":"Ординатура","name":"Гигиена детей и подростков","form":"Очная","duration":"2 года"}'>Гигиена детей и подростков</option>
+                                <option value='{"level":"Ординатура","name":"Гематология","form":"Очная","duration":"2 года"}'>Гематология</option>
+                                <option value='{"level":"Ординатура","name":"Анестезиология-реаниматология","form":"Очная","duration":"2 года"}'>Анестезиология-реаниматология</option>
+                                <option value='{"level":"Ординатура","name":"Аллергология и иммунология","form":"Очная","duration":"2 года"}'>Аллергология и иммунология</option>
+                                <option value='{"level":"Ординатура","name":"Педиатрия","form":"Очная","duration":"2 года"}'>Педиатрия</option>
+                                <option value='{"level":"Ординатура","name":"Акушерство и гинекология","form":"Очная","duration":"2 года"}'>Акушерство и гинекология</option>
+                            </optgroup>
+                            
+                            <optgroup label="Аспирантура">
+                                <option value='{"level":"Аспирантура","name":"Социология культуры","form":"Очная","duration":"3 года"}'>Социология культуры</option>
+                                <option value='{"level":"Аспирантура","name":"Организация фармацевтического дела","form":"Очная","duration":"3 года"}'>Организация фармацевтического дела</option>
+                                <option value='{"level":"Аспирантура","name":"Фармацевтическая химия, фармакогнозия","form":"Очная","duration":"3 года"}'>Фармацевтическая химия, фармакогнозия</option>
+                                <option value='{"level":"Аспирантура","name":"Промышленная фармация и технология получения лекарств","form":"Очная","duration":"3 года"}'>Промышленная фармация и технология получения лекарств</option>
+                                <option value='{"level":"Аспирантура","name":"Фармакология, клиническая фармакология","form":"Очная","duration":"4 года"}'>Фармакология, клиническая фармакология</option>
+                                <option value='{"level":"Аспирантура","name":"Патологическая физиология","form":"Очная","duration":"4 года"}'>Патологическая физиология</option>
+                                <option value='{"level":"Аспирантура","name":"Общественное здоровье, организация и социология здравоохранения, медико-социальная экспертиза","form":"Очная","duration":"3 года"}'>Общественное здоровье, организация и социология здравоохранения, медико-социальная экспертиза</option>
+                                <option value='{"level":"Аспирантура","name":"Гигиена","form":"Очная","duration":"3 года"}'>Гигиена</option>
+                                <option value='{"level":"Аспирантура","name":"Неврология","form":"Очная","duration":"3 года"}'>Неврология</option>
+                                <option value='{"level":"Аспирантура","name":"Педиатрия","form":"Очная","duration":"3 года"}'>Педиатрия</option>
+                                <option value='{"level":"Аспирантура","name":"Внутренние болезни","form":"Очная","duration":"3 года"}'>Внутренние болезни</option>
+                                <option value='{"level":"Аспирантура","name":"Хирургия","form":"Очная","duration":"3 года"}'>Хирургия</option>
+                                <option value='{"level":"Аспирантура","name":"Стоматология","form":"Очная","duration":"3 года"}'>Стоматология</option>
+                                <option value='{"level":"Аспирантура","name":"Офтальмология","form":"Очная","duration":"3 года"}'>Офтальмология</option>
+                                <option value='{"level":"Аспирантура","name":"Акушерство и гинекология","form":"Очная","duration":"3 года"}'>Акушерство и гинекология</option>
+                                <option value='{"level":"Аспирантура","name":"Оториноларингология","form":"Очная","duration":"3 года"}'>Оториноларингология</option>
+                                <option value='{"level":"Аспирантура","name":"Клеточная биология","form":"Очная","duration":"4 года"}'>Клеточная биология</option>
+                                <option value='{"level":"Аспирантура","name":"Микробиология","form":"Очная","duration":"4 года"}'>Микробиология</option>
+                                <option value='{"level":"Аспирантура","name":"Физиология человека и животных","form":"Очная","duration":"4 года"}'>Физиология человека и животных</option>
+                                <option value='{"level":"Аспирантура","name":"Химия элементоорганических соединений","form":"Очная","duration":"4 года"}'>Химия элементоорганических соединений</option>
+                                <option value='{"level":"Аспирантура","name":"Органическая химия","form":"Очная","duration":"4 года"}'>Органическая химия</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div id="reg-direction-details" class="spec-details"></div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Пароль</label>
+                        <input type="password" id="reg-password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Повторите пароль</label>
+                        <input type="password" id="reg-password-confirm" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Фото профиля (необязательно)</label>
+                        <div class="flex items-center gap-3">
+                            <label class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl text-center text-slate-500 font-semibold text-sm cursor-pointer hover:bg-slate-100 transition">
+                                Выбрать фото
+                                <input type="file" id="reg-avatar-file" accept="image/*" class="hidden" onchange="previewAvatar(event, 'reg-avatar-preview')">
+                            </label>
+                            <div id="reg-avatar-preview" class="w-14 h-14 rounded-full border-2 border-slate-200 overflow-hidden flex-shrink-0 avatar-placeholder">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="registerUser()" class="w-full mt-6 vgm-bg-green text-white font-bold py-4 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Зарегистрироваться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ЛИЧНЫЙ КАБИНЕТ -->
+    <div id="profileBlock" class="hidden">
+        <main class="max-w-md mx-auto p-6 pb-32">
+            
+            <div class="bg-white rounded-[40px] p-8 card-shadow border border-slate-50 text-center mb-8">
+                <div class="relative inline-block">
+                    <div id="avatar-container" class="w-32 h-32 rounded-[35px] mx-auto mb-6 overflow-hidden border-4 border-white shadow-sm avatar-placeholder">
+                        <img id="profile-avatar" src="#" alt="Avatar" class="w-full h-full object-cover hidden">
+                        <div id="avatar-placeholder-icon" class="w-full h-full flex items-center justify-center">
+                            <svg class="w-16 h-16 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-4 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                </div>
+                
+                <h2 id="profile-name" class="text-2xl font-extrabold text-slate-800">—</h2>
+                <p id="profile-status" class="text-slate-400 font-semibold text-sm uppercase tracking-widest mb-4">—</p>
+                
+                <div class="flex justify-center gap-2 flex-wrap mb-6">
+                    <span id="profile-tag" class="bg-slate-50 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">—</span>
+                    <span id="profile-level" class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">—</span>
+                    <span class="bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold">⭐️ 5.0</span>
+                </div>
+
+                <!-- НАВИГАЦИОННЫЕ ПЛИТКИ -->
+                <div class="grid grid-cols-3 gap-3">
+                    <a href="my-requests.html" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-3 text-center transition">
+                        <div class="text-2xl mb-1">📋</div>
+                        <p class="text-xs font-bold text-slate-600">Заявки</p>
+                    </a>
+                    <a href="catalog.html" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-3 text-center transition">
+                        <div class="text-2xl mb-1">🎓</div>
+                        <p class="text-xs font-bold text-slate-600">Каталог</p>
+                    </a>
+                    <button onclick="openEditModal()" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-3 text-center transition">
+                        <div class="text-2xl mb-1">✏️</div>
+                        <p class="text-xs font-bold text-slate-600">Профиль</p>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-400 uppercase tracking-widest px-2">Управление</h3>
+                
+                <a href="my-requests.html" class="w-full bg-white border border-slate-100 p-5 rounded-[24px] flex justify-between items-center card-shadow active:scale-[0.97] transition cursor-pointer block">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <span class="font-bold text-slate-700">Входящие заявки</span>
+                    </div>
+                    <span id="requestsBadge" class="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-black hidden">0</span>
+                </a>
+
+                <div role="button" onclick="openEditModal()" class="w-full bg-white border border-slate-100 p-5 rounded-[24px] flex justify-between items-center card-shadow active:scale-[0.97] transition cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </div>
+                        <span class="font-bold text-slate-700">Редактировать анкету</span>
+                    </div>
+                    <svg class="text-slate-300" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
+
+            <button onclick="logoutUser()" class="w-full mt-12 py-4 text-slate-400 font-bold text-sm hover:text-red-500 transition">
+                Выйти из аккаунта
+            </button>
+
+        </main>
+    </div>
+
+    <!-- ОКНО РЕДАКТИРОВАНИЯ -->
+    <div id="editModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden justify-center items-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl relative border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <h3 class="text-xl font-extrabold text-slate-800 mb-5">Редактировать профиль</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">ФИО наставника</label>
+                    <input type="text" id="input-name" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Роль</label>
+                    <select id="input-role" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                        <option value="Наставник ВолгГМУ">Наставник</option>
+                        <option value="Подопечный">Подопечный</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
+                    <select id="edit-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('edit')">
+                        <option value="">Выберите направление</option>
+                        
+                        <optgroup label="Бакалавриат">
+                            <option value='{"level":"Бакалавриат","name":"Биология","form":"Очная","duration":"4 года"}'>Биология</option>
+                            <option value='{"level":"Бакалавриат","name":"Биотехнические системы и технологии","form":"Очная","duration":"4 года"}'>Биотехнические системы и технологии</option>
+                        </optgroup>
+                        
+                        <optgroup label="Специалитет">
+                            <option value='{"level":"Специалитет","name":"Лечебное дело","form":"Очная","duration":"6 лет","code":"31.05.01"}'>Лечебное дело</option>
+                            <option value='{"level":"Специалитет","name":"Педиатрия","form":"Очная","duration":"6 лет","code":"31.05.02"}'>Педиатрия</option>
+                            <option value='{"level":"Специалитет","name":"Стоматология","form":"Очная","duration":"5 лет","code":"31.05.03"}'>Стоматология</option>
+                            <option value='{"level":"Специалитет","name":"Медицинская биохимия","form":"Очная","duration":"6 лет","code":"30.05.01"}'>Медицинская биохимия</option>
+                            <option value='{"level":"Специалитет","name":"Медико-профилактическое дело","form":"Очная","duration":"6 лет","code":"32.05.01"}'>Медико-профилактическое дело</option>
+                            <option value='{"level":"Специалитет","name":"Фармация","form":"Очная","duration":"5 лет","code":"33.05.01"}'>Фармация</option>
+                            <option value='{"level":"Специалитет","name":"Клиническая психология","form":"Очная","duration":"5 лет 6 месяцев","code":"37.05.01"}'>Клиническая психология</option>
+                        </optgroup>
+                        
+                        <optgroup label="Магистратура">
+                            <option value='{"level":"Магистратура","name":"Биотехнические системы и технологии","form":"Очная","duration":"2 года"}'>Биотехнические системы и технологии</option>
+                            <option value='{"level":"Магистратура","name":"Менеджмент","form":"Заочная","duration":"2 года 6 месяцев"}'>Менеджмент</option>
+                            <option value='{"level":"Магистратура","name":"Общественное здравоохранение","form":"Очно-заочная","duration":"2 года 6 месяцев"}'>Общественное здравоохранение</option>
+                            <option value='{"level":"Магистратура","name":"Биология","form":"Очная","duration":"2 года"}'>Биология</option>
+                        </optgroup>
+
+                        <optgroup label="СПО (Колледж)">
+                            <option value='{"level":"СПО","name":"Медицинская оптика","form":"Очная","duration":"1 год 10 месяцев"}'>Медицинская оптика</option>
+                            <option value='{"level":"СПО","name":"Стоматологическое дело","form":"Очная","duration":"2 года 10 месяцев"}'>Стоматологическое дело</option>
+                            <option value='{"level":"СПО","name":"Сестринское дело","form":"Очная","duration":"1 год 10 месяцев"}'>Сестринское дело</option>
+                        </optgroup>
+                        
+                        <optgroup label="Ординатура">
+                            <option value='{"level":"Ординатура","name":"Общая гигиена","form":"Очная","duration":"2 года"}'>Общая гигиена</option>
+                            <option value='{"level":"Ординатура","name":"Нефрология","form":"Очная","duration":"2 года"}'>Нефрология</option>
+                            <option value='{"level":"Ординатура","name":"Хирургия","form":"Очная","duration":"2 года"}'>Хирургия</option>
+                            <option value='{"level":"Ординатура","name":"Педиатрия","form":"Очная","duration":"2 года"}'>Педиатрия</option>
+                            <option value='{"level":"Ординатура","name":"Акушерство и гинекология","form":"Очная","duration":"2 года"}'>Акушерство и гинекология</option>
+                        </optgroup>
+                        
+                        <optgroup label="Аспирантура">
+                            <option value='{"level":"Аспирантура","name":"Гигиена","form":"Очная","duration":"3 года"}'>Гигиена</option>
+                            <option value='{"level":"Аспирантура","name":"Неврология","form":"Очная","duration":"3 года"}'>Неврология</option>
+                            <option value='{"level":"Аспирантура","name":"Педиатрия","form":"Очная","duration":"3 года"}'>Педиатрия</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="edit-direction-details" class="spec-details"></div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Фото профиля</label>
+                    <div class="flex items-center gap-3">
+                        <label class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl text-center text-slate-500 font-semibold text-sm cursor-pointer hover:bg-slate-100 transition">
+                            Выбрать фото
+                            <input type="file" id="edit-avatar-file" accept="image/*" class="hidden" onchange="previewAvatar(event, 'edit-avatar-preview')">
+                        </label>
+                        <div id="edit-avatar-preview" class="w-14 h-14 rounded-full border-2 border-slate-200 overflow-hidden flex-shrink-0 avatar-placeholder">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveChanges()" class="flex-1 vgm-bg-green text-white font-bold py-3 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Сохранить
+                </button>
+                <button onclick="closeEditModal()" class="flex-1 bg-slate-100 text-slate-500 font-bold py-3 rounded-xl active:scale-[0.97] transition">
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-slate-50 p-4 flex justify-around items-center z-10">
+        <button onclick="window.location.href='index.html'" class="text-slate-300">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+        <button class="text-emerald-700 font-bold">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+    </footer>
+
+    <!-- ЛОГИКА -->
+    <script>
+        const API_URL = '/api';
+
+        let regAvatarDataURL = null;
+        let editAvatarDataURL = null;
+        let currentUser = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            checkAuth();
+        });
+
+        function switchAuthTab(tab) {
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.remove('active');
+            document.getElementById('loginTabBtn').classList.remove('active');
+            document.getElementById('registerTabBtn').classList.remove('active');
+            
+            if (tab === 'login') {
+                document.getElementById('loginTab').classList.add('active');
+                document.getElementById('loginTabBtn').classList.add('active');
+            } else {
+                document.getElementById('registerTab').classList.add('active');
+                document.getElementById('registerTabBtn').classList.add('active');
+            }
+        }
+
+        function updateDirectionDetails(prefix) {
+            const select = document.getElementById(prefix + '-direction');
+            const detailsDiv = document.getElementById(prefix + '-direction-details');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (!selectedOption || !selectedOption.value) {
+                detailsDiv.classList.remove('show');
+                detailsDiv.innerHTML = '';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(selectedOption.value);
+                
+                let html = `<div class="detail-row"><span class="detail-label">Уровень</span><span class="detail-value">${data.level}</span></div>`;
+                html += `<div class="detail-row"><span class="detail-label">Направление</span><span class="detail-value">${data.name}</span></div>`;
+                
+                if (data.code) {
+                    html += `<div class="detail-row"><span class="detail-label">Код направления</span><span class="detail-value code">${data.code}</span></div>`;
+                }
+                
+                if (data.description) {
+                    html += `<div class="detail-description">${data.description}</div>`;
+                }
+                
+                html += `<div class="detail-row"><span class="detail-label">Форма обучения</span><span class="detail-value">${data.form}</span></div>`;
+                html += `<div class="detail-row"><span class="detail-label">Срок обучения</span><span class="detail-value">${data.duration}</span></div>`;
+                
+                detailsDiv.innerHTML = html;
+                detailsDiv.classList.add('show');
+            } catch (e) {
+                detailsDiv.classList.remove('show');
+                detailsDiv.innerHTML = '';
+            }
+        }
+
+        function previewAvatar(event, previewId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataURL = e.target.result;
+                const previewEl = document.getElementById(previewId);
+                previewEl.innerHTML = `<img src="${dataURL}" class="w-full h-full object-cover">`;
+                if (previewId === 'reg-avatar-preview') {
+                    regAvatarDataURL = dataURL;
+                } else if (previewId === 'edit-avatar-preview') {
+                    editAvatarDataURL = dataURL;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function registerUser() {
+            const login = document.getElementById("reg-login").value.trim();
+            const name = document.getElementById("reg-name").value.trim();
+            const role = document.getElementById("reg-role").value;
+            const password = document.getElementById("reg-password").value;
+            const passwordConfirm = document.getElementById("reg-password-confirm").value;
+            const select = document.getElementById("reg-direction");
+            const selectedOption = select.options[select.selectedIndex];
+
+            if (!login || !name || !password || !passwordConfirm) {
+                alert("Пожалуйста, заполните все поля!");
+                return;
+            }
+            if (password !== passwordConfirm) {
+                alert("Пароли не совпадают!");
+                return;
+            }
+            if (password.length < 6) {
+                alert("Пароль должен быть не менее 6 символов!");
+                return;
+            }
+            if (!selectedOption || !selectedOption.value) {
+                alert("Пожалуйста, выберите направление!");
+                return;
+            }
+
+            let directionData;
+            try {
+                directionData = JSON.parse(selectedOption.value);
+            } catch (e) {
+                alert("Ошибка в данных направления!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        login, name, password, role,
+                        direction: directionData,
+                        avatar: regAvatarDataURL
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error || 'Ошибка регистрации');
+                    return;
+                }
+
+                currentUser = data.user;
+                localStorage.setItem('vgm_current_user', JSON.stringify(data.user));
+                alert('Регистрация успешна!');
+                checkAuth();
+
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось подключиться к серверу.');
+            }
+        }
+
+        async function loginUser() {
+            const login = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value;
+
+            if (!login || !password) {
+                alert("Введите логин и пароль!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error || 'Ошибка входа');
+                    return;
+                }
+
+                currentUser = data.user;
+                localStorage.setItem('vgm_current_user', JSON.stringify(data.user));
+                checkAuth();
+
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось подключиться к серверу.');
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('vgm_current_user');
+            checkAuth();
+        }
+
+        function checkAuth() {
+            const saved = localStorage.getItem('vgm_current_user');
+            
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                
+                document.getElementById("authBlock").classList.add("hidden");
+                document.getElementById("profileBlock").classList.remove("hidden");
+                
+                document.getElementById("profile-name").innerText = currentUser.name;
+                document.getElementById("profile-status").innerText = currentUser.role;
+                
+                if (currentUser.direction) {
+                    document.getElementById("profile-tag").innerText = currentUser.direction.name;
+                    document.getElementById("profile-level").innerText = currentUser.direction.level;
+                }
+                
+                updateProfileAvatar(currentUser.avatar);
+                loadRequestsCount();
+            } else {
+                document.getElementById("authBlock").classList.remove("hidden");
+                document.getElementById("profileBlock").classList.add("hidden");
+                
+                document.getElementById("reg-login").value = '';
+                document.getElementById("reg-name").value = '';
+                document.getElementById("reg-password").value = '';
+                document.getElementById("reg-password-confirm").value = '';
+                document.getElementById("login-username").value = '';
+                document.getElementById("login-password").value = '';
+                document.getElementById("reg-avatar-file").value = '';
+                regAvatarDataURL = null;
+                
+                const preview = document.getElementById('reg-avatar-preview');
+                preview.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+                
+                document.getElementById('reg-direction').value = '';
+                document.getElementById('reg-direction-details').classList.remove('show');
+                document.getElementById('reg-direction-details').innerHTML = '';
+            }
+        }
+
+        function updateProfileAvatar(dataURL) {
+            const img = document.getElementById('profile-avatar');
+            const placeholder = document.getElementById('avatar-placeholder-icon');
+            const container = document.getElementById('avatar-container');
+            if (dataURL && dataURL !== 'null' && dataURL !== '') {
+                img.src = dataURL;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                container.classList.remove('avatar-placeholder');
+            } else {
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                container.classList.add('avatar-placeholder');
+            }
+        }
+
+        async function loadRequestsCount() {
+            if (!currentUser) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/requests/${currentUser.id}`);
+                const requests = await response.json();
+                
+                const incomingPending = requests.filter(r => 
+                    r.to_user_id === currentUser.id && r.status === 'pending'
+                ).length;
+                
+                const badge = document.getElementById('requestsBadge');
+                if (badge) {
+                    if (incomingPending > 0) {
+                        badge.innerText = incomingPending;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            } catch (e) {
+                console.error('Ошибка загрузки заявок:', e);
+            }
+        }
+
+        function openEditModal() {
+            if (!currentUser) return;
+            
+            document.getElementById("input-name").value = currentUser.name || '';
+            
+            const roleSelect = document.getElementById("input-role");
+            if ((currentUser.role || '').includes("Наставник")) {
+                roleSelect.value = "Наставник ВолгГМУ";
+            } else {
+                roleSelect.value = "Подопечный";
+            }
+            
+            const editSelect = document.getElementById("edit-direction");
+            const currentTag = currentUser.direction ? currentUser.direction.name : '';
+            const currentLevel = currentUser.direction ? currentUser.direction.level : '';
+            
+            for (let i = 0; i < editSelect.options.length; i++) {
+                const opt = editSelect.options[i];
+                if (opt.value) {
+                    try {
+                        const data = JSON.parse(opt.value);
+                        if (data.name === currentTag && data.level === currentLevel) {
+                            editSelect.value = opt.value;
+                            updateDirectionDetails('edit');
+                            break;
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            const previewEl = document.getElementById('edit-avatar-preview');
+            if (currentUser.avatar) {
+                previewEl.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover">`;
+                editAvatarDataURL = currentUser.avatar;
+            } else {
+                previewEl.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+                editAvatarDataURL = null;
+            }
+            document.getElementById('edit-avatar-file').value = '';
+            
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        async function saveChanges() {
+            if (!currentUser) return;
+            
+            const newName = document.getElementById("input-name").value.trim();
+            const newRole = document.getElementById("input-role").value;
+            
+            const editSelect = document.getElementById("edit-direction");
+            const selectedOption = editSelect.options[editSelect.selectedIndex];
+            
+            let directionData = currentUser.direction;
+            if (selectedOption && selectedOption.value) {
+                try {
+                    directionData = JSON.parse(selectedOption.value);
+                } catch(e) {}
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/users/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: newName || currentUser.name,
+                        role: newRole,
+                        direction: directionData,
+                        avatar: editAvatarDataURL
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentUser = data.user;
+                    localStorage.setItem('vgm_current_user', JSON.stringify(data.user));
+                    
+                    document.getElementById("profile-name").innerText = currentUser.name;
+                    document.getElementById("profile-status").innerText = currentUser.role;
+                    
+                    if (currentUser.direction) {
+                        document.getElementById("profile-tag").innerText = currentUser.direction.name;
+                        document.getElementById("profile-level").innerText = currentUser.direction.level;
+                    }
+                    
+                    updateProfileAvatar(currentUser.avatar);
+                    closeEditModal();
+                } else {
+                    alert(data.error || 'Ошибка сохранения');
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось подключиться к серверу');
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("editModal");
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+
+</body>
+</html>

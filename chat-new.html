@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат | ВолгГМУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: #94a3b8;
+        }
+        .chat-messages {
+    height: calc(100vh - 200px);   /* fallback */
+    height: calc(100dvh - 200px);  /* поддержка динамического viewport */
+    overflow-y: auto;
+    padding-bottom: 8px;
+}
+        .message-bubble { max-width: 70%; word-wrap: break-word; }
+        .message-own { background-color: #007a5e; color: white; margin-left: auto; }
+        .message-other { background-color: #ffffff; color: #1e293b; border: 1px solid #e2e8f0; }
+        .message-img { max-width: 250px; max-height: 250px; border-radius: 12px; cursor: pointer; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900">
+
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
+        <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="chats.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
+                ← Чаты
+            </a>
+            <h1 class="font-extrabold text-lg vgm-green truncate max-w-xs" id="chatTitle">Чат</h1>
+            <button onclick="toggleMembers()" id="membersBtn" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden">
+                👥 Участники
+            </button>
+        </div>
+    </header>
+
+    <!-- ИНФО О ЧАТЕ -->
+    <div class="max-w-3xl mx-auto px-6 py-3">
+        <div class="bg-white rounded-2xl p-3 border border-slate-100 flex items-center gap-3">
+            <div id="chatAvatar" class="w-12 h-12 rounded-xl overflow-hidden avatar-placeholder flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+                <h2 id="chatName" class="font-bold text-slate-800 truncate">Загрузка...</h2>
+                <p id="chatMembersCount" class="text-xs text-slate-400 font-semibold">—</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- УЧАСТНИКИ (скрыто по умолчанию) -->
+    <div id="membersPanel" class="max-w-3xl mx-auto px-6 pb-3 hidden">
+        <div class="bg-white rounded-2xl p-4 border border-slate-100">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Участники</h3>
+            <div id="membersList" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- СООБЩЕНИЯ -->
+    <main class="max-w-3xl mx-auto px-6 pb-4">
+        <div id="loadingState" class="text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"></div>
+            <p class="text-slate-500 mt-2 text-sm">Загрузка сообщений...</p>
+        </div>
+
+        <div id="chatMessages" class="chat-messages space-y-3 hidden"></div>
+
+        <div id="errorState" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">❌</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">Чат не найден</h3>
+            <a href="chats.html" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition">Вернуться к чатам</a>
+        </div>
+    </main>
+
+    <!-- ПОЛЕ ВВОДА -->
+    <div id="inputBlock" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 hidden" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
+        <div class="max-w-3xl mx-auto flex gap-2 items-end">
+            <label class="cursor-pointer p-3 hover:bg-slate-100 rounded-xl transition flex-shrink-0">
+                📎
+                <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt" class="hidden" onchange="uploadFile(event)">
+            </label>
+            <input type="text" id="messageInput" placeholder="Напишите сообщение..." 
+                class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition"
+                onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()" class="vgm-bg-green text-white font-bold px-5 py-3 rounded-xl hover:bg-emerald-700 transition flex-shrink-0">
+                ➤
+            </button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ДЛЯ ПРОСМОТРА КАРТИНОК -->
+    <div id="imageModal" class="fixed inset-0 bg-black/80 z-50 hidden justify-center items-center p-4" onclick="closeImageModal()">
+        <img id="modalImage" class="max-w-full max-h-full rounded-2xl">
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+        let chatId = null;
+        let chatData = null;
+        let refreshInterval = null;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        chatId = urlParams.get('id');
+
+        // Проверка авторизации
+        function checkAuth() {
+            const saved = localStorage.getItem('vgm_current_user');
+            if (!saved) {
+                alert('Войдите в аккаунт');
+                window.location.href = 'profile1.html';
+                return false;
+            }
+            currentUser = JSON.parse(saved);
+            return true;
+        }
+
+        // Загрузка информации о чате
+        async function loadChatInfo() {
+            try {
+                const response = await fetch(`${API_URL}/chats/${chatId}/info`);
+                
+                if (!response.ok) {
+                    showError();
+                    return;
+                }
+
+                chatData = await response.json();
+
+                // Название
+                let displayName = chatData.name || 'Чат';
+                let displayAvatar = chatData.avatar;
+
+                if (!chatData.is_group) {
+                    const other = chatData.members.find(m => m.id != currentUser.id);
+                    if (other) {
+                        displayName = other.name;
+                        displayAvatar = other.avatar;
+                    }
+                }
+
+                document.getElementById('chatTitle').innerText = displayName;
+                document.getElementById('chatName').innerText = displayName;
+                document.getElementById('chatMembersCount').innerText = 
+                    chatData.is_group ? `${chatData.members.length} участников` : chatData.members[0].role;
+
+                // Аватар
+                const avatarEl = document.getElementById('chatAvatar');
+                if (displayAvatar) {
+                    avatarEl.innerHTML = `<img src="${displayAvatar}" class="w-full h-full object-cover">`;
+                } else {
+                    avatarEl.innerHTML = chatData.is_group 
+                        ? '<div class="text-2xl">👥</div>'
+                        : '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>';
+                }
+
+                // Кнопка участников — только для групп
+                if (chatData.is_group) {
+                    document.getElementById('membersBtn').classList.remove('hidden');
+                    renderMembers();
+                }
+
+                document.getElementById('inputBlock').classList.remove('hidden');
+                loadMessages();
+
+                // Автообновление каждые 3 секунды
+                refreshInterval = setInterval(loadMessages, 3000);
+
+            } catch (error) {
+                console.error(error);
+                showError();
+            }
+        }
+
+        // Рендер участников
+        function renderMembers() {
+            document.getElementById('membersList').innerHTML = chatData.members.map(m => `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden avatar-placeholder flex-shrink-0">
+                        ${m.avatar ? `<img src="${m.avatar}" class="w-full h-full object-cover">` : '👤'}
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm text-slate-800">${m.name} ${m.id == currentUser.id ? '(вы)' : ''}</p>
+                        <p class="text-xs text-slate-400">${m.role}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleMembers() {
+            document.getElementById('membersPanel').classList.toggle('hidden');
+        }
+
+        // Загрузка сообщений
+        async function loadMessages() {
+            try {
+                const response = await fetch(`${API_URL}/chats/${chatId}/messages`);
+                const messages = await response.json();
+
+                document.getElementById('loadingState').classList.add('hidden');
+                const chatEl = document.getElementById('chatMessages');
+                chatEl.classList.remove('hidden');
+
+                if (messages.length === 0) {
+                    chatEl.innerHTML = `
+                        <div class="text-center py-16">
+                            <div class="text-5xl mb-3">💬</div>
+                            <p class="text-slate-400 font-semibold">Сообщений пока нет</p>
+                            <p class="text-slate-400 text-sm">Напишите первое сообщение!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                chatEl.innerHTML = messages.map(msg => {
+                    const isOwn = msg.from_user_id === currentUser.id;
+                    const time = new Date(msg.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                    let content = '';
+
+                    if (msg.attachment_url) {
+                        if (msg.attachment_type === 'image') {
+                            content = `
+                                <img src="${msg.attachment_url}" class="message-img" onclick="openImageModal('${msg.attachment_url}')">
+                                ${msg.text ? `<p class="text-sm mt-2">${escapeHtml(msg.text)}</p>` : ''}
+                            `;
+                        } else {
+                            content = `
+                                <a href="${msg.attachment_url}" download="${msg.attachment_name}" 
+                                   class="flex items-center gap-2 ${isOwn ? 'text-white' : 'text-emerald-600'} font-bold text-sm hover:underline">
+                                    📄 ${msg.attachment_name}
+                                </a>
+                                ${msg.text ? `<p class="text-sm mt-2">${escapeHtml(msg.text)}</p>` : ''}
+                            `;
+                        }
+                    } else {
+                        content = `<p class="text-sm">${escapeHtml(msg.text)}</p>`;
+                    }
+
+                    const showName = !isOwn && chatData.is_group;
+
+                    return `
+                        <div class="flex ${isOwn ? 'justify-end' : 'justify-start'}">
+                            <div class="message-bubble ${isOwn ? 'message-own' : 'message-other'} rounded-2xl px-4 py-2.5">
+                                ${showName ? `<p class="text-xs font-bold vgm-green mb-1">${msg.from_name || 'Пользователь'}</p>` : ''}
+                                ${content}
+                                <p class="text-[10px] opacity-70 mt-1 ${isOwn ? 'text-right' : ''}">${time}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                chatEl.scrollTop = chatEl.scrollHeight;
+
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+            }
+        }
+
+        // Отправить сообщение
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            try {
+                const response = await fetch(`${API_URL}/chats/${chatId}/messages`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        from_user_id: currentUser.id,
+                        text: text
+                    })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    await loadMessages();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Ошибка отправки');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось отправить');
+            }
+        }
+
+        // Загрузить файл
+        async function uploadFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Файл больше 10 MB');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('from_user_id', currentUser.id);
+
+            try {
+                const response = await fetch(`${API_URL}/chats/${chatId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    await loadMessages();
+                } else {
+                    alert(data.error || 'Ошибка загрузки');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось загрузить файл');
+            }
+
+            event.target.value = '';
+        }
+
+        // Модалка для картинок
+        function openImageModal(url) {
+            document.getElementById('modalImage').src = url;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        function showError() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        if (checkAuth() && chatId) {
+            loadChatInfo();
+        } else if (!chatId) {
+            showError();
+        }
+    </script>
+
+</body>
+</html>

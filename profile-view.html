@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль наставника | ВолгГМУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900">
+
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="catalog.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
+                ← Каталог
+            </a>
+            <h1 class="font-extrabold text-lg vgm-green">Профиль наставника</h1>
+            <div class="flex gap-3">
+                <a href="my-requests.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">📋 Заявки</a>
+                <a href="profile1.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">👤 Кабинет</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-10">
+        
+        <div id="loadingState" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+            <p class="text-slate-500 mt-4">Загрузка профиля...</p>
+        </div>
+
+        <div id="profileCard" class="hidden bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            
+            <div class="flex flex-col md:flex-row gap-6 items-center md:items-start mb-8">
+                <div id="avatar" class="w-32 h-32 rounded-3xl overflow-hidden avatar-placeholder flex-shrink-0"></div>
+                <div class="text-center md:text-left flex-1">
+                    <h2 id="name" class="text-3xl font-extrabold text-slate-800 mb-2">—</h2>
+                    <p id="role" class="text-sm font-bold vgm-green uppercase tracking-widest mb-4">—</p>
+                    <div id="directionTags" class="flex flex-wrap gap-2 justify-center md:justify-start"></div>
+                </div>
+            </div>
+
+            <div id="directionDetails" class="bg-slate-50 rounded-2xl p-6 mb-8">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Направление</h3>
+                <div id="directionInfo"></div>
+            </div>
+
+            <div class="bg-blue-50 rounded-2xl p-4 md:p-6 mb-8 border border-blue-100">
+                <h3 class="font-bold text-blue-900 mb-2">📋 Оставить заявку</h3>
+                <p class="text-sm text-blue-700 mb-4">Постарайтесь четко сформулировать свой запрос — это повысит шансы на то, что наставник согласится с вами работать</p>
+                <button onclick="openRequestModal()" class="w-full vgm-bg-green text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition">
+                    Оставить заявку
+                </button>
+            </div>
+
+            <!-- РЕЙТИНГ И ОТЗЫВЫ -->
+            <div class="bg-white rounded-2xl p-6 mb-8 border border-slate-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800">⭐ Отзывы</h3>
+                    <div id="avgRating" class="text-sm font-bold text-slate-600">—</div>
+                </div>
+                
+                <div id="reviewsList" class="space-y-3 mb-4">
+                    <p class="text-slate-400 text-sm">Загрузка отзывов...</p>
+                </div>
+                
+                <button onclick="openReviewModal()" class="w-full bg-yellow-50 text-yellow-700 font-bold py-3 rounded-xl hover:bg-yellow-100 transition">
+                    ✍️ Оставить отзыв
+                </button>
+            </div>
+
+        </div>
+
+        <div id="errorState" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">❌</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">Профиль не найден</h3>
+            <p class="text-slate-500 mb-6">Возможно, наставник был удалён</p>
+            <a href="catalog.html" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition">Вернуться к каталогу</a>
+        </div>
+
+    </main>
+
+    <!-- МОДАЛКА ЗАЯВКИ -->
+    <div id="requestModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden justify-center items-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-extrabold text-slate-800">Заявка наставнику</h3>
+                <button onclick="closeRequestModal()" class="text-slate-400 hover:text-slate-600 text-2xl">×</button>
+            </div>
+            
+            <p class="text-sm text-slate-500 mb-4">Напишите, чем вы занимаетесь и какую помощь хотите получить</p>
+            
+            <textarea id="requestMessage" rows="5" placeholder="Здравствуйте! Меня интересует..." 
+                class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition mb-4"></textarea>
+            
+            <div class="flex gap-3">
+                <button onclick="sendRequest()" class="flex-1 vgm-bg-green text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition">
+                    Отправить
+                </button>
+                <button onclick="closeRequestModal()" class="flex-1 bg-slate-100 text-slate-500 font-bold py-3 rounded-xl hover:bg-slate-200 transition">
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ОТЗЫВА -->
+    <div id="reviewModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden justify-center items-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-extrabold text-slate-800">Оставить отзыв</h3>
+                <button onclick="closeReviewModal()" class="text-slate-400 hover:text-slate-600 text-2xl">×</button>
+            </div>
+            
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Оценка</label>
+            <div class="flex gap-2 mb-4">
+                <button onclick="setRating(1)" class="star-btn text-4xl text-slate-300 hover:text-yellow-500 transition" data-rating="1">★</button>
+                <button onclick="setRating(2)" class="star-btn text-4xl text-slate-300 hover:text-yellow-500 transition" data-rating="2">★</button>
+                <button onclick="setRating(3)" class="star-btn text-4xl text-slate-300 hover:text-yellow-500 transition" data-rating="3">★</button>
+                <button onclick="setRating(4)" class="star-btn text-4xl text-slate-300 hover:text-yellow-500 transition" data-rating="4">★</button>
+                <button onclick="setRating(5)" class="star-btn text-4xl text-slate-300 hover:text-yellow-500 transition" data-rating="5">★</button>
+            </div>
+            <input type="hidden" id="ratingValue" value="0">
+            
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Текст отзыва (необязательно)</label>
+            <textarea id="reviewText" rows="4" placeholder="Отличный наставник! Помог с..." 
+                class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition mb-4"></textarea>
+            
+            <div class="flex gap-3">
+                <button onclick="sendReview()" class="flex-1 vgm-bg-green text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition">
+                    Отправить
+                </button>
+                <button onclick="closeReviewModal()" class="flex-1 bg-slate-100 text-slate-500 font-bold py-3 rounded-xl hover:bg-slate-200 transition">
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let mentorData = null;
+        let selectedRating = 0;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mentorId = urlParams.get('id');
+
+        async function loadMentor() {
+            if (!mentorId) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/users/${mentorId}`);
+                
+                if (!response.ok) {
+                    showError();
+                    return;
+                }
+                
+                mentorData = await response.json();
+                renderMentor();
+                loadReviews();
+            } catch (error) {
+                console.error(error);
+                showError();
+            }
+        }
+
+        function renderMentor() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('profileCard').classList.remove('hidden');
+
+            const avatarEl = document.getElementById('avatar');
+            if (mentorData.avatar) {
+                avatarEl.innerHTML = `<img src="${mentorData.avatar}" class="w-full h-full object-cover">`;
+            } else {
+                avatarEl.innerHTML = `<svg class="w-16 h-16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+            }
+
+            document.getElementById('name').innerText = mentorData.name;
+            document.getElementById('role').innerText = mentorData.role;
+
+            const tagsEl = document.getElementById('directionTags');
+            if (mentorData.direction) {
+                tagsEl.innerHTML = `
+                    <span class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.level}</span>
+                    <span class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.form}</span>
+                `;
+            }
+
+            const infoEl = document.getElementById('directionInfo');
+            if (mentorData.direction) {
+                const d = mentorData.direction;
+                let html = '';
+                if (d.name) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Направление</span><span class="font-bold">${d.name}</span></div>`;
+                if (d.code) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Код</span><span class="font-bold vgm-green font-mono text-sm">${d.code}</span></div>`;
+                if (d.description) html += `<p class="text-sm text-slate-600 mt-3 leading-relaxed">${d.description}</p>`;
+                if (d.duration) html += `<div class="flex justify-between py-2 border-b border-slate-200 mt-3"><span class="text-slate-500 font-semibold">Срок обучения</span><span class="font-bold">${d.duration}</span></div>`;
+                infoEl.innerHTML = html;
+            } else {
+                infoEl.innerHTML = '<p class="text-slate-400 italic">Направление не указано</p>';
+            }
+        }
+
+        async function loadReviews() {
+            if (!mentorId) return;
+            
+            try {
+                const ratingRes = await fetch(`${API_URL}/reviews/${mentorId}/rating`);
+                const ratingData = await ratingRes.json();
+                
+                document.getElementById('avgRating').innerHTML = ratingData.count > 0
+                    ? `<span class="text-yellow-600">⭐ ${ratingData.average}</span> <span class="text-slate-400">(${ratingData.count})</span>`
+                    : 'Нет отзывов';
+                
+                const reviewsRes = await fetch(`${API_URL}/reviews/${mentorId}`);
+                const reviews = await reviewsRes.json();
+                
+                const list = document.getElementById('reviewsList');
+                
+                if (reviews.length === 0) {
+                    list.innerHTML = '<p class="text-slate-400 text-sm italic">Пока нет отзывов. Будьте первым!</p>';
+                    return;
+                }
+                
+                list.innerHTML = reviews.map(r => {
+                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                    const date = new Date(r.created_at).toLocaleDateString('ru-RU');
+                    
+                    return `
+                        <div class="bg-slate-50 rounded-xl p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-800">${r.author_name || 'Пользователь'}</p>
+                                    <p class="text-xs text-slate-400">${date}</p>
+                                </div>
+                                <p class="text-yellow-500 text-lg">${stars}</p>
+                            </div>
+                            ${r.text ? `<p class="text-sm text-slate-600">${r.text}</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Ошибка загрузки отзывов:', e);
+            }
+        }
+
+        function showError() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        function openRequestModal() {
+            const currentUser = localStorage.getItem('vgm_current_user');
+            if (!currentUser) {
+                alert('Чтобы отправить заявку, войдите в аккаунт');
+                window.location.href = 'profile1.html';
+                return;
+            }
+            document.getElementById('requestModal').style.display = 'flex';
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').style.display = 'none';
+        }
+
+        async function sendRequest() {
+            const message = document.getElementById('requestMessage').value.trim();
+            const currentUser = JSON.parse(localStorage.getItem('vgm_current_user'));
+
+            if (!message) {
+                alert('Напишите сообщение');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/requests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        from_user_id: currentUser.id,
+                        to_user_id: mentorData.id,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Заявка отправлена!');
+                    closeRequestModal();
+                    document.getElementById('requestMessage').value = '';
+                } else {
+                    alert(data.error || 'Ошибка отправки');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось отправить заявку');
+            }
+        }
+
+        // ОТЗЫВЫ
+        function openReviewModal() {
+            const currentUser = localStorage.getItem('vgm_current_user');
+            if (!currentUser) {
+                alert('Войдите в аккаунт');
+                window.location.href = 'profile1.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            if (user.id === mentorData.id) {
+                alert('Нельзя оставить отзыв самому себе');
+                return;
+            }
+            
+            document.getElementById('reviewModal').style.display = 'flex';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+            selectedRating = 0;
+            document.getElementById('ratingValue').value = 0;
+            document.querySelectorAll('.star-btn').forEach(btn => {
+                btn.classList.remove('text-yellow-500');
+                btn.classList.add('text-slate-300');
+            });
+            document.getElementById('reviewText').value = '';
+        }
+
+        function setRating(rating) {
+            selectedRating = rating;
+            document.getElementById('ratingValue').value = rating;
+            
+            document.querySelectorAll('.star-btn').forEach(btn => {
+                const r = parseInt(btn.dataset.rating);
+                if (r <= rating) {
+                    btn.classList.remove('text-slate-300');
+                    btn.classList.add('text-yellow-500');
+                } else {
+                    btn.classList.remove('text-yellow-500');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+        }
+
+        async function sendReview() {
+            const currentUser = JSON.parse(localStorage.getItem('vgm_current_user'));
+            const rating = selectedRating;
+            const text = document.getElementById('reviewText').value.trim();
+            
+            if (rating === 0) {
+                alert('Поставьте оценку');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mentor_id: mentorData.id,
+                        author_id: currentUser.id,
+                        rating: rating,
+                        text: text
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Спасибо за отзыв!');
+                    closeReviewModal();
+                    loadReviews();
+                } else {
+                    alert(data.error || 'Ошибка');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Не удалось отправить отзыв');
+            }
+        }
+
+        loadMentor();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident-Student | VolgSMU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue-gradient-start: #112d61;
+            --blue-gradient-end: #1b4284;
+            --accent-blue: #2196F3;
+            --accent-blue-light: rgba(33, 150, 243, 0.1);
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--blue-gradient-start) 0%, var(--blue-gradient-end) 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-header {
+            background: rgba(13, 27, 62, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .logo-circle {
+            width: 38px;
+            height: 38px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .logo-main-text {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            box-sizing: border-box;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 45px 50px;
+            max-width: 760px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            background: var(--accent-blue-light);
+            color: var(--accent-blue);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            color: #0d1b3e;
+            letter-spacing: -0.8px;
+        }
+
+        .lead-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #475569;
+            margin: 0 0 30px 0;
+        }
+
+        .quote-block {
+            border-left: 4px solid var(--accent-blue);
+            background: #f8fafc;
+            padding: 18px 24px;
+            border-radius: 0 16px 16px 0;
+            margin-bottom: 35px;
+        }
+
+        .quote-block p {
+            font-size: 15px;
+            font-style: italic;
+            color: #334155;
+            font-weight: 600;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .list-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0d1b3e;
+            margin: 0 0 18px 0;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #334155;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .actions-layout {
+            text-align: center;
+        }
+
+        .btn-return {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #0d1b3e;
+            color: #ffffff;
+            padding: 16px 38px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(13, 27, 62, 0.2);
+        }
+
+        .btn-return:hover {
+            background: #162a5a;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(13, 27, 62, 0.3);
+        }
+
+        .btn-return svg {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-return:hover svg {
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="indexENG.html" class="header-logo">
+            <div class="logo-circle">⚕️</div>
+            <div class="logo-main-text">Mentorship VolgSMU</div>
+        </a>
+        <nav class="header-nav">
+            <a href="indexENG.html" class="nav-link">Home</a>
+            <a href="indexENG.html#programs" class="nav-link">All Programs</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="content-card">
+            <span class="badge">Practical Program</span>
+            <h1>Resident-Student Direction</h1>
+            
+            <p class="lead-text">
+                The transition from dry university theory to real clinical practice is the most difficult stage for senior students. Clinical residents will help you feel confident at the patient's bedside.
+            </p>
+
+            <div class="quote-block">
+                <p>"Learn real medicine from those who were recently students themselves but already work in the clinical departments of the city's hospitals."</p>
+            </div>
+
+            <h3 class="list-title">Areas of work:</h3>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>Mastering practical medical procedures and basic patient examination algorithms.</span>
+                </li>
+                <li class="feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>Learning proper management, completion, and analysis of medical records and case histories.</span>
+                </li>
+                <li class="feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>Analysis of real complex clinical cases directly in medical departments.</span>
+                </li>
+            </ul>
+
+            <div class="actions-layout">
+                <a href="indexENG.html" class="btn-return">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
