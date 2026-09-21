@@ -751,26 +751,19 @@ app.get('/api/chats/:userId', (req, res) => {
     const { userId } = req.params;
 
     db.all(`
-        SELECT c.id, c.name, c.is_group, c.avatar, c.created_at,
-               (SELECT text FROM chat_messages WHERE chat_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
-               (SELECT created_at FROM chat_messages WHERE chat_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_at
+        SELECT c.id, c.name, c.is_group, c.avatar, c.created_at
         FROM chats c
         JOIN chat_members m ON c.id = m.chat_id
         WHERE m.user_id = ?
-        ORDER BY COALESCE(last_message_at, c.created_at) DESC
     `, [userId], (err, chats) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Ошибка базы данных' });
         }
 
-        // Для каждого чата получаем участников
-        const chatsWithMembers = [];
-        let pending = chats.length;
+        if (chats.length === 0) return res.json([]);
 
-        if (pending === 0) {
-            return res.json([]);
-        }
+        let pending = chats.length;
 
         chats.forEach(chat => {
             db.all(`
@@ -779,16 +772,11 @@ app.get('/api/chats/:userId', (req, res) => {
                 JOIN users u ON m.user_id = u.id
                 WHERE m.chat_id = ?
             `, [chat.id], (err, members) => {
-                if (err) {
-                    console.error(err);
-                    members = [];
-                }
-
+                if (err) members = [];
                 chat.members = members;
-                
-                // Для личного чата — имя собеседника
+
                 if (!chat.is_group) {
-                    const other = members.find(m => m.id != userId);
+                    const other = members.find(m => String(m.id) !== String(userId));
                     if (other) {
                         chat.display_name = other.name;
                         chat.display_avatar = other.avatar;
@@ -797,16 +785,44 @@ app.get('/api/chats/:userId', (req, res) => {
                     chat.display_name = chat.name || 'Группа';
                 }
 
-                chatsWithMembers.push(chat);
-                pending--;
+                db.get(`
+                    SELECT text, attachment_type, attachment_name, created_at
+                    FROM chat_messages
+                    WHERE chat_id = ?
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 1
+                `, [chat.id], (err, msg) => {
+                    if (err || !msg) {
+                        chat.last_message = null;
+                        chat.last_message_at = null;
+                    } else {
+                        if (msg.text) {
+                            chat.last_message = msg.text;
+                        } else if (msg.attachment_type === 'image') {
+                            chat.last_message = '📷 Фото';
+                        } else if (msg.attachment_name) {
+                            chat.last_message = '📎 ' + msg.attachment_name;
+                        } else {
+                            chat.last_message = '📎 Файл';
+                        }
+                        chat.last_message_at = msg.created_at;
+                    }
 
-                if (pending === 0) {
-                    res.json(chatsWithMembers);
-                }
+                    pending--;
+                    if (pending === 0) {
+                        chats.sort((a, b) => {
+                            const da = a.last_message_at || a.created_at;
+                            const db_ = b.last_message_at || b.created_at;
+                            return da < db_ ? 1 : -1;
+                        });
+                        res.json(chats);
+                    }
+                });
             });
         });
     });
 });
+
 
 // ============ ИНФОРМАЦИЯ О ЧАТЕ ============
 app.get('/api/chats/:id/info', (req, res) => {
