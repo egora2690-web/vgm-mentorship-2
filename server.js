@@ -296,6 +296,28 @@ app.get('/api/mentors', (req, res) => {
     });
 });
 
+// ============ ПОИСК ПОЛЬЗОВАТЕЛЕЙ ============
+app.get('/api/users/search', (req, res) => {
+    const { q } = req.query;
+
+    if (!q || q.length < 2) {
+        return res.json([]);
+    }
+
+    db.all(`
+        SELECT id, login, name, avatar, role
+        FROM users
+        WHERE LOWER(name) LIKE ? OR LOWER(login) LIKE ?
+        LIMIT 10
+    `, [`%${q.toLowerCase()}%`, `%${q.toLowerCase()}%`], (err, users) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Ошибка базы данных' });
+        }
+        res.json(users);
+    });
+});
+
 // ============ ПОЛУЧИТЬ ОДНОГО ПОЛЬЗОВАТЕЛЯ ============
 app.get('/api/users/:id', (req, res) => {
     const { id } = req.params;
@@ -903,27 +925,6 @@ app.post('/api/chats/:id/upload', upload.single('file'), (req, res) => {
     );
 });
 
-// ============ ПОИСК ПОЛЬЗОВАТЕЛЕЙ ============
-app.get('/api/users/search', (req, res) => {
-    const { q } = req.query;
-
-    if (!q || q.length < 2) {
-        return res.json([]);
-    }
-
-    db.all(`
-        SELECT id, login, name, avatar, role
-        FROM users
-        WHERE LOWER(name) LIKE ? OR LOWER(login) LIKE ?
-        LIMIT 10
-    `, [`%${q.toLowerCase()}%`, `%${q.toLowerCase()}%`], (err, users) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Ошибка базы данных' });
-        }
-        res.json(users);
-    });
-});
 // ============ ЗАПУСК ============
 app.listen(PORT, () => {
     console.log(`✅ Сервер запущен: http://localhost:${PORT}`);
