@@ -27,9 +27,22 @@ padding: 0 20px;
 
  
 .main-header {
-background-color: var(--primary-blue);
-padding: 10px 0;
-width: 100%;
+    background-color: var(--primary-blue);
+    padding: 10px 0;
+    width: 100%;
+    position: relative;   /* ← добавлено */
+}
+
+.mobile-menu-btn {
+    display: none;
+}
+
+.header-nav-wrap {
+    display: contents;
+}
+
+body.menu-locked {
+    overflow: hidden;
 }
 
 .header-container {
@@ -958,43 +971,136 @@ a.program-card:hover .icon {
         border-radius: 6px !important;
     }
 
-    /* Бургер — показываем только на мобильных */
-    .mobile-menu-btn {
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #fff;
-        font-size: 18px;
-        line-height: 1;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 0;
+    /* ---- Бургер и выпадающее меню ---- */
+    .main-header {
+        position: relative;   /* чтобы меню позиционировалось от хедера */
+        padding: 10px 0;
     }
 
-    /* Скрываем доп. ссылки по умолчанию, показываем при .menu-open */
-    .header-right .profile-link:not(.profile-link-always) {
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        padding: 0 14px;
+        gap: 10px;
+    }
+
+    .logo-area img {
+        height: 34px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        font-size: 20px;
+        line-height: 1;
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 0;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+    }
+    .mobile-menu-btn:active {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ---- Обёртка: превращается в выпадающую панель ---- */
+    .header-nav-wrap {
         display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #0A2F5E;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 14px 14px 20px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        z-index: 100;
+        flex-direction: column;
+        gap: 14px;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
     }
-    .header-right.menu-open .profile-link {
-        display: inline-block;
+
+    .header-nav-wrap.menu-open {
+        display: flex;
     }
-    .header-right.menu-open {
+
+    /* Главное меню — вертикальный список */
+    .main-nav {
+        order: 2;
+        width: 100%;
+    }
+    .main-nav ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+    .main-nav li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .main-nav li:last-child {
+        border-bottom: none;
+    }
+    .main-nav a {
+        display: block;
+        padding: 14px 6px;
+        font-size: 13px;
+        color: #fff;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+    }
+
+    /* Правый блок (поиск, языки, кабинет, чаты, заявки) */
+    .header-right {
+        order: 1;
+        display: flex;
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
         width: 100%;
-        padding-top: 8px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        margin-top: 6px;
     }
-    .header-right.menu-open .profile-link {
+
+    .header-right .search-btn,
+    .header-right .lang-switch {
+        align-self: flex-start;
+    }
+    .lang-switch,
+    .lang-switch a {
+        font-size: 12px;
+    }
+
+    .profile-link {
+        display: block !important;
         text-align: center;
+        font-size: 13px !important;
+        padding: 12px 14px !important;
+        border-radius: 10px !important;
+        margin: 0;
         width: 100%;
-        padding: 10px !important;
-        font-size: 12px !important;
+        box-sizing: border-box;
+    }
+
+    /* Заголовок-разделитель над профильными кнопками */
+    .header-right::before {
+        content: 'Меню';
+        display: block;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
     }
 
     /* ====== HERO ====== */

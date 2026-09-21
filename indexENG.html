@@ -9,12 +9,16 @@
 <body>
 
     <header class="main-header">
-        <div class="container header-container">
-            <div class="logo-area">
-                <a href="https://www.volgmed.ru/" target="_blank"> 
-                    <img src="https://en.volgmed.ru/upload/constructor/42a/mq5ku3fe97pws7f1izgpe67ej60xexq5/logo%20eng.svg" alt="Logo" class="header-logo-img">
-                </a>  
-            </div>
+    <div class="container header-container">
+        <div class="logo-area">
+            <a href="https://www.volgmed.ru/" target="_blank"> 
+                <img src="https://en.volgmed.ru/upload/constructor/42a/mq5ku3fe97pws7f1izgpe67ej60xexq5/logo%20eng.svg" alt="Logo" class="header-logo-img">
+            </a>  
+        </div>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+
+        <div class="header-nav-wrap" id="headerNavWrap">
 
             <nav class="main-nav">
                 <ul>
@@ -25,18 +29,19 @@
                 </ul>
             </nav>
 
-<div class="header-right" id="headerRight">
-    <button class="search-btn">🔍</button> 
-    <span class="lang-switch">
-        <a href="index.html">RU</a> / <a href="indexENG.html" class="active">EN</a>
-    </span>
-    <a href="profile1ENG.html" class="profile-link profile-link-always">👤 ACCOUNT</a>
-    <a href="chatsENG.html" class="profile-link">💬 CHATS</a>
-    <a href="my-requestsENG.html" class="profile-link">📋 REQUESTS</a>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
-</div>
+            <div class="header-right" id="headerRight">
+                <button class="search-btn">🔍</button> 
+                <span class="lang-switch">
+                    <a href="index.html">RU</a> / <a href="indexENG.html" class="active">EN</a>
+                </span>
+                <a href="profile1ENG.html" class="profile-link">👤 ACCOUNT</a>
+                <a href="chatsENG.html" class="profile-link">💬 CHATS</a>
+                <a href="my-requestsENG.html" class="profile-link">📋 REQUESTS</a>
+            </div>
+
         </div>
-    </header>
+    </div>
+</header>
 
     <section class="hero">
         <div class="container hero-container">
@@ -120,7 +125,7 @@
                     <p>After the mentor approves your request, you can arrange a meeting. The system will create a chat link for convenient communication.</p>
                 </div>
 
-                <button class="find-btn" onclick="window.location.href='catalogENG.html'">
+                <button class="find-btn" onclick="window.location.href='mentors/catalogENG.html'">
                     🔍 Find a mentor
                 </button>
             </div>
@@ -287,18 +292,33 @@
     </script>
 <script>
     function toggleMobileMenu() {
-        document.getElementById('headerRight').classList.toggle('menu-open');
+        const wrap = document.getElementById('headerNavWrap');
+        const btn  = document.querySelector('.mobile-menu-btn');
+        const open = wrap.classList.toggle('menu-open');
+        // Меняем иконку бургера на крестик
+        btn.textContent = open ? '✕' : '☰';
+        // Блокируем скролл страницы под открытым меню
+        document.body.classList.toggle('menu-locked', open);
     }
-    // Закрывать меню при клике вне его (только на мобилке)
+
+    // Закрывать меню при клике вне его
     document.addEventListener('click', function(e) {
-        const hr = document.getElementById('headerRight');
-        if (!hr || !hr.classList.contains('menu-open')) return;
-        if (!hr.contains(e.target)) hr.classList.remove('menu-open');
+        const wrap = document.getElementById('headerNavWrap');
+        if (!wrap || !wrap.classList.contains('menu-open')) return;
+        if (wrap.contains(e.target)) return;
+        if (e.target.closest('.mobile-menu-btn')) return; // сам бургер обрабатывает
+        wrap.classList.remove('menu-open');
+        document.querySelector('.mobile-menu-btn').textContent = '☰';
+        document.body.classList.remove('menu-locked');
     });
-    // Закрывать при переходе по ссылке
-    document.querySelectorAll('#headerRight .profile-link').forEach(function(a){
+
+    // Закрывать при переходе по любой ссылке внутри меню
+    document.querySelectorAll('#headerNavWrap a').forEach(function(a){
         a.addEventListener('click', function(){
-            document.getElementById('headerRight').classList.remove('menu-open');
+            const wrap = document.getElementById('headerNavWrap');
+            wrap.classList.remove('menu-open');
+            document.querySelector('.mobile-menu-btn').textContent = '☰';
+            document.body.classList.remove('menu-locked');
         });
     });
 </script>
