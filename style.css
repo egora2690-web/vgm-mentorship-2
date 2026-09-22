@@ -572,3 +572,10 @@ a.program-card h3 {
     color: var(--text-dark) !important;
     text-decoration: none !important;
 }
+.social-icons img {
+    /* filter: brightness(0) invert(1); ← убери это */
+    opacity: 1;
+    background: white;
+    border-radius: 8px;
+    padding: 4px;
+}
