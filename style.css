@@ -1,24 +1,16 @@
-
 :root {
-    /* Цвета */
     --primary-green: #007A5E;
     --primary-green-dark: #005C47;
     --primary-green-light: #E8F5F0;
-    
     --accent-gold: #D4B678;
     --accent-gold-dark: #C4A668;
     --accent-gold-light: #F5EDD8;
-    
     --bg-white: #FFFFFF;
     --bg-cream: #F5F1E8;
-    
     --text-dark: #1A1A1A;
     --text-gray: #5E6D82;
-    
     --border-light: #E5E7EB;
-    
     --font-main: 'Manrope', sans-serif;
-    
     --radius-pill: 100px;
     --radius-card: 24px;
 }
@@ -38,9 +30,10 @@ body {
     padding: 0 20px;
 }
 
-/* ============================================
-   ХЕДЕР — ЗЕЛЁНЫЙ
-   ============================================ */
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
 .main-header {
     background-color: var(--primary-green);
@@ -55,25 +48,33 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
-.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-area { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
 .header-logo-img {
     height: 45px;
     width: auto;
-    filter: brightness(0) invert(1); /* логотип белый */
+    filter: brightness(0) invert(1);
+}
+
+.main-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .main-nav ul {
     display: flex;
     list-style: none;
     gap: 32px;
+    margin: 0;
+    padding: 0;
 }
 
 .main-nav a {
     color: white;
-    text-decoration: none;
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
@@ -84,19 +85,27 @@ body {
 
 .main-nav a:hover { opacity: 1; }
 
-.header-right { display: flex; align-items: center; gap: 16px; }
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
 
 .search-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
 }
 
 .lang-switch a {
     color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
     font-weight: 600;
     font-size: 13px;
     transition: color 0.2s;
@@ -105,21 +114,20 @@ body {
 .lang-switch a:hover { color: white; }
 .lang-switch a.active { color: white; font-weight: 700; }
 
-/* Кнопка «Личный кабинет» — ЗОЛОТИСТАЯ */
 .profile-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 22px;
+    gap: 6px;
+    padding: 8px 16px;
     border-radius: var(--radius-pill);
     background-color: var(--accent-gold);
     color: var(--text-dark);
-    text-decoration: none;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .profile-link:hover {
@@ -128,9 +136,15 @@ body {
     box-shadow: 0 6px 16px rgba(212, 182, 120, 0.4);
 }
 
-/* ============================================
-   HERO — ЗЕЛЁНО-БЕЛЫЙ ГРАДИЕНТ
-   ============================================ */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
 
 .hero {
     background: linear-gradient(180deg, var(--primary-green) 0%, #1a8f72 40%, var(--bg-white) 100%);
@@ -164,13 +178,8 @@ body {
     letter-spacing: -1px;
 }
 
-.hero-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-}
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
-/* VGM кнопки */
 .vgm-btn {
     display: inline-flex;
     align-items: center;
@@ -187,7 +196,6 @@ body {
     text-decoration: none;
 }
 
-/* Золотистая кнопка */
 .vgm-btn-filled {
     background-color: var(--accent-gold);
     color: var(--text-dark);
@@ -199,7 +207,6 @@ body {
     box-shadow: 0 10px 24px rgba(212, 182, 120, 0.4);
 }
 
-/* Кнопка с белой обводкой */
 .vgm-btn-white {
     background-color: transparent;
     color: white;
@@ -210,10 +217,6 @@ body {
     background-color: white;
     color: var(--primary-green);
 }
-
-/* ============================================
-   ПРОГРАММЫ (КАРТОЧКИ)
-   ============================================ */
 
 .programs {
     padding: 0 0 80px;
@@ -240,7 +243,8 @@ body {
 }
 
 .program-card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background-color: var(--bg-white);
     border: 2px solid var(--border-light);
     border-radius: var(--radius-card);
@@ -261,7 +265,6 @@ body {
 .program-card .icon {
     font-size: 40px;
     margin-bottom: 20px;
-    display: block;
     transition: transform 0.3s ease;
 }
 
@@ -273,11 +276,8 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     line-height: 1.4;
+    color: var(--text-dark) !important;
 }
-
-/* ============================================
-   КАК НАЙТИ НАСТАВНИКА
-   ============================================ */
 
 .how-to-section {
     padding: 100px 0;
@@ -290,6 +290,7 @@ body {
     display: flex;
     gap: 80px;
     align-items: flex-start;
+    padding: 0 20px;
 }
 
 .how-to-title h2 {
@@ -310,7 +311,6 @@ body {
     border-left: 3px solid var(--accent-gold);
 }
 
-/* Badge — ЗОЛОТИСТЫЙ */
 .step-badge {
     display: inline-block;
     background-color: var(--accent-gold);
@@ -360,10 +360,6 @@ body {
     box-shadow: 0 8px 20px rgba(212, 182, 120, 0.4);
 }
 
-/* ============================================
-   СТАТЬ НАСТАВНИКОМ
-   ============================================ */
-
 .become-mentor-section {
     padding: 100px 20px;
     background-color: var(--bg-white);
@@ -408,7 +404,6 @@ body {
     line-height: 1.6;
 }
 
-/* Зелёная карточка с фичами */
 .mentor-features {
     flex: 1;
     min-width: 350px;
@@ -445,7 +440,6 @@ body {
     line-height: 1.5;
 }
 
-/* Кнопка «Стать наставником» — ЗОЛОТИСТАЯ */
 .btn-primary-vgm {
     display: inline-flex;
     align-items: center;
@@ -470,10 +464,6 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(212, 182, 120, 0.4);
 }
-
-/* ============================================
-   ФУТЕР — ЗЕЛЁНЫЙ
-   ============================================ */
 
 .main-footer {
     background-color: var(--primary-green);
@@ -518,16 +508,34 @@ body {
 .social-icons {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 }
 
-.social-icons img {
-    filter: brightness(0) invert(1);
-    opacity: 0.7;
-    transition: opacity 0.2s;
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.social-icons img:hover { opacity: 1; }
+.social-icon:hover {
+    background-color: var(--accent-gold);
+    color: var(--text-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(212, 182, 120, 0.4);
+}
+
+.social-icon svg {
+    width: 22px;
+    height: 22px;
+}
 
 .footer-bottom {
     text-align: center;
@@ -537,15 +545,47 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* ============================================
-   АДАПТИВ
-   ============================================ */
+@media (max-width: 1024px) {
+    .mobile-menu-btn { display: block; }
+    
+    .header-nav-wrap {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--primary-green);
+        padding: 20px;
+        flex-direction: column;
+        gap: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .header-nav-wrap.menu-open {
+        display: flex;
+    }
+    
+    .main-nav {
+        position: static;
+        transform: none;
+    }
+    
+    .main-nav ul {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-left: 0;
+    }
+    
+    body.menu-locked { overflow: hidden; }
+}
 
 @media (max-width: 768px) {
-    .header-container { flex-wrap: wrap; gap: 12px; }
-    .main-nav { order: 3; width: 100%; }
-    .main-nav ul { gap: 16px; flex-wrap: wrap; }
-    
     .hero { padding: 60px 0 100px; }
     .hero h1 { font-size: 32px; }
     .hero-container { grid-template-columns: 1fr; gap: 40px; }
@@ -554,28 +594,4 @@ body {
     .how-to-title h2 { font-size: 32px; position: static; }
     .section-title { font-size: 24px; padding-top: 40px; }
     .footer-grid { grid-template-columns: 1fr; }
-}
-/* Убираем браузерные стили ссылок */
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-a:hover {
-    color: inherit;
-    text-decoration: none;
-}
-
-
-.program-card h3,
-a.program-card h3 {
-    color: var(--text-dark) !important;
-    text-decoration: none !important;
-}
-.social-icons img {
-    /* filter: brightness(0) invert(1); ← убери это */
-    opacity: 1;
-    background: white;
-    border-radius: 8px;
-    padding: 4px;
 }
