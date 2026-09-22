@@ -47,7 +47,7 @@ a {
 .header-container {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 30px;
 }
 
 .logo-area {
@@ -525,11 +525,11 @@ a {
     text-decoration: none;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
 }
 
 .social-icon:hover {
     background-color: var(--accent-gold);
-    color: var(--text-dark);
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(212, 182, 120, 0.4);
 }
@@ -537,6 +537,12 @@ a {
 .social-icon svg {
     width: 22px;
     height: 22px;
+}
+
+.social-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .footer-bottom {
