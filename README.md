@@ -22,7 +22,6 @@
 - [Важные нюансы кода](#важные-нюансы-кода)
 - [Деплой на Render](#деплой-на-render)
 - [Мобильная адаптация](#мобильная-адаптация)
-- [Тёмная тема и цвета бренда](#тёмная-тема-и-цвета-бренда)
 - [Известные ограничения](#известные-ограничения)
 - [Частые проблемы и решения](#частые-проблемы-и-решения)
 
@@ -596,79 +595,7 @@ function toggleMobileMenu() {
 
 ---
 
-## Тёмная тема и цвета бренда
 
-### Фирменные цвета ВолгГМУ
-
-- **Изумрудный (зелёный)**: `#007a5e` — основной акцент
-- **Синий**: `#0A2F5E` — фон хедера, академический тон
-- **Золотистый**: `#b8860b` / `#fbbf24` — акценты (опционально)
-- **Белый / серый**: фон и текст
-
-Текущая палитра в `style.css` и Tailwind-классах (`emerald-600`, `slate-*`) уже близка к брендбуку. Для полного соответствия нужно заменить цвета на CSS-переменные:
-
-```css
-:root {
-    --vgm-green: #007a5e;
-    --vgm-green-dark: #005c47;
-    --vgm-blue: #0A2F5E;
-    --vgm-gold: #b8860b;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-}
-
-body.dark-theme {
-    --vgm-green: #10b981;
-    --vgm-blue: #020617;
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-}
-```
-
-### Переключение темы
-
-Кнопка в хедер:
-```html
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">🌓</button>
-```
-
-Скрипт (вставить на всех страницах перед `</body>`):
-```js
-(function() {
-    const saved = localStorage.getItem('vgm-theme');
-    if (saved === 'dark') document.body.classList.add('dark-theme');
-    else if (saved === 'light') document.body.classList.add('light-theme');
-
-    window.toggleTheme = function() {
-        const isDark = document.body.classList.contains('dark-theme');
-        if (isDark) {
-            document.body.classList.remove('dark-theme');
-            document.body.classList.add('light-theme');
-            localStorage.setItem('vgm-theme', 'light');
-        } else {
-            document.body.classList.remove('light-theme');
-            document.body.classList.add('dark-theme');
-            localStorage.setItem('vgm-theme', 'dark');
-        }
-    };
-})();
-```
-
-### Автоматическая тёмная тема
-
-```css
-@media (prefers-color-scheme: dark) {
-    body:not(.light-theme) {
-        /* тёмные переменные */
-    }
-}
-```
-
----
 
 ## Известные ограничения
 
