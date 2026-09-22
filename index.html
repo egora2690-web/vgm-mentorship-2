@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -19,32 +19,28 @@
 
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
 
-            <div class="header-nav-wrap" id="headerNavWrap">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="https://www.volgmed.ru/university/" target="_blank">ОБ УНИВЕРСИТЕТЕ</a></li>
+                    <li><a href="https://www.volgmed.ru/education/" target="_blank">ОБРАЗОВАНИЕ</a></li>
+                    <li><a href="https://www.volgmed.ru/medicine/" target="_blank">МЕДИЦИНА</a></li>
+                    <li><a href="https://www.volgmed.ru/science/" target="_blank">НАУКА</a></li>
+                </ul>
+            </nav>
 
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="https://www.volgmed.ru/university/" target="_blank">ОБ УНИВЕРСИТЕТЕ</a></li>
-                        <li><a href="https://www.volgmed.ru/education/" target="_blank">ОБРАЗОВАНИЕ</a></li>
-                        <li><a href="https://www.volgmed.ru/medicine/" target="_blank">МЕДИЦИНА</a></li>
-                        <li><a href="https://www.volgmed.ru/science/" target="_blank">НАУКА</a></li>
-                    </ul>
-                </nav>
-
-                <div class="header-right">
-                    <button class="search-btn" aria-label="Поиск">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                    </button>
-                    <span class="lang-switch">  
-                        <a href="index.html" class="active">RU</a> / <a href="indexENG.html">EN</a> 
-                    </span>
-                    <a href="profile1.html" class="profile-link">👤 КАБИНЕТ</a>
-                    <a href="chats.html" class="profile-link">💬 ЧАТЫ</a>
-                    <a href="my-requests.html" class="profile-link">📋 ЗАЯВКИ</a>
-                </div>
-
+            <div class="header-right">
+                <button class="search-btn" aria-label="Поиск">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                </button>
+                <span class="lang-switch">  
+                    <a href="index.html" class="active">RU</a> / <a href="indexENG.html">EN</a> 
+                </span>
+                <a href="profile1.html" class="profile-link">👤 КАБИНЕТ</a>
+                <a href="chats.html" class="profile-link">💬 ЧАТЫ</a>
+                <a href="my-requests.html" class="profile-link">📋 ЗАЯВКИ</a>
             </div>
         </div>
     </header>
@@ -221,31 +217,12 @@
         document.querySelectorAll('.hidden-el').forEach((el) => observer.observe(el));
 
         function toggleMobileMenu() {
-            const wrap = document.getElementById('headerNavWrap');
+            const container = document.querySelector('.header-container');
             const btn = document.querySelector('.mobile-menu-btn');
-            const open = wrap.classList.toggle('menu-open');
+            const open = container.classList.toggle('menu-open');
             btn.textContent = open ? '✕' : '☰';
             document.body.classList.toggle('menu-locked', open);
         }
-
-        document.addEventListener('click', function(e) {
-            const wrap = document.getElementById('headerNavWrap');
-            if (!wrap || !wrap.classList.contains('menu-open')) return;
-            if (wrap.contains(e.target)) return;
-            if (e.target.closest('.mobile-menu-btn')) return;
-            wrap.classList.remove('menu-open');
-            document.querySelector('.mobile-menu-btn').textContent = '☰';
-            document.body.classList.remove('menu-locked');
-        });
-
-        document.querySelectorAll('#headerNavWrap a').forEach(function(a){
-            a.addEventListener('click', function(){
-                const wrap = document.getElementById('headerNavWrap');
-                wrap.classList.remove('menu-open');
-                document.querySelector('.mobile-menu-btn').textContent = '☰';
-                document.body.classList.remove('menu-locked');
-            });
-        });
     </script>
 </body>
 </html>
