@@ -534,6 +534,10 @@ a {
     box-shadow: 0 6px 16px rgba(212, 182, 120, 0.4);
 }
 
+.social-icon:hover img {
+    filter: brightness(0);
+}
+
 .social-icon svg {
     width: 22px;
     height: 22px;
@@ -543,6 +547,7 @@ a {
     width: 24px;
     height: 24px;
     object-fit: contain;
+    filter: brightness(0) invert(1);
 }
 
 .footer-bottom {
