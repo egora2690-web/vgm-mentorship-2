@@ -1,7 +1,3 @@
-/* ============================================
-   ВОЛГГМУ — ДИЗАЙН-СИСТЕМА
-   Зелёно-белый фон + золотистые кнопки
-   ============================================ */
 
 :root {
     /* Цвета */
@@ -558,4 +554,21 @@ body {
     .how-to-title h2 { font-size: 32px; position: static; }
     .section-title { font-size: 24px; padding-top: 40px; }
     .footer-grid { grid-template-columns: 1fr; }
+}
+/* Убираем браузерные стили ссылок */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.program-card h3,
+a.program-card h3 {
+    color: var(--text-dark) !important;
+    text-decoration: none !important;
 }
