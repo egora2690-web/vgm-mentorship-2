@@ -102,6 +102,13 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ваш статус</label>
+                        <select id="reg-status" onchange="onStatusChange('reg')" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition"></select>
+                    </div>
+
+                    <!-- Учёба: показывается для студентов, ординаторов, аспирантов -->
+                    <div id="reg-study-block" class="space-y-4 hidden">
+                    <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
                         <select id="reg-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('reg')">
                             <option value="">Выберите направление</option>
@@ -235,6 +242,14 @@
                         </select>
                     </div>
                     <div id="reg-direction-details" class="spec-details"></div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Курс или год обучения (необязательно)</label>
+                            <input type="number" id="reg-course" min="1" max="6" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- Врач / учёный / «О себе» (генерируется в JS) -->
+                    <div id="reg-extra" class="space-y-4"></div>
                     
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Пароль</label>
@@ -288,6 +303,9 @@
                     <span id="profile-level" class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">—</span>
                     <span class="bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold">⭐️ 5.0</span>
                 </div>
+
+                <p id="profile-extra-line" class="text-sm text-slate-500 font-semibold mb-4 hidden"></p>
+                <p id="profile-about" class="text-sm text-slate-600 leading-relaxed text-left bg-slate-50 rounded-2xl p-4 mb-6 whitespace-pre-line hidden"></p>
 
                 <!-- НАВИГАЦИОННЫЕ ПЛИТКИ -->
                 <div class="grid grid-cols-3 gap-3">
@@ -361,54 +379,24 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
-                    <select id="edit-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('edit')">
-                        <option value="">Выберите направление</option>
-                        
-                        <optgroup label="Бакалавриат">
-                            <option value='{"level":"Бакалавриат","name":"Биология","form":"Очная","duration":"4 года"}'>Биология</option>
-                            <option value='{"level":"Бакалавриат","name":"Биотехнические системы и технологии","form":"Очная","duration":"4 года"}'>Биотехнические системы и технологии</option>
-                        </optgroup>
-                        
-                        <optgroup label="Специалитет">
-                            <option value='{"level":"Специалитет","name":"Лечебное дело","form":"Очная","duration":"6 лет","code":"31.05.01"}'>Лечебное дело</option>
-                            <option value='{"level":"Специалитет","name":"Педиатрия","form":"Очная","duration":"6 лет","code":"31.05.02"}'>Педиатрия</option>
-                            <option value='{"level":"Специалитет","name":"Стоматология","form":"Очная","duration":"5 лет","code":"31.05.03"}'>Стоматология</option>
-                            <option value='{"level":"Специалитет","name":"Медицинская биохимия","form":"Очная","duration":"6 лет","code":"30.05.01"}'>Медицинская биохимия</option>
-                            <option value='{"level":"Специалитет","name":"Медико-профилактическое дело","form":"Очная","duration":"6 лет","code":"32.05.01"}'>Медико-профилактическое дело</option>
-                            <option value='{"level":"Специалитет","name":"Фармация","form":"Очная","duration":"5 лет","code":"33.05.01"}'>Фармация</option>
-                            <option value='{"level":"Специалитет","name":"Клиническая психология","form":"Очная","duration":"5 лет 6 месяцев","code":"37.05.01"}'>Клиническая психология</option>
-                        </optgroup>
-                        
-                        <optgroup label="Магистратура">
-                            <option value='{"level":"Магистратура","name":"Биотехнические системы и технологии","form":"Очная","duration":"2 года"}'>Биотехнические системы и технологии</option>
-                            <option value='{"level":"Магистратура","name":"Менеджмент","form":"Заочная","duration":"2 года 6 месяцев"}'>Менеджмент</option>
-                            <option value='{"level":"Магистратура","name":"Общественное здравоохранение","form":"Очно-заочная","duration":"2 года 6 месяцев"}'>Общественное здравоохранение</option>
-                            <option value='{"level":"Магистратура","name":"Биология","form":"Очная","duration":"2 года"}'>Биология</option>
-                        </optgroup>
-
-                        <optgroup label="СПО (Колледж)">
-                            <option value='{"level":"СПО","name":"Медицинская оптика","form":"Очная","duration":"1 год 10 месяцев"}'>Медицинская оптика</option>
-                            <option value='{"level":"СПО","name":"Стоматологическое дело","form":"Очная","duration":"2 года 10 месяцев"}'>Стоматологическое дело</option>
-                            <option value='{"level":"СПО","name":"Сестринское дело","form":"Очная","duration":"1 год 10 месяцев"}'>Сестринское дело</option>
-                        </optgroup>
-                        
-                        <optgroup label="Ординатура">
-                            <option value='{"level":"Ординатура","name":"Общая гигиена","form":"Очная","duration":"2 года"}'>Общая гигиена</option>
-                            <option value='{"level":"Ординатура","name":"Нефрология","form":"Очная","duration":"2 года"}'>Нефрология</option>
-                            <option value='{"level":"Ординатура","name":"Хирургия","form":"Очная","duration":"2 года"}'>Хирургия</option>
-                            <option value='{"level":"Ординатура","name":"Педиатрия","form":"Очная","duration":"2 года"}'>Педиатрия</option>
-                            <option value='{"level":"Ординатура","name":"Акушерство и гинекология","form":"Очная","duration":"2 года"}'>Акушерство и гинекология</option>
-                        </optgroup>
-                        
-                        <optgroup label="Аспирантура">
-                            <option value='{"level":"Аспирантура","name":"Гигиена","form":"Очная","duration":"3 года"}'>Гигиена</option>
-                            <option value='{"level":"Аспирантура","name":"Неврология","form":"Очная","duration":"3 года"}'>Неврология</option>
-                            <option value='{"level":"Аспирантура","name":"Педиатрия","form":"Очная","duration":"3 года"}'>Педиатрия</option>
-                        </optgroup>
-                    </select>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ваш статус</label>
+                    <select id="edit-status" onchange="onStatusChange('edit')" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition"></select>
                 </div>
-                <div id="edit-direction-details" class="spec-details"></div>
+
+                <div id="edit-study-block" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
+                        <!-- список направлений копируется из формы регистрации скриптом -->
+                        <select id="edit-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('edit')"></select>
+                    </div>
+                    <div id="edit-direction-details" class="spec-details"></div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Курс или год обучения (необязательно)</label>
+                        <input type="number" id="edit-course" min="1" max="6" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+
+                <div id="edit-extra" class="space-y-4"></div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Фото профиля</label>
@@ -449,11 +437,408 @@
     <script>
         const API_URL = '/api';
 
+        // ====== Справочники ======
+        const STATUSES = [
+            { t: 'Студент бакалавриата', type: 'study' },
+            { t: 'Студент специалитета', type: 'study' },
+            { t: 'Магистрант', type: 'study' },
+            { t: 'Студент колледжа', type: 'study' },
+            { t: 'Ординатор', type: 'study' },
+            { t: 'Аспирант', type: 'study' },
+            { t: 'Практикующий врач', type: 'doctor' },
+            { t: 'Научный сотрудник / преподаватель', type: 'science' }
+        ];
+        const LEVEL_TO_STATUS = {
+            'Бакалавриат': 'Студент бакалавриата',
+            'Специалитет': 'Студент специалитета',
+            'Магистратура': 'Магистрант',
+            'СПО': 'Студент колледжа',
+            'Ординатура': 'Ординатор',
+            'Аспирантура': 'Аспирант'
+        };
+        // Обратное соответствие: статус -> уровень направления
+        const STATUS_TO_LEVEL = Object.fromEntries(Object.entries(LEVEL_TO_STATUS).map(([lvl, st]) => [st, lvl]));
+        let ALL_DIRECTIONS_HTML = '';
+
+        // Оставляет в списке направлений только те, что относятся к выбранному статусу
+        function filterDirections(p) {
+            const sel = document.getElementById(p + '-direction');
+            if (!sel || !ALL_DIRECTIONS_HTML) return;
+            const level = STATUS_TO_LEVEL[document.getElementById(p + '-status').value];
+            const prev = sel.value;
+
+            const tmp = document.createElement('select');
+            tmp.innerHTML = ALL_DIRECTIONS_HTML;
+            const placeholder = tmp.querySelector('option[value=""]');
+            let html = placeholder ? placeholder.outerHTML : '<option value=""></option>';
+            tmp.querySelectorAll('optgroup').forEach(g => {
+                const first = g.querySelector('option');
+                try {
+                    if (!level || JSON.parse(first.value).level === level) html += g.outerHTML;
+                } catch (e) {}
+            });
+            sel.innerHTML = html;
+            sel.value = [...sel.options].some(o => o.value === prev) ? prev : '';
+            updateDirectionDetails(p);
+        }
+
+        const WORKPLACES = [
+            {
+                        "label": "Больницы",
+                        "items": [
+                                    "Волгоградская областная клиническая больница № 1",
+                                    "Волгоградская областная детская клиническая больница",
+                                    "Городская клиническая больница № 1",
+                                    "Городская клиническая больница № 1 им. С. З. Фишера",
+                                    "Городская клиническая больница № 3",
+                                    "Городская клиническая больница скорой медицинской помощи № 25",
+                                    "Клиническая больница № 4",
+                                    "Клиническая больница № 5",
+                                    "Клиническая больница № 11",
+                                    "Клиническая больница № 12",
+                                    "Больница № 16",
+                                    "Больница № 22",
+                                    "Детская клиническая больница № 8",
+                                    "Клиническая больница скорой медицинской помощи № 7",
+                                    "Клиническая больница скорой медицинской помощи № 15",
+                                    "Волгоградская областная клиническая инфекционная больница № 1",
+                                    "Волгоградский областной клинический госпиталь ветеранов войн",
+                                    "Волгоградский областной клинический онкологический диспансер",
+                                    "Волгоградский областной клинический кардиологический центр",
+                                    "Волгоградский областной клинический перинатальный центр № 2",
+                                    "Волгоградский областной уронефрологический центр",
+                                    "Детская больница № 1",
+                                    "Волгоградская областная клиническая психиатрическая больница № 2",
+                                    "Волгоградская областная детская клиническая психиатрическая больница (Центр психического здоровья детей и подростков)",
+                                    "Волгоградский областной клинический хоспис"
+                        ]
+            },
+            {
+                        "label": "Поликлиники",
+                        "items": [
+                                    "Клиническая поликлиника № 1",
+                                    "Поликлиника № 2",
+                                    "Клиническая поликлиника № 3 (автономное учреждение)",
+                                    "Поликлиника № 4",
+                                    "Поликлиника № 5",
+                                    "Клиническая поликлиника № 28",
+                                    "Поликлиника № 30",
+                                    "Детская поликлиника № 1",
+                                    "Детская поликлиника № 3",
+                                    "Детская поликлиника № 6",
+                                    "Детская клиническая поликлиника № 15",
+                                    "Детская клиническая поликлиника № 31",
+                                    "Городская детская поликлиника № 2",
+                                    "Консультативно-диагностическая поликлиника № 2",
+                                    "Поликлиника ВМКЦ ФМБА (ул. Ким, 24)",
+                                    "Поликлиника клиники № 1 ВолгГМУ (ул. Никитина, 64)",
+                                    "Поликлиника медико-санитарной части МВД России по Волгоградской области (№ 1, ул. Скосырева, 4)"
+                        ]
+            },
+            {
+                        "label": "Специализированные и другие учреждения",
+                        "items": [
+                                    "Волгоградский областной центр по профилактике и борьбе со СПИД и инфекционными заболеваниями",
+                                    "Волгоградский областной клинический центр медицинской реабилитации",
+                                    "Волгоградская областная клиническая стоматологическая поликлиника (автономное учреждение)",
+                                    "Клиническая стоматологическая поликлиника № 3 (автономное учреждение)",
+                                    "Стоматологическая поликлиника № 7 (автономное учреждение)",
+                                    "Стоматологическая поликлиника № 9 (автономное учреждение)",
+                                    "Стоматологическая поликлиника № 11 (автономное учреждение)",
+                                    "Клиническая стоматологическая поликлиника № 12 (автономное учреждение)",
+                                    "Волгоградский областной центр крови",
+                                    "Волгоградский региональный центр общественного здоровья и медицинской профилактики",
+                                    "Клинический родильный дом № 2",
+                                    "Родильный дом № 4"
+                        ]
+            }
+];
+        const SPECIALTIES = [
+            "Акушерство и гинекология",
+            "Аллергология и иммунология",
+            "Анестезиология-реаниматология",
+            "Бактериология",
+            "Вирусология",
+            "Гастроэнтерология",
+            "Гематология",
+            "Генетика",
+            "Гериатрия",
+            "Гигиена детей и подростков",
+            "Гигиена труда",
+            "Дерматовенерология",
+            "Детская кардиология",
+            "Детская онкология",
+            "Детская урология-андрология",
+            "Детская хирургия",
+            "Детская эндокринология",
+            "Диетология",
+            "Инфекционные болезни",
+            "Кардиология",
+            "Клиническая лабораторная диагностика",
+            "Клиническая фармакология",
+            "Колопроктология",
+            "Лечебная физкультура и спортивная медицина",
+            "Мануальная терапия",
+            "Медицинская профилактика",
+            "Неврология",
+            "Нейрохирургия",
+            "Неонатология",
+            "Нефрология",
+            "Общая врачебная практика (семейная медицина)",
+            "Онкология",
+            "Организация здравоохранения и общественное здоровье",
+            "Ортодонтия",
+            "Остеопатия",
+            "Оториноларингология",
+            "Офтальмология",
+            "Паллиативная медицина",
+            "Патологическая анатомия",
+            "Педиатрия (участковый врач-педиатр)",
+            "Профпатология",
+            "Психиатрия",
+            "Психиатрия-наркология",
+            "Психотерапия",
+            "Пульмонология",
+            "Радиология",
+            "Радиотерапия",
+            "Ревматология",
+            "Рентгенология",
+            "Рентгенэндоваскулярные диагностика и лечение",
+            "Рефлексотерапия",
+            "Сердечно-сосудистая хирургия",
+            "Скорая медицинская помощь",
+            "Стоматология детская",
+            "Стоматология общей практики",
+            "Стоматология ортопедическая",
+            "Стоматология терапевтическая",
+            "Стоматология хирургическая",
+            "Судебно-медицинская экспертиза",
+            "Сурдология-оториноларингология",
+            "Терапия (участковый врач-терапевт)",
+            "Токсикология",
+            "Торакальная хирургия",
+            "Травматология и ортопедия",
+            "Трансфузиология",
+            "Ультразвуковая диагностика",
+            "Урология",
+            "Физиотерапия",
+            "Физическая и реабилитационная медицина",
+            "Фтизиатрия",
+            "Функциональная диагностика",
+            "Хирургия",
+            "Челюстно-лицевая хирургия",
+            "Эндокринология",
+            "Эндоскопия",
+            "Эпидемиология"
+];
+
+        const INPUT_CLS = 'w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition';
+        const LABEL_CLS = 'block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2';
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function optionsHTML(list) {
+            return list.map(x => `<option>${esc(x)}</option>`).join('');
+        }
+        function statusOptionsHTML() {
+            return '<option value="">Выберите статус</option>' + STATUSES.map(s => `<option>${esc(s.t)}</option>`).join('');
+        }
+
+        // Блоки «врач», «учёный» и поле «О себе» (одинаковые для регистрации и редактирования)
+        function buildExtraFields(p) {
+            const workplaceOpts = WORKPLACES.map(g => `<optgroup label="${esc(g.label)}">${optionsHTML(g.items)}</optgroup>`).join('');
+            return `
+            <div id="${p}-blk-doctor" class="hidden space-y-4">
+                <div>
+                    <label class="${LABEL_CLS}">Место работы</label>
+                    <select id="${p}-workplace" class="${INPUT_CLS}" onchange="toggleOther('${p}', 'workplace')">
+                        <option value="">Выберите медицинскую организацию</option>
+                        ${workplaceOpts}
+                        <option value="__other">Другая (указать)</option>
+                    </select>
+                    <input type="text" id="${p}-workplace-other" placeholder="Название организации" class="${INPUT_CLS} mt-2 hidden">
+                </div>
+                <div>
+                    <label class="${LABEL_CLS}">Врачебная специальность</label>
+                    <select id="${p}-specialty" class="${INPUT_CLS}" onchange="toggleOther('${p}', 'specialty')">
+                        <option value="">Выберите специальность</option>
+                        ${optionsHTML(SPECIALTIES)}
+                        <option value="__other">Другая (указать)</option>
+                    </select>
+                    <input type="text" id="${p}-specialty-other" placeholder="Название специальности" class="${INPUT_CLS} mt-2 hidden">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="${LABEL_CLS}">Стаж, лет</label>
+                        <input type="number" id="${p}-experience" min="0" max="60" class="${INPUT_CLS}">
+                    </div>
+                    <div>
+                        <label class="${LABEL_CLS}">Категория</label>
+                        <select id="${p}-category" class="${INPUT_CLS}">
+                            <option value="">Нет</option>
+                            <option>Вторая</option>
+                            <option>Первая</option>
+                            <option>Высшая</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="${p}-blk-science" class="hidden space-y-4">
+                <div>
+                    <label class="${LABEL_CLS}">Учёная степень</label>
+                    <select id="${p}-degree" class="${INPUT_CLS}">
+                        <option value="">Нет</option>
+                        <option>Кандидат наук</option>
+                        <option>Доктор наук</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="${LABEL_CLS}">Область исследований</label>
+                    <input type="text" id="${p}-research" placeholder="Например, клиническая фармакология" class="${INPUT_CLS}">
+                </div>
+                <div>
+                    <label class="${LABEL_CLS}">Профиль eLibrary или ORCID (необязательно)</label>
+                    <input type="url" id="${p}-link" placeholder="https://" class="${INPUT_CLS}">
+                </div>
+            </div>
+
+            <div>
+                <label class="${LABEL_CLS}">О себе (необязательно)</label>
+                <textarea id="${p}-about" rows="4" maxlength="1000" placeholder="Чем занимаетесь, в чём можете помочь или чему хотите научиться" class="${INPUT_CLS}"></textarea>
+                <div id="${p}-about-counter" class="text-right text-xs text-slate-400 mt-1">0 / 1000</div>
+            </div>`;
+        }
+
+        function toggleOther(p, field) {
+            const sel = document.getElementById(`${p}-${field}`);
+            document.getElementById(`${p}-${field}-other`).classList.toggle('hidden', sel.value !== '__other');
+        }
+        function setSelectOrOther(p, field, value) {
+            const sel = document.getElementById(`${p}-${field}`);
+            const other = document.getElementById(`${p}-${field}-other`);
+            other.value = '';
+            other.classList.add('hidden');
+            if (!value) { sel.value = ''; return; }
+            if ([...sel.options].some(o => o.value === value)) {
+                sel.value = value;
+            } else {
+                sel.value = '__other';
+                other.value = value;
+                other.classList.remove('hidden');
+            }
+        }
+        function readSelectOrOther(p, field) {
+            const sel = document.getElementById(`${p}-${field}`);
+            return sel.value === '__other'
+                ? document.getElementById(`${p}-${field}-other`).value.trim()
+                : sel.value;
+        }
+
+        function updateAboutCounter(p) {
+            const len = document.getElementById(p + '-about').value.length;
+            document.getElementById(p + '-about-counter').innerText = len + ' / 1000';
+        }
+
+        // Показываем нужные блоки в зависимости от статуса
+        function onStatusChange(p) {
+            filterDirections(p);
+            const st = STATUSES.find(s => s.t === document.getElementById(p + '-status').value);
+            const type = st ? st.type : '';
+            document.getElementById(p + '-study-block').classList.toggle('hidden', type !== 'study');
+            document.getElementById(p + '-blk-doctor').classList.toggle('hidden', type !== 'doctor');
+            document.getElementById(p + '-blk-science').classList.toggle('hidden', type !== 'science');
+        }
+
+        function resetExtra(p) {
+            ['status', 'direction', 'course', 'workplace', 'workplace-other', 'specialty', 'specialty-other',
+             'experience', 'category', 'degree', 'research', 'link', 'about'].forEach(id => {
+                const el = document.getElementById(p + '-' + id);
+                if (el) el.value = '';
+            });
+            document.getElementById(p + '-workplace-other').classList.add('hidden');
+            document.getElementById(p + '-specialty-other').classList.add('hidden');
+            const det = document.getElementById(p + '-direction-details');
+            if (det) { det.classList.remove('show'); det.innerHTML = ''; }
+            onStatusChange(p);
+            updateAboutCounter(p);
+        }
+
+        // Собирает данные профиля. Всё кладётся в объект direction,
+        // чтобы сервер сохранил его как раньше (без изменений на бэкенде).
+        function collectProfile(p) {
+            const $ = id => document.getElementById(p + '-' + id);
+            const st = STATUSES.find(s => s.t === $('status').value);
+            if (!st) return { error: 'Пожалуйста, выберите ваш статус!' };
+
+            let dir;
+            if (st.type === 'study') {
+                const opt = $('direction').options[$('direction').selectedIndex];
+                if (!opt || !opt.value) return { error: 'Пожалуйста, выберите направление!' };
+                try { dir = JSON.parse(opt.value); } catch (e) { return { error: 'Ошибка в данных направления!' }; }
+                if ($('course').value) dir.course = $('course').value;
+            } else if (st.type === 'doctor') {
+                const workplace = readSelectOrOther(p, 'workplace');
+                const specialty = readSelectOrOther(p, 'specialty');
+                if (!workplace) return { error: 'Укажите место работы!' };
+                if (!specialty) return { error: 'Укажите врачебную специальность!' };
+                dir = { level: 'Практикующий врач', name: specialty, form: workplace, workplace: workplace };
+                if ($('experience').value) dir.experience = $('experience').value;
+                if ($('category').value) dir.category = $('category').value;
+            } else {
+                const research = $('research').value.trim();
+                if (!research) return { error: 'Укажите область исследований!' };
+                const link = $('link').value.trim();
+                if (link && !/^https?:\/\//i.test(link)) return { error: 'Ссылка должна начинаться с http:// или https://' };
+                dir = { level: 'Научный сотрудник', name: research, form: $('degree').value || 'Без степени', research: research };
+                if ($('degree').value) dir.degree = $('degree').value;
+                if (link) dir.link = link;
+            }
+
+            dir.status = st.t;
+            dir.statusType = st.type;
+            dir.about = $('about').value.trim();
+            return { direction: dir };
+        }
+
+        // Показ статуса / места работы / «О себе» в личном кабинете
+        function renderProfileExtra() {
+            const d = (currentUser && currentUser.direction) || {};
+            const parts = [];
+            if (d.status) parts.push(d.status);
+            if (d.statusType === 'doctor') {
+                if (d.workplace) parts.push(d.workplace);
+                if (d.experience) parts.push('стаж ' + d.experience + ' лет');
+                if (d.category) parts.push(d.category + ' категория');
+            } else if (d.statusType === 'science') {
+                if (d.degree) parts.push(d.degree);
+            } else if (d.course) {
+                parts.push(d.status === 'Ординатор' || d.status === 'Аспирант' ? d.course + '-й год обучения' : d.course + ' курс');
+            }
+            const line = document.getElementById('profile-extra-line');
+            line.innerText = parts.join(' · ');
+            line.classList.toggle('hidden', parts.length === 0);
+
+            const about = document.getElementById('profile-about');
+            about.innerText = d.about || '';
+            about.classList.toggle('hidden', !d.about);
+        }
+
         let regAvatarDataURL = null;
         let editAvatarDataURL = null;
         let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Список направлений в окне редактирования = полный список из регистрации
+            ALL_DIRECTIONS_HTML = document.getElementById('reg-direction').innerHTML;
+            document.getElementById('edit-direction').innerHTML = document.getElementById('reg-direction').innerHTML;
+
+            ['reg', 'edit'].forEach(p => {
+                document.getElementById(p + '-status').innerHTML = statusOptionsHTML();
+                document.getElementById(p + '-extra').innerHTML = buildExtraFields(p);
+                document.getElementById(p + '-about').addEventListener('input', () => updateAboutCounter(p));
+            });
             checkAuth();
         });
 
@@ -531,11 +916,9 @@
             const role = document.getElementById("reg-role").value;
             const password = document.getElementById("reg-password").value;
             const passwordConfirm = document.getElementById("reg-password-confirm").value;
-            const select = document.getElementById("reg-direction");
-            const selectedOption = select.options[select.selectedIndex];
 
             if (!login || !name || !password || !passwordConfirm) {
-                alert("Пожалуйста, заполните все поля!");
+                alert("Пожалуйста, заполните все обязательные поля!");
                 return;
             }
             if (password !== passwordConfirm) {
@@ -546,16 +929,10 @@
                 alert("Пароль должен быть не менее 6 символов!");
                 return;
             }
-            if (!selectedOption || !selectedOption.value) {
-                alert("Пожалуйста, выберите направление!");
-                return;
-            }
 
-            let directionData;
-            try {
-                directionData = JSON.parse(selectedOption.value);
-            } catch (e) {
-                alert("Ошибка в данных направления!");
+            const prof = collectProfile('reg');
+            if (prof.error) {
+                alert(prof.error);
                 return;
             }
 
@@ -565,7 +942,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         login, name, password, role,
-                        direction: directionData,
+                        direction: prof.direction,
                         avatar: regAvatarDataURL
                     })
                 });
@@ -644,6 +1021,7 @@
                     document.getElementById("profile-level").innerText = currentUser.direction.level;
                 }
                 
+                renderProfileExtra();
                 updateProfileAvatar(currentUser.avatar);
                 loadRequestsCount();
             } else {
@@ -662,9 +1040,7 @@
                 const preview = document.getElementById('reg-avatar-preview');
                 preview.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
                 
-                document.getElementById('reg-direction').value = '';
-                document.getElementById('reg-direction-details').classList.remove('show');
-                document.getElementById('reg-direction-details').innerHTML = '';
+                resetExtra('reg');
             }
         }
 
@@ -711,6 +1087,7 @@
 
         function openEditModal() {
             if (!currentUser) return;
+            const d = currentUser.direction || {};
             
             document.getElementById("input-name").value = currentUser.name || '';
             
@@ -721,23 +1098,41 @@
                 roleSelect.value = "Подопечный";
             }
             
+            // Статус (для старых анкет определяем по уровню направления)
+            const statusLabel = d.status || LEVEL_TO_STATUS[d.level] || '';
+            document.getElementById('edit-status').value = statusLabel;
+            onStatusChange('edit');
+
+            // Направление (учёба)
             const editSelect = document.getElementById("edit-direction");
-            const currentTag = currentUser.direction ? currentUser.direction.name : '';
-            const currentLevel = currentUser.direction ? currentUser.direction.level : '';
-            
-            for (let i = 0; i < editSelect.options.length; i++) {
-                const opt = editSelect.options[i];
-                if (opt.value) {
-                    try {
-                        const data = JSON.parse(opt.value);
-                        if (data.name === currentTag && data.level === currentLevel) {
-                            editSelect.value = opt.value;
-                            updateDirectionDetails('edit');
-                            break;
-                        }
-                    } catch(e) {}
-                }
+            editSelect.value = '';
+            let matched = null;
+            for (const opt of editSelect.options) {
+                if (!opt.value) continue;
+                try {
+                    const o = JSON.parse(opt.value);
+                    if (o.name === d.name && o.level === d.level && o.form === d.form) { matched = opt; break; }
+                    if (!matched && o.name === d.name && o.level === d.level) matched = opt;
+                } catch (e) {}
             }
+            if (matched && (!d.statusType || d.statusType === 'study')) editSelect.value = matched.value;
+            updateDirectionDetails('edit');
+            document.getElementById('edit-course').value = d.course || '';
+
+            // Врач
+            setSelectOrOther('edit', 'workplace', d.statusType === 'doctor' ? (d.workplace || '') : '');
+            setSelectOrOther('edit', 'specialty', d.statusType === 'doctor' ? (d.name || '') : '');
+            document.getElementById('edit-experience').value = d.experience || '';
+            document.getElementById('edit-category').value = d.category || '';
+
+            // Учёный
+            document.getElementById('edit-degree').value = d.degree || '';
+            document.getElementById('edit-research').value = d.statusType === 'science' ? (d.research || d.name || '') : '';
+            document.getElementById('edit-link').value = d.link || '';
+
+            // О себе
+            document.getElementById('edit-about').value = d.about || '';
+            updateAboutCounter('edit');
             
             const previewEl = document.getElementById('edit-avatar-preview');
             if (currentUser.avatar) {
@@ -761,15 +1156,11 @@
             
             const newName = document.getElementById("input-name").value.trim();
             const newRole = document.getElementById("input-role").value;
-            
-            const editSelect = document.getElementById("edit-direction");
-            const selectedOption = editSelect.options[editSelect.selectedIndex];
-            
-            let directionData = currentUser.direction;
-            if (selectedOption && selectedOption.value) {
-                try {
-                    directionData = JSON.parse(selectedOption.value);
-                } catch(e) {}
+
+            const prof = collectProfile('edit');
+            if (prof.error) {
+                alert(prof.error);
+                return;
             }
 
             try {
@@ -779,7 +1170,7 @@
                     body: JSON.stringify({
                         name: newName || currentUser.name,
                         role: newRole,
-                        direction: directionData,
+                        direction: prof.direction,
                         avatar: editAvatarDataURL
                     })
                 });
@@ -798,6 +1189,7 @@
                         document.getElementById("profile-level").innerText = currentUser.direction.level;
                     }
                     
+                    renderProfileExtra();
                     updateProfileAvatar(currentUser.avatar);
                     closeEditModal();
                 } else {
