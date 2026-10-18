@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог наставников | ВолгГМУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); }
+        .card-shadow:hover { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08); }
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-900 min-h-screen">
+
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
+                ← На главную
+            </a>
+            <h1 class="font-extrabold text-xl vgm-green">КАТАЛОГ НАСТАВНИКОВ</h1>
+            <div class="flex gap-3">
+                <a href="my-requests.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">📋 Заявки</a>
+                <a href="profile1.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">👤 Кабинет</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-6 py-8">
+        <div class="bg-white rounded-3xl p-6 card-shadow border border-slate-50">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Поиск по имени</label>
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" id="searchInput" placeholder="Введите имя или логин..." 
+                            class="w-full bg-slate-50 border border-slate-100 pl-10 pr-4 py-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Уровень</label>
+                    <select id="levelFilter" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                        <option value="">Все уровни</option>
+                        <option value="Бакалавриат">Бакалавриат</option>
+                        <option value="Специалитет">Специалитет</option>
+                        <option value="Магистратура">Магистратура</option>
+                        <option value="СПО">СПО (Колледж)</option>
+                        <option value="Ординатура">Ординатура</option>
+                        <option value="Аспирантура">Аспирантура</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Направление</label>
+                    <select id="directionFilter" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                        <option value="">Все направления</option>
+                        
+                        <optgroup label="Бакалавриат">
+                            <option value="Биология">Биология</option>
+                            <option value="Биотехнические системы и технологии">Биотехнические системы и технологии</option>
+                        </optgroup>
+                        
+                        <optgroup label="Специалитет">
+                            <option value="Лечебное дело">Лечебное дело</option>
+                            <option value="Педиатрия">Педиатрия</option>
+                            <option value="Стоматология">Стоматология</option>
+                            <option value="Медицинская биохимия">Медицинская биохимия</option>
+                            <option value="Медико-профилактическое дело">Медико-профилактическое дело</option>
+                            <option value="Фармация">Фармация</option>
+                            <option value="Клиническая психология">Клиническая психология</option>
+                        </optgroup>
+                        
+                        <optgroup label="Магистратура">
+                            <option value="Менеджмент">Менеджмент</option>
+                            <option value="Общественное здравоохранение">Общественное здравоохранение</option>
+                        </optgroup>
+                        
+                        <optgroup label="СПО (Колледж)">
+                            <option value="Медицинская оптика (Медицинский оптик-оптометрист)">Медицинская оптика</option>
+                            <option value="Стоматологическое дело (Фельдшер стоматологический)">Стоматологическое дело</option>
+                            <option value="Медицинский администратор">Медицинский администратор</option>
+                            <option value="Сестринское дело">Сестринское дело</option>
+                            <option value="Фармация (Фармацевт)">Фармация (Фармацевт)</option>
+                            <option value="Стоматология профилактическая (Гигиенист стоматологический)">Стоматология профилактическая</option>
+                            <option value="Стоматология ортопедическая (Зубной техник)">Стоматология ортопедическая</option>
+                        </optgroup>
+                        
+                        <optgroup label="Ординатура">
+                            <option value="Общая гигиена">Общая гигиена</option>
+                            <option value="Нефрология">Нефрология</option>
+                            <option value="Диетология">Диетология</option>
+                            <option value="Психотерапия">Психотерапия</option>
+                            <option value="Физиотерапия">Физиотерапия</option>
+                            <option value="Гастроэнтерология">Гастроэнтерология</option>
+                            <option value="Хирургия">Хирургия</option>
+                            <option value="Терапия">Терапия</option>
+                            <option value="Кардиология">Кардиология</option>
+                            <option value="Неврология">Неврология</option>
+                            <option value="Офтальмология">Офтальмология</option>
+                            <option value="Онкология">Онкология</option>
+                            <option value="Педиатрия">Педиатрия</option>
+                            <option value="Акушерство и гинекология">Акушерство и гинекология</option>
+                        </optgroup>
+                        
+                        <optgroup label="Аспирантура">
+                            <option value="Гигиена">Гигиена</option>
+                            <option value="Неврология">Неврология</option>
+                            <option value="Педиатрия">Педиатрия</option>
+                            <option value="Хирургия">Хирургия</option>
+                            <option value="Стоматология">Стоматология</option>
+                            <option value="Офтальмология">Офтальмология</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="mt-4 flex justify-between items-center">
+                <span id="resultsCount" class="text-sm text-slate-500 font-semibold">Загрузка...</span>
+                <button onclick="resetFilters()" class="text-sm text-emerald-600 font-bold hover:text-emerald-700 transition">Сбросить фильтры</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-16">
+        <div id="mentorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <div id="emptyState" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">Ничего не найдено</h3>
+            <p class="text-slate-500 mb-6">Попробуйте изменить фильтры или поиск</p>
+            <button onclick="resetFilters()" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition">Сбросить фильтры</button>
+        </div>
+
+        <div id="loadingState" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+            <p class="text-slate-500 mt-4">Загрузка наставников...</p>
+        </div>
+    </section>
+
+    <script>
+        const API_URL = '/api';
+        let allMentors = [];
+        let filteredMentors = [];
+
+        async function loadMentors() {
+            try {
+                const response = await fetch(`${API_URL}/mentors-with-rating`);
+                const data = await response.json();
+                allMentors = data;
+                applyFilters();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loadingState').innerHTML = 
+                    '<p class="text-red-500 font-bold">Ошибка загрузки. Проверьте, что сервер запущен.</p>';
+            }
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.trim().toLowerCase();
+            const level = document.getElementById('levelFilter').value;
+            const direction = document.getElementById('directionFilter').value;
+
+            filteredMentors = allMentors.filter(m => {
+                if (search) {
+                    const matchName = (m.name || '').toLowerCase().includes(search);
+                    const matchLogin = (m.login || '').toLowerCase().includes(search);
+                    if (!matchName && !matchLogin) return false;
+                }
+                if (level && (!m.direction || m.direction.level !== level)) return false;
+                if (direction && (!m.direction || m.direction.name !== direction)) return false;
+                return true;
+            });
+
+            renderMentors();
+        }
+
+        function renderMentors() {
+            const grid = document.getElementById('mentorsGrid');
+            const empty = document.getElementById('emptyState');
+            const loading = document.getElementById('loadingState');
+            const count = document.getElementById('resultsCount');
+
+            loading.classList.add('hidden');
+
+            if (filteredMentors.length === 0) {
+                grid.innerHTML = '';
+                empty.classList.remove('hidden');
+                count.innerText = 'Найдено: 0';
+                return;
+            }
+
+            empty.classList.add('hidden');
+            count.innerText = `Найдено: ${filteredMentors.length}`;
+
+            grid.innerHTML = filteredMentors.map(mentor => {
+                const avatarHTML = mentor.avatar
+                    ? `<img src="${mentor.avatar}" alt="${mentor.name}" class="w-full h-full object-cover">`
+                    : `<svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+
+                const directionName = mentor.direction
+                    ? `${mentor.direction.name} • ${mentor.direction.level}`
+                    : 'Направление не указано';
+
+                const ratingHTML = mentor.reviews_count > 0
+                    ? `<span class="text-yellow-600 font-bold">⭐ ${mentor.avg_rating}</span> <span class="text-slate-400">(${mentor.reviews_count})</span>`
+                    : '<span class="text-slate-400">⭐ Пока нет отзывов</span>';
+
+                return `
+                    <div class="bg-white p-6 rounded-[32px] card-shadow transition-all duration-300 border border-slate-100">
+                        <div class="w-20 h-20 bg-slate-100 rounded-2xl mb-4 overflow-hidden avatar-placeholder">
+                            ${avatarHTML}
+                        </div>
+                        <h3 class="font-bold text-xl mb-1 text-slate-800">${mentor.name}</h3>
+                        <p class="text-xs font-bold vgm-green uppercase mb-2 tracking-widest">${directionName}</p>
+                        <p class="text-sm mb-4">${ratingHTML}</p>
+                        <a href="profile-view.html?id=${mentor.id}" 
+                           class="block w-full vgm-bg-green text-white py-3 rounded-xl font-bold text-sm text-center active:scale-95 transition">
+                            Посмотреть профиль
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('levelFilter').value = '';
+            document.getElementById('directionFilter').value = '';
+            applyFilters();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('levelFilter').addEventListener('change', applyFilters);
+        document.getElementById('directionFilter').addEventListener('change', applyFilters);
+
+        loadMentors();
+    </script>
+
+</body>
+</html>
