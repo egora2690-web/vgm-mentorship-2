@@ -168,42 +168,129 @@
         </div>
     </section>
 
-    <footer class="main-footer">
-        <div class="container footer-grid">
-            <div class="footer-logo">
-                <div class="dummy-logo">VOLGSMU</div>
-                <div class="logo-text">VOLGOGRAD STATE MEDICAL UNIVERSITY</div>
-            </div>
-            <div class="footer-contacts">
-                <p>📍 1, Pavshikh Bortsov Square, Volgograd</p>
-                <p>📞 +7 (8442) 38-53-57</p>
-                <p>📧 egora2690@gmail.com</p>
-            </div>
-            <div class="footer-social">
-                <h4>Social networks</h4>
-                <div class="social-icons">
-                    <a href="https://vk.com/volggmu" target="_blank" class="social-icon" aria-label="VK">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.587-.188 1.34 1.263 2.14 1.822.604.422 1.063.33 1.063.33l2.135-.03s1.116-.07.587-.953c-.043-.072-.306-.654-1.577-1.85-1.33-1.256-1.153-1.053.45-3.229.976-1.323 1.367-2.13 1.245-2.476-.117-.33-.842-.243-.842-.243l-2.404.015s-.178-.025-.31.055c-.13.078-.213.262-.213.262s-.382 1.026-.89 1.9c-1.074 1.83-1.504 1.927-1.68 1.814-.407-.27-.306-1.092-.306-1.674 0-1.82.27-2.578-.527-2.774-.263-.064-.456-.106-1.13-.113-.863-.009-1.594.003-2.008.208-.276.136-.488.44-.359.457.163.021.53.1.725.368.252.345.243 1.12.243 1.12s.145 2.14-.337 2.406c-.33.182-.784-.19-1.755-1.888-.497-.867-.872-1.826-.872-1.826s-.073-.178-.202-.273c-.157-.116-.377-.152-.377-.152l-2.286.015s-.343.01-.47.16c-.112.134-.008.41-.008.41s1.79 4.234 3.816 6.366c1.858 1.955 3.968 1.826 3.968 1.826l.957-.06z"/>
-                        </svg>
-                    </a>
+    <footer class="portal-footer">
+    <div class="portal-footer__card">
 
-                    <a href="https://t.me/volggmu_vuz" target="_blank" class="social-icon" aria-label="Telegram">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                        </svg>
-                    </a>
+        <!-- ВЕРХНЯЯ ЧАСТЬ: лого + меню + кнопка наверх -->
+        <div class="pf-top">
+            <a href="/" class="pf-logo" aria-label="ВолгГМУ — на главную">
+                <!-- TODO: подставь путь к белому лого; если лого тёмное — фильтр ниже сделает его белым -->
+                <img src="https://www.volgmed.ru/upload/constructor/60a/e7rx7lwdqeb24vkn64t1fz1wakazwq82.svg" alt="Волгоградский государственный медицинский университет">
+            </a>
 
-                    <a href="https://max.ru/id3444048472_biz" target="_blank" class="social-icon" aria-label="MAX">
+            <nav class="pf-nav" aria-label="Футер-меню">
+                <a href="https://www.volgmed.ru/matriculant/" target="_blank">Абитуриенту</a>
+                <a href="https://www.volgmed.ru/apprentice/" target="_blank">Обучающемуся</a>
+                <a href="https://www.volgmed.ru/worker/" target="_blank" >Работнику</a>
+                <a href="https://www.volgmed.ru/graduate/" target="_blank">Выпускнику</a>
+                <a href="https://www.volgmed.ru/partners/" target="_blank">Бизнесу</a>
+            </nav>
+
+            <button class="pf-totop" type="button" aria-label="Наверх" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+        </div>
+
+        <div class="pf-divider"></div>
+
+        <div class="pf-cols">
+            <!-- СОЦСЕТИ + СЕРВИСНЫЕ ССЫЛКИ -->
+            <div class="pf-col pf-col--social">
+                <h4>Социальные сети</h4>
+                <div class="pf-social">
+                     <a href="https://t.me/volggmu_vuz" target="_blank" rel="noopener" class="pf-social-link" aria-label="Telegram">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </a>
+                    <a href="https://vk.com/volggmu" target="_blank" rel="noopener" class="pf-social-link" aria-label="ВКонтакте">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.587-.188 1.34 1.263 2.14 1.822.604.422 1.063.33 1.063.33l2.135-.03s1.116-.07.587-.953c-.043-.072-.306-.654-1.577-1.85-1.33-1.256-1.153-1.053.45-3.229.976-1.323 1.367-2.13 1.245-2.476-.117-.33-.842-.243-.842-.243l-2.404.015s-.178-.025-.31.055c-.13.078-.213.262-.213.262s-.382 1.026-.89 1.9c-1.074 1.83-1.504 1.927-1.68 1.814-.407-.27-.306-1.092-.306-1.674 0-1.82.27-2.578-.527-2.774-.263-.064-.456-.106-1.13-.113-.863-.009-1.594.003-2.008.208-.276.136-.488.44-.359.457.163.021.53.1.725.368.252.345.243 1.12.243 1.12s.145 2.14-.337 2.406c-.33.182-.784-.19-1.755-1.888-.497-.867-.872-1.826-.872-1.826s-.073-.178-.202-.273c-.157-.116-.377-.152-.377-.152l-2.286.015s-.343.01-.47.16c-.112.134-.008.41-.008.41s1.79 4.234 3.816 6.366c1.858 1.955 3.968 1.826 3.968 1.826l.957-.06z"/></svg>
+                    </a>
+                   
+                    <a href="https://max.ru/id3444048472_biz" target="_blank" rel="noopener" class="pf-social-link" aria-label="MAX">
                         <img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="MAX">
                     </a>
                 </div>
+
+                <div class="pf-service">
+                    <a href="https://www.volgmed.ru/sitemap/">Карта сайта</a>
+                    <a href="https://www.volgmed.ru/info/faq/">Часто задаваемые вопросы</a>
+                </div>
+            </div>
+
+            <!-- ГЛАВНЫЙ КОРПУС -->
+            <div class="pf-col">
+                <h4>Главный корпус</h4>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <a href="tel:+78442385005">+7 (8442) 38-50-05</a>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>г. Волгоград, площадь Павших Борцов, д. 1</span>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <a href="mailto:post@volgmed.ru">post@volgmed.ru</a>
+                </p>
+                <p class="pf-schedule"><strong>График работы:</strong>Пн — Пт: 10:00 - 18:00<br>Сб: 10:00 - 14:00</p>
+            </div>
+
+            <!-- ПРИЕМНАЯ КОМИССИЯ -->
+            <div class="pf-col">
+                <h4>Приемная комиссия</h4>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <a href="tel:+78442532333">+7 (8442) 53-23-33</a>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>г. Волгоград, площадь Павших Борцов, д. 1, кабинет 3-47</span>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <a href="mailto:priem@volgmed.ru">priem@volgmed.ru</a>
+                </p>
+                <p class="pf-schedule"><strong>График работы:</strong>Вт - Пт: 13:00 - 17:00<br>(для приема граждан)</p>
+            </div>
+
+            <!-- ПРИЕМНАЯ РЕКТОРА -->
+            <div class="pf-col">
+                <h4>Приемная ректора</h4>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <a href="tel:+78442385005">+7 (8442) 38-50-05</a>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>г. Волгоград, площадь Павших Борцов, д. 1, каб. 3-11 (индекс 400066)</span>
+                </p>
+                <p class="pf-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <a href="mailto:post@volgmed.ru">post@volgmed.ru</a>
+                </p>
+                <p class="pf-schedule"><strong>График работы:</strong>Пн - Пт: 08:30 - 17:00<br>(перерыв 12:30 - 13:00)<br>Сб - Вс: выходные дни</p>
             </div>
         </div>
-        <div class="container footer-bottom">
-            <p>&copy; 2026 Project developed for VolgSMU</p>
+
+        <!-- БЕГУЩАЯ СТРОКА -->
+        <div class="pf-marquee" aria-hidden="true">
+            <div class="pf-marquee-track">
+                <span>Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ </span>
+                <span>Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ </span>
+            </div>
         </div>
-    </footer>
+
+        <!-- НИЖНЯЯ СТРОКА -->
+        <div class="pf-bottom">
+            <span class="pf-copy">&copy; 2026 Волгоградский государственный медицинский университет</span>
+            <div class="pf-links">
+                <a href="https://www.volgmed.ru/info/privacy-policy/" target="_blank">Политика конфиденциальности</a>
+                <a href="https://www.volgmed.ru/info/personal-details/" target="_blank">Политика по обработке персональных данных</a>
+                <a href="https://www.volgmed.ru/info/user-politics/" target="_blank">Пользовательское соглашение</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
 
     <script>
         const observer = new IntersectionObserver((entries) => {
