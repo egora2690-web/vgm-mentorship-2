@@ -50,8 +50,13 @@
             </div>
 
             <div id="directionDetails" class="bg-slate-50 rounded-2xl p-6 mb-8">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Направление</h3>
+                <h3 id="directionTitle" class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Направление</h3>
                 <div id="directionInfo"></div>
+            </div>
+
+            <div id="aboutBlock" class="hidden bg-white rounded-2xl p-6 mb-8 border border-slate-100">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">О себе</h3>
+                <p id="aboutText" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
             </div>
 
             <div class="bg-blue-50 rounded-2xl p-4 md:p-6 mb-8 border border-blue-100">
@@ -148,6 +153,10 @@
 
     <script>
         const API_URL = '/api';
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
         let mentorData = null;
         let selectedRating = 0;
 
@@ -191,26 +200,55 @@
             document.getElementById('name').innerText = mentorData.name;
             document.getElementById('role').innerText = mentorData.role;
 
+            const d = mentorData.direction;
+
             const tagsEl = document.getElementById('directionTags');
-            if (mentorData.direction) {
-                tagsEl.innerHTML = `
-                    <span class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.level}</span>
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.form}</span>
-                `;
+            if (d) {
+                tagsEl.innerHTML = `<span class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">${esc(d.level)}</span>`
+                    + (d.form ? `<span class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">${esc(d.form)}</span>` : '');
             }
 
+            const row = (label, value, extra = '') => value
+                ? `<div class="flex justify-between gap-4 py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">${label}</span><span class="font-bold text-right ${extra}">${esc(value)}</span></div>`
+                : '';
+
+            const titleEl = document.getElementById('directionTitle');
             const infoEl = document.getElementById('directionInfo');
-            if (mentorData.direction) {
-                const d = mentorData.direction;
+            if (d) {
                 let html = '';
-                if (d.name) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Направление</span><span class="font-bold">${d.name}</span></div>`;
-                if (d.code) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Код</span><span class="font-bold vgm-green font-mono text-sm">${d.code}</span></div>`;
-                if (d.description) html += `<p class="text-sm text-slate-600 mt-3 leading-relaxed">${d.description}</p>`;
-                if (d.duration) html += `<div class="flex justify-between py-2 border-b border-slate-200 mt-3"><span class="text-slate-500 font-semibold">Срок обучения</span><span class="font-bold">${d.duration}</span></div>`;
+                if (d.statusType === 'doctor') {
+                    titleEl.innerText = 'Работа';
+                    html += row('Статус', d.status);
+                    html += row('Специальность', d.name);
+                    html += row('Место работы', d.workplace || d.form);
+                    html += row('Стаж', d.experience ? d.experience + ' лет' : '');
+                    html += row('Категория', d.category);
+                } else if (d.statusType === 'science') {
+                    titleEl.innerText = 'Научная деятельность';
+                    html += row('Статус', d.status);
+                    html += row('Область исследований', d.research || d.name);
+                    html += row('Учёная степень', d.degree);
+                    if (/^https?:\/\//i.test(d.link || '')) {
+                        html += `<div class="flex justify-between gap-4 py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Профиль</span><a href="${esc(d.link)}" target="_blank" rel="noopener noreferrer" class="font-bold vgm-green underline">eLibrary / ORCID</a></div>`;
+                    }
+                } else {
+                    titleEl.innerText = 'Направление';
+                    html += row('Статус', d.status);
+                    html += row('Направление', d.name);
+                    html += row('Код', d.code, 'vgm-green font-mono text-sm');
+                    html += row('Курс / год обучения', d.course);
+                    if (d.description) html += `<p class="text-sm text-slate-600 mt-3 leading-relaxed">${esc(d.description)}</p>`;
+                    if (d.duration) html += `<div class="flex justify-between py-2 border-b border-slate-200 mt-3"><span class="text-slate-500 font-semibold">Срок обучения</span><span class="font-bold">${esc(d.duration)}</span></div>`;
+                }
                 infoEl.innerHTML = html;
             } else {
                 infoEl.innerHTML = '<p class="text-slate-400 italic">Направление не указано</p>';
             }
+
+            // О себе
+            const aboutBlock = document.getElementById('aboutBlock');
+            document.getElementById('aboutText').innerText = (d && d.about) || '';
+            aboutBlock.classList.toggle('hidden', !(d && d.about));
         }
 
         async function loadReviews() {
