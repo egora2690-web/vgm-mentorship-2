@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Моё наставничество | ВолгГМУ</title>
+    <link rel="stylesheet" href="kursorium.css">
+    <script>document.documentElement.classList.add('k-js');setTimeout(function(){document.documentElement.classList.remove('k-js')},1500);</script>
+</head>
+<body data-k-lang="ru" data-k-active="mentors" data-k-ru="my-mentors.html" data-k-en="my-mentorsENG.html">
+
+<main class="k-content">
+    <div class="k-page-head">
+        <h1 class="k-page-title">Мои наставники и подопечные</h1>
+        <p class="k-page-sub">Люди, с которыми у вас одобренные заявки</p>
+    </div>
+
+    <div id="loadingState" class="k-state">
+        <div class="k-spinner"></div>
+        <p>Загрузка...</p>
+    </div>
+
+    <div id="authError" class="k-state" hidden>
+        <div class="k-state-ico">🔒</div>
+        <h3>Вы не авторизованы</h3>
+        <p>Войдите, чтобы увидеть своих наставников и подопечных</p>
+        <a class="k-btn k-btn--green" href="profile1.html">Войти</a>
+    </div>
+
+    <div id="content" class="k-stack" hidden>
+        <section aria-labelledby="mentorsTitle">
+            <h2 class="k-section-title" id="mentorsTitle">Мои наставники<span class="k-count" id="mentorsCount">0</span></h2>
+            <div id="mentorsGrid" class="k-grid"></div>
+            <div id="mentorsEmpty" class="k-empty" hidden>
+                <p>У вас пока нет наставника. Выберите его в каталоге и отправьте заявку.</p>
+                <a class="k-btn k-btn--green k-btn--sm" href="catalog.html">Найти наставника</a>
+            </div>
+        </section>
+
+        <section aria-labelledby="menteesTitle">
+            <h2 class="k-section-title" id="menteesTitle">Мои подопечные<span class="k-count" id="menteesCount">0</span></h2>
+            <div id="menteesGrid" class="k-grid"></div>
+            <div id="menteesEmpty" class="k-empty" hidden>
+                <p>Пока нет подопечных. Здесь появятся люди, чьи заявки вы одобрите.</p>
+                <a class="k-btn k-btn--soft k-btn--sm" href="my-requests.html">Перейти к заявкам</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script src="shell.js"></script>
+<script>
+const API_URL = '/api';
+const I = {"locale": "ru-RU", "chat": "Открыть чат", "profile": "Профиль", "since": "Вместе с", "user": "Пользователь", "loadError": "Ошибка загрузки"};
+const PROFILE_URL = 'profile-view.html';
+let currentUser = null;
+
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Ссылки на чат: только http(s) или адреса этого же сайта
+function safeHref(u) {
+    try {
+        const x = new URL(u, location.href);
+        return (x.protocol === 'http:' || x.protocol === 'https:' || x.protocol === location.protocol) ? u : '#';
+    } catch (e) { return '#'; }
+}
+
+// Из списка одобренных заявок собираем людей (один человек — одна карточка, берём самую свежую заявку)
+function collect(list, side) {
+    const map = new Map();
+    list.forEach(r => {
+        const id = r[side + '_user_id'];
+        const prev = map.get(id);
+        if (!prev || new Date(r.created_at) > new Date(prev.created_at)) map.set(id, r);
+    });
+    return [...map.values()]
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .map(r => ({ id: r[side + '_user_id'], name: r[side + '_name'], avatar: r[side + '_avatar'], chat: r.chat_link, date: r.created_at }));
+}
+
+function personCard(p) {
+    const avatarHTML = p.avatar
+        ? `<img src="${esc(p.avatar)}" alt="">`
+        : `<svg viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+    const date = new Date(p.date).toLocaleDateString(I.locale, { day: 'numeric', month: 'long', year: 'numeric' });
+    const chatBtn = p.chat
+        ? `<a class="k-btn k-btn--green k-btn--sm" href="${esc(safeHref(p.chat))}">💬 ${esc(I.chat)}</a>`
+        : '';
+    return `
+        <article class="k-mentor">
+            <div class="k-mentor-top">
+                <div class="k-avatar">${avatarHTML}</div>
+                <div>
+                    <h3>${esc(p.name || I.user)}</h3>
+                    <p class="k-since">${esc(I.since)} ${esc(date)}</p>
+                </div>
+            </div>
+            <div class="k-person-actions">
+                ${chatBtn}
+                <a class="k-btn k-btn--soft k-btn--sm" href="${PROFILE_URL}?id=${encodeURIComponent(p.id)}">${esc(I.profile)}</a>
+            </div>
+        </article>`;
+}
+
+function fill(gridId, emptyId, countId, people) {
+    document.getElementById(countId).innerText = people.length;
+    document.getElementById(gridId).innerHTML = people.map(personCard).join('');
+    document.getElementById(emptyId).hidden = people.length > 0;
+}
+
+async function load() {
+    const saved = localStorage.getItem('vgm_current_user');
+    if (!saved) {
+        document.getElementById('loadingState').hidden = true;
+        document.getElementById('authError').hidden = false;
+        return;
+    }
+    currentUser = JSON.parse(saved);
+
+    try {
+        const response = await fetch(`${API_URL}/requests/${currentUser.id}`);
+        const all = await response.json();
+        const approved = all.filter(r => r.status === 'approved');
+
+        // я отправил заявку и её одобрили — это мой наставник; мне отправили и я одобрил — это мой подопечный
+        fill('mentorsGrid', 'mentorsEmpty', 'mentorsCount', collect(approved.filter(r => r.from_user_id === currentUser.id), 'to'));
+        fill('menteesGrid', 'menteesEmpty', 'menteesCount', collect(approved.filter(r => r.to_user_id === currentUser.id), 'from'));
+
+        document.getElementById('loadingState').hidden = true;
+        document.getElementById('content').hidden = false;
+    } catch (error) {
+        console.error(error);
+        document.getElementById('loadingState').innerHTML = `<p class="k-error">${esc(I.loadError)}</p>`;
+    }
+}
+
+load();
+</script>
+
+</body>
+</html>

@@ -1,315 +1,56 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>VolgSMU Mentorship | Your Path in Medicine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>VolgSMU Mentorship | Your Path to Medicine</title>
+    <link rel="stylesheet" href="kursorium.css">
+    <script>document.documentElement.classList.add('k-js');setTimeout(function(){document.documentElement.classList.remove('k-js')},1500);</script>
 </head>
-<body>
+<body data-k-lang="en" data-k-active="home" data-k-ru="index.html" data-k-en="indexENG.html">
 
-    <header class="main-header">
-        <div class="container header-container">
-            <div class="logo-area">
-                <a href="https://www.volgmed.ru/" target="_blank"> 
-                    <img src="https://en.volgmed.ru/upload/constructor/42a/mq5ku3fe97pws7f1izgpe67ej60xexq5/logo%20eng.svg" alt="Logo" class="header-logo-img">
-                </a>  
-            </div>
+<main class="k-content">
 
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
-
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="https://www.volgmed.ru/university/" target="_blank">ABOUT UNIVERSITY</a></li>
-                    <li><a href="https://www.volgmed.ru/education/" target="_blank">EDUCATION</a></li>
-                    <li><a href="https://www.volgmed.ru/medicine/" target="_blank">MEDICINE</a></li>
-                    <li><a href="https://www.volgmed.ru/science/" target="_blank">SCIENCE</a></li>
-                </ul>
-            </nav>
-
-            <div class="header-right">
-                <button class="search-btn" aria-label="Search">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="M21 21l-4.35-4.35"/>
-                    </svg>
-                </button>
-                <span class="lang-switch">
-                    <a href="index.html">RU</a> / <a href="indexENG.html" class="active">EN</a>
-                </span>
-                <a href="profile1ENG.html" class="profile-link">👤 ACCOUNT</a>
-                <a href="chatsENG.html" class="profile-link">💬 CHATS</a>
-                <a href="my-requestsENG.html" class="profile-link">📋 REQUESTS</a>
-            </div>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="container hero-container">
-            <div class="hero-content">
-                <span class="hero-subtitle">VOLGSMU — TRADITIONS, EXPERIENCE AND SUPPORT FOR FUTURE GENERATIONS</span>
-                <h1>YOUR PATH IN MEDICINE: WITH A MENTOR, IT'S MORE CONFIDENT</h1>
-                
-                <div class="hero-actions">
-                    <button class="vgm-btn vgm-btn-filled" onclick="document.getElementById('how-to-find').scrollIntoView({behavior: 'smooth'})">
-                        FIND A MENTOR →
-                    </button>
-                    <button class="vgm-btn vgm-btn-white" onclick="document.getElementById('how-to-become').scrollIntoView({behavior: 'smooth'})">
-                        BECOME A MENTOR →
-                    </button>
-                </div>
-            </div>
-            <div class="hero-image-placeholder"></div>
-        </div>
-    </section>
-
-    <section class="programs container">
-        <h2 class="section-title">KEY MENTORSHIP PROGRAMS</h2>
-        
-        <div class="program-grid">
-            
-            <a href="catalogSSENG.html" class="program-card">
-                <div class="icon">👥</div>
-                <h3>STUDENT-STUDENT: ACADEMIC SUPPORT</h3>
-            </a>
-
-            <a href="catalog0ENG.html" class="program-card">
-                <div class="icon">⚕️</div>
-                <h3>RESIDENT-STUDENT: PRACTICAL SKILLS</h3>
-            </a>
-
-            <a href="catalogWWENG.html" class="program-card">
-                <div class="icon">👨‍⚕️</div>
-                <h3>SPECIALIST — YOUNG DOCTOR: CAREER GROWTH</h3>
-            </a>
-
-            <a href="catalogNENG.html" class="program-card">
-                <div class="icon">🔬</div>
-                <h3>RESEARCH MENTORSHIP: HELP IN RESEARCH</h3>
-            </a>
-
-        </div>
-    </section>
-        
-    <section id="how-to-find" class="how-to-section">
-        <div class="how-to-container">
-            <div class="how-to-title">
-                <h2>How to find a mentor</h2>
-            </div>
-
-            <div class="how-to-steps">
-                <div class="step-item">
-                    <span class="step-badge">Step 1</span>
-                    <h3>Choose a mentor</h3>
-                    <p>Find a suitable specialist in our catalog of verified mentors. You can filter them by field, experience, and other criteria.</p>
-                </div>
-
-                <div class="step-item">
-                    <span class="step-badge">Step 2</span>
-                    <h3>Write to them</h3>
-                    <p>Leave a request on the website. Try to clearly formulate your request — this will increase the chances that the mentor will agree to work with you.</p>
-                </div>
-
-                <div class="step-item">
-                    <span class="step-badge">Step 3</span>
-                    <h3>It's up to you</h3>
-                    <p>After the mentor approves your request, you can arrange a meeting. The system will create a chat link for convenient communication.</p>
-                </div>
-
-                <button class="find-btn" onclick="window.location.href='catalogENG.html'">
-                    🔍 Find a mentor →
-                </button>
-            </div>
-        </div>
-    </section>
-        
-    <section id="how-to-become" class="become-mentor-section">
-        <div class="mentor-container">
-            <div class="mentor-steps">
-                <h2 class="section-title-alt">How to become <br><span>a mentor</span></h2>
-
-                <div class="mentor-step-item">
-                    <span class="step-label">Step 1</span>
-                    <p>Click the "Become a mentor" button. Register by selecting your field of activity and describing your experience.</p>
-                </div>
-
-                <div class="mentor-step-item">
-                    <span class="step-label">Step 2</span>
-                    <p>Your profile will be checked by university moderators for compliance with the competencies of the direction.</p>
-                </div>
-
-                <div class="mentor-step-item">
-                    <span class="step-label">Step 3</span>
-                    <p>After verification, you will appear in the catalog. You will be able to accept requests and schedule meetings with students.</p>
-                </div>
-
-                <a href="profile1ENG.html" class="btn-primary-vgm">Become a Mentor →</a>
-            </div>
-
-            <div class="mentor-features">
-                <h3 class="features-title">Platform opportunities for mentors</h3>
-
-                <div class="feature-card">
-                    <h4>Community of like-minded people</h4>
-                    <p>Connect with other mentors, share experiences and participate in major VolgSMU projects.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h4>Development opportunities</h4>
-                    <p>Access to teaching materials, courses and the university's research base.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h4>Convenient tools</h4>
-                    <p>Personal account for managing requests, chats with students and a progress monitoring system.</p>
-                </div>
+    <section class="k-hero">
+        <div class="k-hero-inner">
+            <span class="k-eyebrow">VolgSMU — traditions, experience and support for future generations</span>
+            <h1>Your path to medicine: more confident with a mentor</h1>
+            <div class="k-actions">
+                <a class="k-btn k-btn--white" href="#how-to-find">Find a mentor →</a>
+                <a class="k-btn k-btn--ghost" href="#how-to-become">Become a mentor →</a>
             </div>
         </div>
     </section>
 
-    <footer class="portal-footer">
-    <div class="portal-footer__card">
 
-        <!-- ВЕРХНЯЯ ЧАСТЬ: лого + меню + кнопка наверх -->
-        <div class="pf-top">
-            <a href="/" class="pf-logo" aria-label="ВолгГМУ — на главную">
-                <!-- TODO: подставь путь к белому лого; если лого тёмное — фильтр ниже сделает его белым -->
-                <img src="https://www.volgmed.ru/upload/constructor/60a/e7rx7lwdqeb24vkn64t1fz1wakazwq82.svg" alt="Волгоградский государственный медицинский университет">
-            </a>
-
-            <nav class="pf-nav" aria-label="Футер-меню">
-                <a href="https://www.volgmed.ru/matriculant/" target="_blank">Абитуриенту</a>
-                <a href="https://www.volgmed.ru/apprentice/" target="_blank">Обучающемуся</a>
-                <a href="https://www.volgmed.ru/worker/" target="_blank" >Работнику</a>
-                <a href="https://www.volgmed.ru/graduate/" target="_blank">Выпускнику</a>
-                <a href="https://www.volgmed.ru/partners/" target="_blank">Бизнесу</a>
-            </nav>
-
-            <button class="pf-totop" type="button" aria-label="Наверх" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-            </button>
+    <section id="how-to-find" class="k-section">
+        <h2 class="k-section-title">How to find a mentor</h2>
+        <div class="k-steps">
+            <div class="k-step"><span class="k-badge">Step 1</span><h3>Choose a mentor</h3><p>Find a suitable specialist in our catalog of verified mentors. You can filter them by direction, experience and other parameters.</p></div>
+            <div class="k-step"><span class="k-badge">Step 2</span><h3>Write to them</h3><p>Submit a request on the site. Try to state your request clearly — it increases the chances that the mentor agrees to work with you.</p></div>
+            <div class="k-step"><span class="k-badge">Step 3</span><h3>It's up to you</h3><p>Once the mentor approves your request, you can arrange a meeting. The system will create a chat link for convenient communication.</p></div>
         </div>
+        <div class="k-section-cta"><a class="k-btn k-btn--green" href="catalogENG.html">🔍 Find a mentor →</a></div>
+    </section>
 
-        <div class="pf-divider"></div>
-
-        <div class="pf-cols">
-            <!-- СОЦСЕТИ + СЕРВИСНЫЕ ССЫЛКИ -->
-            <div class="pf-col pf-col--social">
-                <h4>Социальные сети</h4>
-                <div class="pf-social">
-                     <a href="https://t.me/volggmu_vuz" target="_blank" rel="noopener" class="pf-social-link" aria-label="Telegram">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                    </a>
-                    <a href="https://vk.com/volggmu" target="_blank" rel="noopener" class="pf-social-link" aria-label="ВКонтакте">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.587-.188 1.34 1.263 2.14 1.822.604.422 1.063.33 1.063.33l2.135-.03s1.116-.07.587-.953c-.043-.072-.306-.654-1.577-1.85-1.33-1.256-1.153-1.053.45-3.229.976-1.323 1.367-2.13 1.245-2.476-.117-.33-.842-.243-.842-.243l-2.404.015s-.178-.025-.31.055c-.13.078-.213.262-.213.262s-.382 1.026-.89 1.9c-1.074 1.83-1.504 1.927-1.68 1.814-.407-.27-.306-1.092-.306-1.674 0-1.82.27-2.578-.527-2.774-.263-.064-.456-.106-1.13-.113-.863-.009-1.594.003-2.008.208-.276.136-.488.44-.359.457.163.021.53.1.725.368.252.345.243 1.12.243 1.12s.145 2.14-.337 2.406c-.33.182-.784-.19-1.755-1.888-.497-.867-.872-1.826-.872-1.826s-.073-.178-.202-.273c-.157-.116-.377-.152-.377-.152l-2.286.015s-.343.01-.47.16c-.112.134-.008.41-.008.41s1.79 4.234 3.816 6.366c1.858 1.955 3.968 1.826 3.968 1.826l.957-.06z"/></svg>
-                    </a>
-                   
-                    <a href="https://max.ru/id3444048472_biz" target="_blank" rel="noopener" class="pf-social-link" aria-label="MAX">
-                        <img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="MAX">
-                    </a>
-                </div>
-
-                <div class="pf-service">
-                    <a href="https://www.volgmed.ru/sitemap/">Карта сайта</a>
-                    <a href="https://www.volgmed.ru/info/faq/">Часто задаваемые вопросы</a>
-                </div>
-            </div>
-
-            <!-- ГЛАВНЫЙ КОРПУС -->
-            <div class="pf-col">
-                <h4>Главный корпус</h4>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    <a href="tel:+78442385005">+7 (8442) 38-50-05</a>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span>г. Волгоград, площадь Павших Борцов, д. 1</span>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <a href="mailto:post@volgmed.ru">post@volgmed.ru</a>
-                </p>
-                <p class="pf-schedule"><strong>График работы:</strong>Пн — Пт: 10:00 - 18:00<br>Сб: 10:00 - 14:00</p>
-            </div>
-
-            <!-- ПРИЕМНАЯ КОМИССИЯ -->
-            <div class="pf-col">
-                <h4>Приемная комиссия</h4>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    <a href="tel:+78442532333">+7 (8442) 53-23-33</a>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span>г. Волгоград, площадь Павших Борцов, д. 1, кабинет 3-47</span>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <a href="mailto:priem@volgmed.ru">priem@volgmed.ru</a>
-                </p>
-                <p class="pf-schedule"><strong>График работы:</strong>Вт - Пт: 13:00 - 17:00<br>(для приема граждан)</p>
-            </div>
-
-            <!-- ПРИЕМНАЯ РЕКТОРА -->
-            <div class="pf-col">
-                <h4>Приемная ректора</h4>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    <a href="tel:+78442385005">+7 (8442) 38-50-05</a>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span>г. Волгоград, площадь Павших Борцов, д. 1, каб. 3-11 (индекс 400066)</span>
-                </p>
-                <p class="pf-row">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <a href="mailto:post@volgmed.ru">post@volgmed.ru</a>
-                </p>
-                <p class="pf-schedule"><strong>График работы:</strong>Пн - Пт: 08:30 - 17:00<br>(перерыв 12:30 - 13:00)<br>Сб - Вс: выходные дни</p>
-            </div>
+    <section id="how-to-become" class="k-become">
+        <div class="k-section k-become-steps">
+            <h2 class="k-section-title">How to become a mentor</h2>
+            <div class="k-step"><span class="k-badge">Step 1</span><p>Click “Become a mentor”. Register, choosing your field of activity and describing your experience.</p></div>
+            <div class="k-step"><span class="k-badge">Step 2</span><p>Your profile will be reviewed by university moderators for compliance with the competencies of the field.</p></div>
+            <div class="k-step"><span class="k-badge">Step 3</span><p>After review you will appear in the catalog. You will be able to accept requests and schedule meetings with students.</p></div>
+            <div class="k-section-cta"><a class="k-btn k-btn--gold" href="profile1ENG.html">Become a mentor →</a></div>
         </div>
-
-        <!-- БЕГУЩАЯ СТРОКА -->
-        <div class="pf-marquee" aria-hidden="true">
-            <div class="pf-marquee-track">
-                <span>Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ </span>
-                <span>Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ Искусство быть врачом ✦ </span>
-            </div>
+        <div class="k-features">
+            <h3>Platform features for mentors</h3>
+            <div class="k-feature"><h4>Community of like-minded people</h4><p>Join other mentors, share experience and take part in large VolgSMU projects.</p></div>
+            <div class="k-feature"><h4>Opportunities for growth</h4><p>Access to teaching materials, courses and the university's research base.</p></div>
+            <div class="k-feature"><h4>Convenient tools</h4><p>A personal account for managing requests, chats with students and a progress monitoring system.</p></div>
         </div>
+    </section>
+</main>
 
-        <!-- НИЖНЯЯ СТРОКА -->
-        <div class="pf-bottom">
-            <span class="pf-copy">&copy; 2026 Волгоградский государственный медицинский университет</span>
-            <div class="pf-links">
-                <a href="https://www.volgmed.ru/info/privacy-policy/" target="_blank">Политика конфиденциальности</a>
-                <a href="https://www.volgmed.ru/info/personal-details/" target="_blank">Политика по обработке персональных данных</a>
-                <a href="https://www.volgmed.ru/info/user-politics/" target="_blank">Пользовательское соглашение</a>
-            </div>
-        </div>
+<script src="shell.js"></script>
 
-    </div>
-</footer>
-
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show-el');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.hidden-el').forEach((el) => observer.observe(el));
-
-        function toggleMobileMenu() {
-            const container = document.querySelector('.header-container');
-            const btn = document.querySelector('.mobile-menu-btn');
-            const open = container.classList.toggle('menu-open');
-            btn.textContent = open ? '✕' : '☰';
-            document.body.classList.toggle('menu-locked', open);
-        }
-    </script>
 </body>
 </html>

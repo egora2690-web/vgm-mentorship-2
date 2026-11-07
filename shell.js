@@ -1,0 +1,179 @@
+/* =====================================================================
+   shell.js — общая оболочка «как в Курсориуме» для сайта наставничества ВолгГМУ
+   (боковая панель, верхняя панель, футер). Менять меню и контакты нужно только здесь.
+
+   Как подключать на странице:
+     <body data-k-lang="ru|en" data-k-active="home|catalog|requests|chats|account|catSS|catO|catWW|catN"
+           data-k-ru="адрес_русской_версии" data-k-en="адрес_английской_версии">
+       <main class="k-content"> ...содержимое страницы... </main>
+       <script src="shell.js"></script>
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  var body = document.body;
+  var main = document.querySelector('main.k-content');
+  if (!main) { body.classList.add('k-ready'); return; }
+
+  var lang = body.getAttribute('data-k-lang') === 'en' ? 'en' : 'ru';
+  var active = body.getAttribute('data-k-active') || '';
+  var ruHref = body.getAttribute('data-k-ru') || 'index.html';
+  var enHref = body.getAttribute('data-k-en') || 'indexENG.html';
+
+  var ICON = {
+    home: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+    clip: '<svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>',
+    chat: '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    user: '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    flag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+    users: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    panel: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+  };
+
+  var LINKS = {
+    ru: { home: 'index.html', catalog: 'catalog.html', requests: 'my-requests.html', mentors: 'my-mentors.html', chats: 'chats.html', account: 'profile1.html',
+          catSS: 'catalogSS.html', catO: 'catalogO.html', catWW: 'catalogWW.html', catN: 'catalogN.html' },
+    en: { home: 'indexENG.html', catalog: 'catalogENG.html', requests: 'my-requestsENG.html', mentors: 'my-mentorsENG.html', chats: 'chatsENG.html', account: 'profile1ENG.html',
+          catSS: 'catalogSSENG.html', catO: 'catalog0ENG.html', catWW: 'catalogWWENG.html', catN: 'catalogNENG.html' }
+  };
+
+  var TEXT = {
+    ru: {
+      brand: 'НАСТАВНИЧЕСТВО', tag: 'ВолгГМУ',
+      ariaSidebar: 'Боковая панель', ariaMain: 'Основное меню', ariaToggle: 'Показать или скрыть меню', ariaLang: 'Язык',
+      nav: { home: 'Главная', catalog: 'Каталог наставников', requests: 'Мои заявки', mentors: 'Моё наставничество', chats: 'Чаты', account: 'Личный кабинет' },
+      howTitle: 'Как это работает', how: ['Как найти наставника', 'Как стать наставником'],
+      univTitle: 'Университет', univ: ['Об университете', 'Образование', 'Медицина', 'Наука'],
+      helpTitle: 'Наставничество ВолгГМУ', help: 'Нужна помощь?', accountBtn: 'Кабинет',
+      f: { main: 'Главный корпус', adm: 'Приемная комиссия', rec: 'Приемная ректора', hours: 'График работы:',
+           addrMain: 'г. Волгоград, площадь Павших Борцов, д. 1',
+           addrAdm: 'г. Волгоград, площадь Павших Борцов, д. 1, кабинет 3-47',
+           addrRec: 'г. Волгоград, площадь Павших Борцов, д. 1, каб. 3-11 (индекс 400066)',
+           hMain: 'Пн — Пт: 10:00 - 18:00<br>Сб: 10:00 - 14:00',
+           hAdm: 'Вт - Пт: 13:00 - 17:00<br>(для приема граждан)',
+           hRec: 'Пн - Пт: 08:30 - 17:00<br>(перерыв 12:30 - 13:00)<br>Сб - Вс: выходные дни',
+           legal1: 'Пользовательское соглашение', legal2: 'Политика по обработке персональных данных',
+           copy: '&copy; 2026 Проект разработан для ВолгГМУ' }
+    },
+    en: {
+      brand: 'MENTORSHIP', tag: 'VolgSMU',
+      ariaSidebar: 'Sidebar', ariaMain: 'Main menu', ariaToggle: 'Show or hide menu', ariaLang: 'Language',
+      nav: { home: 'Home', catalog: 'Mentor catalog', requests: 'My requests', mentors: 'My mentorship', chats: 'Chats', account: 'Account' },
+      howTitle: 'How it works', how: ['How to find a mentor', 'How to become a mentor'],
+      univTitle: 'University', univ: ['About the University', 'Education', 'Medicine', 'Science'],
+      helpTitle: 'VolgSMU Mentorship', help: 'Need help?', accountBtn: 'Account',
+      f: { main: 'Main building', adm: 'Admissions office', rec: "Rector's office", hours: 'Working hours:',
+           addrMain: '1 Pavshikh Bortsov Square, Volgograd',
+           addrAdm: '1 Pavshikh Bortsov Square, Volgograd, room 3-47',
+           addrRec: '1 Pavshikh Bortsov Square, Volgograd, room 3-11 (postal code 400066)',
+           hMain: 'Mon — Fri: 10:00 - 18:00<br>Sat: 10:00 - 14:00',
+           hAdm: 'Tue - Fri: 13:00 - 17:00<br>(public reception hours)',
+           hRec: 'Mon - Fri: 08:30 - 17:00<br>(break 12:30 - 13:00)<br>Sat - Sun: closed',
+           legal1: 'User Agreement', legal2: 'Personal Data Processing Policy',
+           copy: '&copy; 2026 Project developed for VolgSMU' }
+    }
+  };
+
+  var L = LINKS[lang], T = TEXT[lang];
+  var UNIV_URLS = ['https://www.volgmed.ru/university/', 'https://www.volgmed.ru/education/', 'https://www.volgmed.ru/medicine/', 'https://www.volgmed.ru/science/'];
+
+  function cur(key) { return active === key ? ' aria-current="page"' : ''; }
+  function navItem(key, icon) {
+    return '<li><a href="' + L[key] + '"' + cur(key) + '>' + ICON[icon] + T.nav[key] + '</a></li>';
+  }
+
+  var markSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+
+  var sidebar =
+    '<aside class="k-sidebar" id="kSidebar" aria-label="' + T.ariaSidebar + '">' +
+      '<a class="k-brand" href="' + L.home + '"><span class="k-brand-mark" aria-hidden="true">' + markSvg + '</span>' +
+        '<span class="k-brand-text"><span class="k-brand-tag">' + T.tag + '</span><br>' + T.brand + '</span></a>' +
+      '<nav class="k-card" aria-label="' + T.ariaMain + '"><ul class="k-nav">' +
+        navItem('home', 'home') + navItem('catalog', 'search') + navItem('requests', 'clip') + navItem('mentors', 'users') + navItem('chats', 'chat') + navItem('account', 'user') +
+      '</ul></nav>' +
+      '<nav class="k-card" aria-label="' + T.howTitle + '"><p class="k-card-title">' + T.howTitle + '</p><ul class="k-nav k-nav--programs">' +
+        '<li><a href="' + L.home + '#how-to-find">' + T.how[0] + '</a></li>' +
+        '<li><a href="' + L.home + '#how-to-become">' + T.how[1] + '</a></li>' +
+      '</ul></nav>' +
+      '<nav class="k-card" aria-label="' + T.univTitle + '"><p class="k-card-title">' + T.univTitle + '</p><ul class="k-nav k-nav--programs">' +
+        T.univ.map(function (t, i) { return '<li><a href="' + UNIV_URLS[i] + '" target="_blank" rel="noopener">' + t + '</a></li>'; }).join('') +
+      '</ul></nav>' +
+    '</aside>' +
+    '<div class="k-backdrop" id="kBackdrop"></div>';
+
+  var topbar =
+    '<header class="k-topbar">' +
+      '<button class="k-icon-btn" id="kToggle" type="button" aria-label="' + T.ariaToggle + '" aria-controls="kSidebar" aria-expanded="true">' + ICON.panel + '</button>' +
+      '<a class="k-brand-mark" href="' + L.home + '" aria-label="' + T.brand + '">' + markSvg + '</a>' +
+      '<div class="k-lang" role="group" aria-label="' + T.ariaLang + '">' + ICON.flag +
+        '<a href="' + ruHref + '"' + (lang === 'ru' ? ' class="is-active" aria-current="true"' : '') + '>RU</a>' +
+        '<a href="' + enHref + '"' + (lang === 'en' ? ' class="is-active" aria-current="true"' : '') + '>EN</a>' +
+      '</div>' +
+      '<span class="k-spacer"></span>' +
+      '<div class="k-help"><span>' + T.helpTitle + '</span><a href="mailto:post@volgmed.ru">' + T.help + '</a></div>' +
+      '<a class="k-user" href="' + L.account + '"><i>' + ICON.user + '</i><span>' + T.accountBtn + '</span></a>' +
+    '</header>';
+
+  function col(title, tel, telText, addr, mail, hrs) {
+    return '<div class="pf-col"><h4>' + title + '</h4>' +
+      '<p class="pf-row">' + ICON.phone + '<a href="tel:' + tel + '">' + telText + '</a></p>' +
+      '<p class="pf-row">' + ICON.pin + '<span>' + addr + '</span></p>' +
+      '<p class="pf-row">' + ICON.mail + '<a href="mailto:' + mail + '">' + mail + '</a></p>' +
+      '<p class="pf-schedule"><strong>' + T.f.hours + '</strong>' + hrs + '</p></div>';
+  }
+
+  var vk = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.587-.188 1.34 1.263 2.14 1.822.604.422 1.063.33 1.063.33l2.135-.03s1.116-.07.587-.953c-.043-.072-.306-.654-1.577-1.85-1.33-1.256-1.153-1.053.45-3.229.976-1.323 1.367-2.13 1.245-2.476-.117-.33-.842-.243-.842-.243l-2.404.015s-.178-.025-.31.055c-.13.078-.213.262-.213.262s-.382 1.026-.89 1.9c-1.074 1.83-1.504 1.927-1.68 1.814-.407-.27-.306-1.092-.306-1.674 0-1.82.27-2.578-.527-2.774-.263-.064-.456-.106-1.13-.113-.863-.009-1.594.003-2.008.208-.276.136-.488.44-.359.457.163.021.53.1.725.368.252.345.243 1.12.243 1.12s.145 2.14-.337 2.406c-.33.182-.784-.19-1.755-1.888-.497-.867-.872-1.826-.872-1.826s-.073-.178-.202-.273c-.157-.116-.377-.152-.377-.152l-2.286.015s-.343.01-.47.16c-.112.134-.008.41-.008.41s1.79 4.234 3.816 6.366c1.858 1.955 3.968 1.826 3.968 1.826l.957-.06z"/></svg>';
+  var tg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>';
+
+  var footer =
+    '<footer class="portal-footer"><div class="portal-footer__card">' +
+      '<div class="pf-cols">' +
+        col(T.f.main, '+78442385005', '+7 (8442) 38-50-05', T.f.addrMain, 'post@volgmed.ru', T.f.hMain) +
+        col(T.f.adm, '+78442532333', '+7 (8442) 53-23-33', T.f.addrAdm, 'priem@volgmed.ru', T.f.hAdm) +
+        col(T.f.rec, '+78442385005', '+7 (8442) 38-50-05', T.f.addrRec, 'post@volgmed.ru', T.f.hRec) +
+      '</div>' +
+      /* TODO: подставь реальные ссылки на документы портала вместо # */
+      '<div class="pf-links"><a href="#">' + T.f.legal1 + '</a><a href="#">' + T.f.legal2 + '</a></div>' +
+      '<div class="pf-bottom"><span>' + T.f.copy + '</span><div class="pf-social">' +
+        '<a href="https://vk.com/volggmu" target="_blank" rel="noopener" class="pf-social-link" aria-label="VK">' + vk + '</a>' +
+        '<a href="https://t.me/volggmu_vuz" target="_blank" rel="noopener" class="pf-social-link" aria-label="Telegram">' + tg + '</a>' +
+        '<a href="https://max.ru/id3444048472_biz" target="_blank" rel="noopener" class="pf-social-link" aria-label="MAX"><img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="MAX"></a>' +
+      '</div></div>' +
+    '</div></footer>';
+
+  /* --- собираем каркас вокруг содержимого страницы --- */
+  var shell = document.createElement('div');
+  shell.className = 'k-shell';
+  shell.id = 'kShell';
+  shell.innerHTML = sidebar + '<div class="k-main">' + topbar + '<div id="kSlot"></div>' + footer + '</div>';
+  body.insertBefore(shell, body.firstChild);
+  var slot = shell.querySelector('#kSlot');
+  slot.parentNode.replaceChild(main, slot);
+
+  /* --- поведение меню --- */
+  var btn = document.getElementById('kToggle');
+  var backdrop = document.getElementById('kBackdrop');
+  var mq = window.matchMedia('(max-width: 960px)');
+
+  function isOpen() { return mq.matches ? shell.classList.contains('k-open') : !shell.classList.contains('k-collapsed'); }
+  function setOpen(open) {
+    if (mq.matches) { shell.classList.toggle('k-open', open); }
+    else { shell.classList.toggle('k-collapsed', !open); }
+    btn.setAttribute('aria-expanded', String(open));
+  }
+  btn.addEventListener('click', function () { setOpen(!isOpen()); });
+  backdrop.addEventListener('click', function () { setOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mq.matches && isOpen()) setOpen(false); });
+  shell.querySelectorAll('.k-sidebar a').forEach(function (a) {
+    a.addEventListener('click', function () { if (mq.matches) setOpen(false); });
+  });
+  function sync() { shell.classList.remove('k-open'); btn.setAttribute('aria-expanded', String(isOpen())); }
+  if (mq.addEventListener) mq.addEventListener('change', sync); else mq.addListener(sync);
+  sync();
+
+  body.classList.add('k-ready');
+})();
