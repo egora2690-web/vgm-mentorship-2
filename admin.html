@@ -2,334 +2,494 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Админ-панель | ВолгГМУ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="kursorium.css">
+    <script>document.documentElement.classList.add('k-js');setTimeout(function(){document.documentElement.classList.remove('k-js')},1500);</script>
     <style>
-        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
-        .vgm-green { color: #007a5e; }
-        .vgm-bg-green { background-color: #007a5e; }
-        .avatar-placeholder {
-            background: #e2e8f0;
-            display: flex; align-items: center; justify-content: center; color: #94a3b8;
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
         }
-        .tab-btn { transition: all 0.2s; }
-        .tab-btn.active { background-color: #007a5e; color: white; }
-        .tab-btn:not(.active) { background-color: #f1f5f9; color: #64748b; }
+        .admin-stat {
+            padding: 18px 16px;
+            border: 1px solid var(--k-line);
+            border-radius: 20px;
+            background: #fff;
+            text-align: center;
+        }
+        .admin-stat .ico { font-size: 1.6rem; margin-bottom: 6px; }
+        .admin-stat .num { font-size: 1.5rem; font-weight: 800; line-height: 1.2; color: var(--k-text); }
+        .admin-stat .lbl {
+            margin-top: 4px; font-size: .7rem; font-weight: 700;
+            letter-spacing: .04em; text-transform: uppercase; color: var(--k-muted);
+        }
+        .admin-stat.accent-green .num { color: var(--k-green-deep); }
+        .admin-stat.accent-gold .num { color: #b8860b; }
+        .admin-stat.accent-blue .num { color: #1a5fb4; }
+        .admin-stat.accent-red .num { color: #c0392b; }
+
+        .admin-tabs {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            border-bottom: 1px solid var(--k-line); padding-bottom: 0; margin-bottom: 16px;
+        }
+        .admin-tab {
+            padding: 12px 18px; border: 0; border-radius: 14px 14px 0 0;
+            font: inherit; font-weight: 700; font-size: .9rem;
+            background: var(--k-side); color: var(--k-muted); cursor: pointer;
+            transition: background .15s, color .15s;
+        }
+        .admin-tab.is-active { background: var(--k-green-deep); color: #fff; }
+
+        .admin-list {
+            border: 1px solid var(--k-line); border-radius: 20px; background: #fff; overflow: hidden;
+        }
+        .admin-row {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+            padding: 16px 18px; border-bottom: 1px solid var(--k-line);
+        }
+        .admin-row:last-child { border-bottom: 0; }
+        .admin-row:hover { background: var(--k-side); }
+        .admin-ava {
+            width: 44px; height: 44px; border-radius: 12px; background: var(--k-side);
+            display: grid; place-items: center; overflow: hidden; flex-shrink: 0; color: var(--k-muted);
+        }
+        .admin-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .admin-ava svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+        .admin-info { flex: 1; min-width: 160px; }
+        .admin-info h3 { margin: 0 0 2px; font-size: 1rem; font-weight: 700; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .admin-info p { margin: 0; font-size: .82rem; color: var(--k-muted); }
+        .admin-badge {
+            font-size: .65rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 999px;
+        }
+        .admin-badge--admin { background: #fde8e8; color: #c0392b; }
+        .admin-badge--pending { background: #fef6e4; color: #b8860b; }
+        .admin-badge--approved { background: var(--k-green-soft); color: var(--k-green-deep); }
+        .admin-badge--rejected { background: #fde8e8; color: #c0392b; }
+        .admin-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+        .admin-btn {
+            padding: 7px 12px; border: 0; border-radius: 10px;
+            font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer;
+            transition: background .15s;
+        }
+        .admin-btn--warn { background: #fef6e4; color: #b8860b; }
+        .admin-btn--warn:hover { background: #fceec8; }
+        .admin-btn--mute { background: var(--k-side); color: var(--k-muted); }
+        .admin-btn--mute:hover { background: #e5e5e5; }
+        .admin-btn--danger { background: #fde8e8; color: #c0392b; }
+        .admin-btn--danger:hover { background: #fad2d2; }
+        .admin-date { font-size: .78rem; color: var(--k-muted); white-space: nowrap; }
+
+        html.k-contrast .admin-stat,
+        html.k-contrast .admin-list { border: 2px solid #000; }
+        html.k-contrast .admin-tab.is-active { background: #000; }
+        html.k-contrast .admin-badge { border: 1px solid #000; }
+        html.k-contrast .admin-badge--admin,
+        html.k-contrast .admin-badge--rejected { background: #ffe600; color: #000; }
+        html.k-contrast .admin-badge--pending { background: #ffe600; color: #000; }
+        html.k-contrast .admin-badge--approved { background: #ffe600; color: #000; }
+        html.k-contrast .admin-btn { border: 1px solid #000; }
     </style>
 </head>
-<body class="min-h-screen text-slate-900">
+<body data-k-lang="ru" data-k-active="account" data-k-ru="admin.html" data-k-en="admin.html">
 
-    <!-- ХЕДЕР -->
-    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="profile1.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
-                ← Личный кабинет
-            </a>
-            <h1 class="font-extrabold text-lg text-red-600">🔐 АДМИН-ПАНЕЛЬ</h1>
-            <a href="catalog.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">🎓 Каталог</a>
-        </div>
-    </header>
+<main class="k-content">
 
-    <!-- ПРОВЕРКА ДОСТУПА -->
-    <div id="accessDenied" class="hidden max-w-md mx-auto text-center py-20">
-        <div class="text-6xl mb-4">🚫</div>
-        <h3 class="text-xl font-extrabold text-slate-800 mb-2">Доступ запрещён</h3>
-        <p class="text-slate-500 mb-6">У вас нет прав администратора</p>
-        <a href="profile1.html" class="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition inline-block">Вернуться в профиль</a>
+    <div id="accessDenied" class="k-state" hidden>
+        <div class="k-state-ico">🚫</div>
+        <h3>Доступ запрещён</h3>
+        <p>У вас нет прав администратора</p>
+        <a href="profile1.html" class="k-btn k-btn--green">Вернуться в профиль</a>
     </div>
 
-    <!-- АДМИН-ПАНЕЛЬ -->
-    <main id="adminPanel" class="hidden max-w-6xl mx-auto p-6">
+    <div id="adminPanel" hidden>
 
-        <!-- СТАТИСТИКА -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-extrabold text-slate-800 mb-4">📊 Статистика</h2>
-            <div id="statsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- Заполнится через JS -->
+        <div class="k-page-head">
+            <h1 class="k-page-title">Админ-панель</h1>
+            <p class="k-page-sub">Управление пользователями и заявками платформы наставничества</p>
+        </div>
+
+        <section>
+            <h2 class="k-section-title" style="margin-bottom:14px;">Статистика</h2>
+            <div id="statsGrid" class="admin-stats">
+                <div class="admin-stat"><div class="k-spinner" style="margin:12px auto;"></div></div>
             </div>
         </section>
 
-        <!-- ВКЛАДКИ -->
-        <div class="flex gap-2 mb-6 border-b border-slate-200">
-            <button onclick="switchTab('users')" id="usersTabBtn" class="tab-btn active px-5 py-3 text-sm font-bold rounded-t-xl">
-                👥 Пользователи
-            </button>
-            <button onclick="switchTab('requests')" id="requestsTabBtn" class="tab-btn px-5 py-3 text-sm font-bold rounded-t-xl">
-                📋 Заявки
-            </button>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;align-items:center;justify-content:space-between;">
+            <div class="admin-tabs" role="tablist" style="margin:0;">
+                <button type="button" role="tab" id="usersTabBtn" class="admin-tab is-active" onclick="switchTab('users')" aria-selected="true">👥 Пользователи</button>
+                <button type="button" role="tab" id="requestsTabBtn" class="admin-tab" onclick="switchTab('requests')" aria-selected="false">📋 Заявки</button>
+                <button type="button" role="tab" id="reportsTabBtn" class="admin-tab" onclick="switchTab('reports')" aria-selected="false">⚠ Жалобы</button>
+            </div>
+            <button type="button" class="k-btn k-btn--soft k-btn--sm" onclick="downloadBackup()">💾 Скачать бэкап БД</button>
         </div>
 
-        <!-- СПИСОК ПОЛЬЗОВАТЕЛЕЙ -->
-        <section id="usersTab">
-            <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <div id="usersLoading" class="text-center py-10">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"></div>
+        <section id="usersTab" role="tabpanel">
+            <div class="k-panel" style="margin-bottom:12px;padding:14px 18px;">
+                <div class="k-search">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <input class="k-input" type="text" id="userSearchInput" placeholder="Поиск по имени, логину, роли..." autocomplete="off" oninput="filterUsers()">
                 </div>
-                <div id="usersList" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="admin-list">
+                <div id="usersLoading" class="k-state" style="padding:32px;">
+                    <div class="k-spinner"></div>
+                </div>
+                <div id="usersList"></div>
             </div>
         </section>
 
-        <!-- СПИСОК ЗАЯВОК -->
-        <section id="requestsTab" class="hidden">
-            <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <div id="requestsLoading" class="text-center py-10">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"></div>
+        <section id="requestsTab" role="tabpanel" hidden>
+            <div class="k-panel" style="margin-bottom:12px;padding:14px 18px;">
+                <div class="k-search">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <input class="k-input" type="text" id="requestSearchInput" placeholder="Поиск по заявкам..." autocomplete="off" oninput="filterRequests()">
                 </div>
-                <div id="requestsList" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="admin-list">
+                <div id="requestsLoading" class="k-state" style="padding:32px;">
+                    <div class="k-spinner"></div>
+                </div>
+                <div id="requestsList"></div>
             </div>
         </section>
 
-    </main>
-
-    <script>
-        const API_URL = '/api';
-        let currentUser = null;
-        let allUsers = [];
-        let allRequests = [];
-
-        // Проверка админа
-        function checkAdmin() {
-            const saved = localStorage.getItem('vgm_current_user');
-            if (!saved) {
-                document.getElementById('accessDenied').classList.remove('hidden');
-                return false;
-            }
-            currentUser = JSON.parse(saved);
-            
-            if (!currentUser.is_admin) {
-                document.getElementById('accessDenied').classList.remove('hidden');
-                return false;
-            }
-            
-            document.getElementById('adminPanel').classList.remove('hidden');
-            return true;
-        }
-
-        // Заголовки для API админа
-        function adminHeaders() {
-            return {
-                'Content-Type': 'application/json',
-                'x-user-id': currentUser.id
-            };
-        }
-
-        // Переключение вкладок
-        function switchTab(tab) {
-            document.getElementById('usersTabBtn').classList.toggle('active', tab === 'users');
-            document.getElementById('requestsTabBtn').classList.toggle('active', tab === 'requests');
-            document.getElementById('usersTab').classList.toggle('hidden', tab !== 'users');
-            document.getElementById('requestsTab').classList.toggle('hidden', tab !== 'requests');
-        }
-
-        // Загрузка статистики
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_URL}/admin/stats`, { headers: adminHeaders() });
-                const stats = await response.json();
-
-                document.getElementById('statsGrid').innerHTML = `
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">👥</div>
-                        <p class="text-2xl font-extrabold text-slate-800">${stats.total_users}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Всего пользователей</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">🎓</div>
-                        <p class="text-2xl font-extrabold text-emerald-600">${stats.total_mentors}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Наставники</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">👨‍🎓</div>
-                        <p class="text-2xl font-extrabold text-blue-600">${stats.total_mentees}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Подопечные</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">📋</div>
-                        <p class="text-2xl font-extrabold text-slate-800">${stats.total_requests}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Заявок</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">⏳</div>
-                        <p class="text-2xl font-extrabold text-yellow-600">${stats.pending_requests}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Ожидают</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">✅</div>
-                        <p class="text-2xl font-extrabold text-green-600">${stats.approved_requests}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Одобрено</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100">
-                        <div class="text-3xl mb-2">💬</div>
-                        <p class="text-2xl font-extrabold text-slate-800">${stats.total_messages}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Сообщений</p>
-                    </div>
-                `;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        // Загрузка пользователей
-        async function loadUsers() {
-            try {
-                const response = await fetch(`${API_URL}/admin/users`, { headers: adminHeaders() });
-                allUsers = await response.json();
-                
-                document.getElementById('usersLoading').classList.add('hidden');
-                renderUsers();
-            } catch (error) {
-                console.error(error);
-                document.getElementById('usersLoading').innerHTML = 
-                    '<p class="text-red-500 font-bold">Ошибка загрузки</p>';
-            }
-        }
-
-        function renderUsers() {
-            const list = document.getElementById('usersList');
-            
-            if (allUsers.length === 0) {
-                list.innerHTML = '<p class="text-center py-10 text-slate-400">Нет пользователей</p>';
-                return;
-            }
-
-            list.innerHTML = allUsers.map(u => {
-                const isSelf = u.id === currentUser.id;
-                const avatarHTML = u.avatar
-                    ? `<img src="${u.avatar}" class="w-full h-full object-cover">`
-                    : `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
-
-                const directionInfo = u.direction 
-                    ? `<p class="text-xs text-slate-400">${u.direction.name} • ${u.direction.level}</p>` 
-                    : '';
-
-                const adminBadge = u.is_admin 
-                    ? '<span class="bg-red-100 text-red-700 text-[10px] px-2 py-1 rounded-full font-bold">👑 АДМИН</span>' 
-                    : '';
-
-                const date = new Date(u.created_at).toLocaleDateString('ru-RU');
-
-                return `
-    <div class="p-4 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50 transition">
-        <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div class="w-12 h-12 rounded-xl overflow-hidden avatar-placeholder flex-shrink-0">
-                ${avatarHTML}
+        <section id="reportsTab" role="tabpanel" hidden>
+            <div class="admin-list">
+                <div id="reportsLoading" class="k-state" style="padding:32px;"><div class="k-spinner"></div></div>
+                <div id="reportsList"></div>
             </div>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="font-bold text-slate-800">${u.name}</h3>
-                    ${adminBadge}
-                </div>
-                <p class="text-xs text-slate-400">@${u.login} • ${u.role}</p>
-                ${directionInfo}
-            </div>
-        </div>
-        <div class="text-right flex-shrink-0 w-full md:w-auto">
-            <p class="text-xs text-slate-400 mb-2">${date}</p>
-            <div class="flex flex-wrap gap-2 justify-end">
-                ${!u.is_admin ? `
-                    <button onclick="makeAdmin(${u.id})" class="text-xs bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg font-bold hover:bg-yellow-100 transition">
-                        👑 Сделать админом
-                    </button>
-                ` : (isSelf ? '' : `
-                    <button onclick="removeAdmin(${u.id})" class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition">
-                        Снять админа
-                    </button>
-                `)}
-                ${!isSelf ? `
-                    <button onclick="deleteUser(${u.id}, '${u.name.replace(/'/g, "\\'")}')" class="text-xs bg-red-50 text-red-700 px-3 py-1.5 rounded-lg font-bold hover:bg-red-100 transition">
-                        🗑 Удалить
-                    </button>
-                ` : ''}
-            </div>
-        </div>
+        </section>
+
     </div>
-`;
-            }).join('');
+
+</main>
+
+<script src="shell.js"></script>
+<script>
+const API_URL = '/api';
+let currentUser = null;
+let allUsers = [];
+let allRequests = [];
+
+function checkAdmin() {
+    const saved = localStorage.getItem('vgm_current_user');
+    if (!saved) {
+        document.getElementById('accessDenied').hidden = false;
+        return false;
+    }
+    currentUser = JSON.parse(saved);
+    if (!currentUser.is_admin) {
+        document.getElementById('accessDenied').hidden = false;
+        return false;
+    }
+    document.getElementById('adminPanel').hidden = false;
+    return true;
+}
+
+function adminHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'x-user-id': String(currentUser.id)
+    };
+}
+
+function switchTab(tab) {
+    ['users','requests','reports'].forEach(t => {
+        const btn = document.getElementById(t + 'TabBtn');
+        const panel = document.getElementById(t + 'Tab');
+        if (btn) {
+            btn.classList.toggle('is-active', tab === t);
+            btn.setAttribute('aria-selected', tab === t);
         }
+        if (panel) panel.hidden = tab !== t;
+    });
+    if (tab === 'reports') loadReports();
+}
+}
 
-        // Загрузка заявок
-        async function loadRequests() {
-            try {
-                const response = await fetch(`${API_URL}/admin/requests`, { headers: adminHeaders() });
-                allRequests = await response.json();
-                
-                document.getElementById('requestsLoading').classList.add('hidden');
-                renderRequests();
-            } catch (error) {
-                console.error(error);
-            }
+function escapeHtml(str) {
+    return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+async function loadStats() {
+    try {
+        const response = await fetch(`${API_URL}/admin/stats`, { headers: adminHeaders() });
+        const stats = await response.json();
+        document.getElementById('statsGrid').innerHTML = `
+            <div class="admin-stat">
+                <div class="ico">👥</div>
+                <div class="num">${stats.total_users ?? 0}</div>
+                <div class="lbl">Всего пользователей</div>
+            </div>
+            <div class="admin-stat accent-green">
+                <div class="ico">🎓</div>
+                <div class="num">${stats.total_mentors ?? 0}</div>
+                <div class="lbl">Наставники</div>
+            </div>
+            <div class="admin-stat accent-blue">
+                <div class="ico">👨‍🎓</div>
+                <div class="num">${stats.total_mentees ?? 0}</div>
+                <div class="lbl">Подопечные</div>
+            </div>
+            <div class="admin-stat">
+                <div class="ico">📋</div>
+                <div class="num">${stats.total_requests ?? 0}</div>
+                <div class="lbl">Заявок</div>
+            </div>
+            <div class="admin-stat accent-gold">
+                <div class="ico">⏳</div>
+                <div class="num">${stats.pending_requests ?? 0}</div>
+                <div class="lbl">Ожидают</div>
+            </div>
+            <div class="admin-stat accent-green">
+                <div class="ico">✅</div>
+                <div class="num">${stats.approved_requests ?? 0}</div>
+                <div class="lbl">Одобрено</div>
+            </div>
+            <div class="admin-stat">
+                <div class="ico">💬</div>
+                <div class="num">${stats.total_messages ?? 0}</div>
+                <div class="lbl">Сообщений</div>
+            </div>`;
+    } catch (error) {
+        console.error(error);
+        document.getElementById('statsGrid').innerHTML =
+            '<p style="color:#c0392b;font-weight:700">Не удалось загрузить статистику</p>';
+    }
+}
+
+async function loadUsers() {
+    try {
+        const response = await fetch(`${API_URL}/admin/users`, { headers: adminHeaders() });
+        allUsers = await response.json();
+        document.getElementById('usersLoading').hidden = true;
+        renderUsers();
+    } catch (error) {
+        console.error(error);
+        document.getElementById('usersLoading').innerHTML =
+            '<p style="color:#c0392b;font-weight:700">Ошибка загрузки</p>';
+    }
+}
+
+function filterUsers() {
+    renderUsers();
+}
+function filterRequests() {
+    renderRequests();
+}
+
+function renderUsers() {
+    const list = document.getElementById('usersList');
+    if (!Array.isArray(allUsers) || allUsers.length === 0) {
+        list.innerHTML = '<p class="k-state" style="padding:28px;">Нет пользователей</p>';
+        return;
+    }
+
+    const q = (document.getElementById('userSearchInput')?.value || '').trim().toLowerCase();
+    const filtered = !q ? allUsers : allUsers.filter(u => {
+        const blob = [u.name, u.login, u.role, u.direction?.name, u.direction?.level].filter(Boolean).join(' ').toLowerCase();
+        return blob.includes(q);
+    });
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<p class="k-state" style="padding:28px;">Ничего не найдено</p>';
+        return;
+    }
+
+    const personSvg = '<svg viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>';
+
+    list.innerHTML = filtered.map(u => {
+        const isSelf = u.id === currentUser.id;
+        const avatarHTML = u.avatar
+            ? `<img src="${u.avatar}" alt="">`
+            : personSvg;
+        const directionInfo = u.direction
+            ? `<p>${escapeHtml(u.direction.name)} · ${escapeHtml(u.direction.level)}</p>`
+            : '';
+        const adminBadge = u.is_admin
+            ? '<span class="admin-badge admin-badge--admin">👑 Админ</span>'
+            : '';
+        const blockedBadge = u.is_blocked
+            ? '<span class="admin-badge" style="background:#fee2e2;color:#991b1b;">Заблокирован</span>'
+            : '';
+        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('ru-RU') : '—';
+
+        return `
+            <div class="admin-row">
+                <div class="admin-ava">${avatarHTML}</div>
+                <div class="admin-info">
+                    <h3>${escapeHtml(u.name)} ${adminBadge} ${blockedBadge}</h3>
+                    <p>@${escapeHtml(u.login)} · ${escapeHtml(u.role || '')}</p>
+                    ${directionInfo}
+                </div>
+                <div class="admin-date">${date}</div>
+                <div class="admin-actions">
+                    ${!u.is_admin ? `
+                        <button type="button" class="admin-btn admin-btn--warn" onclick="makeAdmin(${u.id})">👑 Сделать админом</button>
+                    ` : (isSelf ? '' : `
+                        <button type="button" class="admin-btn admin-btn--mute" onclick="removeAdmin(${u.id})">Снять админа</button>
+                    `)}
+                    ${!isSelf ? `
+                        <button type="button" class="admin-btn ${u.is_blocked ? 'admin-btn--mute' : 'admin-btn--danger'}" onclick="toggleBlock(${u.id}, ${u.is_blocked ? 0 : 1})">${u.is_blocked ? 'Разблокировать' : '🔒 Блок'}</button>
+                        <button type="button" class="admin-btn admin-btn--danger" onclick="deleteUser(${u.id}, ${JSON.stringify(u.name)})">🗑 Удалить</button>
+                    ` : ''}
+                </div>
+            </div>`;
+    }).join('');
+}
+
+async function toggleBlock(id, blocked) {
+    if (blocked && !confirm('Заблокировать пользователя?')) return;
+    try {
+        const r = await fetch(`${API_URL}/admin/users/${id}/block`, {
+            method: 'PUT',
+            headers: { ...adminHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ blocked: !!blocked })
+        });
+        if (r.ok) loadUsers();
+        else alert('Ошибка');
+    } catch (e) { alert('Ошибка сети'); }
+}
+
+async function loadReports() {
+    const loading = document.getElementById('reportsLoading');
+    const list = document.getElementById('reportsList');
+    if (loading) loading.hidden = false;
+    try {
+        const r = await fetch(`${API_URL}/admin/reports`, { headers: adminHeaders() });
+        const rows = await r.json();
+        if (loading) loading.hidden = true;
+        if (!Array.isArray(rows) || !rows.length) {
+            list.innerHTML = '<p class="k-state" style="padding:28px;">Жалоб нет</p>';
+            return;
         }
+        list.innerHTML = rows.map(x => `
+            <div class="admin-row">
+                <div class="admin-info">
+                    <h3>${escapeHtml(x.target_type)} #${x.target_id}</h3>
+                    <p>от ${escapeHtml(x.reporter_name || '—')} · ${escapeHtml(x.reason || 'без причины')}</p>
+                    <p style="font-size:.8rem;color:var(--k-muted)">${x.created_at || ''} · ${escapeHtml(x.status || '')}</p>
+                </div>
+            </div>`).join('');
+    } catch (e) {
+        if (loading) loading.innerHTML = '<p style="color:#c0392b">Ошибка загрузки</p>';
+    }
+}
 
-        function renderRequests() {
-            const list = document.getElementById('requestsList');
-            
-            if (allRequests.length === 0) {
-                list.innerHTML = '<p class="text-center py-10 text-slate-400">Нет заявок</p>';
-                return;
-            }
+function downloadBackup() {
+    const a = document.createElement('a');
+    a.href = `${API_URL}/admin/backup`;
+    // fetch with header then blob
+    fetch(`${API_URL}/admin/backup`, { headers: adminHeaders() })
+        .then(r => {
+            if (!r.ok) throw new Error('fail');
+            return r.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'vgm-backup.db';
+            a.click();
+            URL.revokeObjectURL(url);
+        })
+        .catch(() => alert('Не удалось скачать бэкап'));
+}
 
-            list.innerHTML = allRequests.map(r => {
-                let statusBadge = '';
-                if (r.status === 'pending') statusBadge = '<span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-xs font-bold">⏳ Ожидает</span>';
-                else if (r.status === 'approved') statusBadge = '<span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-xs font-bold">✅ Одобрена</span>';
-                else if (r.status === 'rejected') statusBadge = '<span class="bg-red-50 text-red-700 px-2 py-1 rounded-lg text-xs font-bold">❌ Отклонена</span>';
+async function loadRequests() {
+    try {
+        const response = await fetch(`${API_URL}/admin/requests`, { headers: adminHeaders() });
+        allRequests = await response.json();
+        document.getElementById('requestsLoading').hidden = true;
+        renderRequests();
+    } catch (error) {
+        console.error(error);
+        document.getElementById('requestsLoading').innerHTML =
+            '<p style="color:#c0392b;font-weight:700">Ошибка загрузки</p>';
+    }
+}
 
-                const date = new Date(r.created_at).toLocaleDateString('ru-RU');
+function renderRequests() {
+    const list = document.getElementById('requestsList');
+    if (!Array.isArray(allRequests) || allRequests.length === 0) {
+        list.innerHTML = '<p class="k-state" style="padding:28px;">Нет заявок</p>';
+        return;
+    }
 
-                return `
-                    <div class="p-4 hover:bg-slate-50 transition">
-                        <div class="flex justify-between items-start mb-2 flex-wrap gap-2">
-                            <div>
-                                <p class="font-bold text-slate-800">${r.from_name} → ${r.to_name}</p>
-                                <p class="text-xs text-slate-400">${date}</p>
-                            </div>
-                            ${statusBadge}
-                        </div>
-                        ${r.message ? `<p class="text-sm text-slate-600 mb-3">"${r.message}"</p>` : ''}
-                        <button onclick="deleteRequest(${r.id})" class="text-xs bg-red-50 text-red-700 px-3 py-1.5 rounded-lg font-bold hover:bg-red-100 transition">
-                            🗑 Удалить заявку
-                        </button>
+    const q = (document.getElementById('requestSearchInput')?.value || '').trim().toLowerCase();
+    const filtered = !q ? allRequests : allRequests.filter(r => {
+        const blob = [r.from_name, r.to_name, r.message, r.status].filter(Boolean).join(' ').toLowerCase();
+        return blob.includes(q);
+    });
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<p class="k-state" style="padding:28px;">Ничего не найдено</p>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(r => {
+        let statusBadge = '';
+        if (r.status === 'pending') statusBadge = '<span class="admin-badge admin-badge--pending">⏳ Ожидает</span>';
+        else if (r.status === 'approved') statusBadge = '<span class="admin-badge admin-badge--approved">✅ Одобрена</span>';
+        else if (r.status === 'rejected') statusBadge = '<span class="admin-badge admin-badge--rejected">❌ Отклонена</span>';
+
+        const date = r.created_at ? new Date(r.created_at).toLocaleDateString('ru-RU') : '—';
+
+        return `
+            <div class="admin-row" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:flex-start;">
+                    <div>
+                        <h3 style="margin:0 0 4px;font-size:1rem;">${escapeHtml(r.from_name)} → ${escapeHtml(r.to_name)}</h3>
+                        <p style="margin:0;font-size:.82rem;color:var(--k-muted);">${date}</p>
                     </div>
-                `;
-            }).join('');
-        }
+                    ${statusBadge}
+                </div>
+                ${r.message ? `<p style="margin:8px 0 0;font-size:.92rem;color:var(--k-text);">«${escapeHtml(r.message)}»</p>` : ''}
+                <div class="admin-actions" style="margin-top:10px;">
+                    <button type="button" class="admin-btn admin-btn--danger" onclick="deleteRequest(${r.id})">🗑 Удалить заявку</button>
+                </div>
+            </div>`;
+    }).join('');
+}
 
-        // Действия
-        async function makeAdmin(id) {
-            if (!confirm('Сделать пользователя админом?')) return;
-            await fetch(`${API_URL}/admin/users/${id}/make-admin`, { method: 'PUT', headers: adminHeaders() });
-            loadUsers();
-        }
+async function makeAdmin(id) {
+    if (!confirm('Сделать пользователя админом?')) return;
+    await fetch(`${API_URL}/admin/users/${id}/make-admin`, { method: 'PUT', headers: adminHeaders() });
+    loadUsers();
+}
 
-        async function removeAdmin(id) {
-            if (!confirm('Снять права админа?')) return;
-            await fetch(`${API_URL}/admin/users/${id}/remove-admin`, { method: 'PUT', headers: adminHeaders() });
-            loadUsers();
-        }
+async function removeAdmin(id) {
+    if (!confirm('Снять права админа?')) return;
+    await fetch(`${API_URL}/admin/users/${id}/remove-admin`, { method: 'PUT', headers: adminHeaders() });
+    loadUsers();
+}
 
-        async function deleteUser(id, name) {
-            if (!confirm(`Удалить пользователя "${name}"? Это действие нельзя отменить!`)) return;
-            await fetch(`${API_URL}/admin/users/${id}`, { method: 'DELETE', headers: adminHeaders() });
-            loadUsers();
-            loadStats();
-        }
+async function deleteUser(id, name) {
+    if (!confirm(`Удалить пользователя «${name}»? Это действие нельзя отменить!`)) return;
+    await fetch(`${API_URL}/admin/users/${id}`, { method: 'DELETE', headers: adminHeaders() });
+    loadUsers();
+    loadStats();
+}
 
-        async function deleteRequest(id) {
-            if (!confirm('Удалить заявку?')) return;
-            await fetch(`${API_URL}/admin/requests/${id}`, { method: 'DELETE', headers: adminHeaders() });
-            loadRequests();
-            loadStats();
-        }
+async function deleteRequest(id) {
+    if (!confirm('Удалить заявку?')) return;
+    await fetch(`${API_URL}/admin/requests/${id}`, { method: 'DELETE', headers: adminHeaders() });
+    loadRequests();
+    loadStats();
+}
 
-        // Запуск
-        if (checkAdmin()) {
-            loadStats();
-            loadUsers();
-            loadRequests();
-        }
-    </script>
-
+if (checkAdmin()) {
+    loadStats();
+    loadUsers();
+    loadRequests();
+}
+</script>
 </body>
 </html>

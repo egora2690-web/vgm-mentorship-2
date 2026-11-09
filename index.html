@@ -17,7 +17,7 @@
             <h1>Твой путь в медицину: с наставником увереннее</h1>
             <div class="k-actions">
                 <a class="k-btn k-btn--white" href="#how-to-find">Найти наставника →</a>
-                <a class="k-btn k-btn--ghost" href="#how-to-become">Стать наставником →</a>
+                <a id="heroBecome" class="k-btn k-btn--ghost" href="#how-to-become">Стать наставником →</a>
             </div>
         </div>
     </section>
@@ -39,7 +39,7 @@
             <div class="k-step"><span class="k-badge">Шаг 1</span><p>Нажмите на кнопку «Стать наставником». Пройдите регистрацию, выбрав свое направление деятельности и описав опыт.</p></div>
             <div class="k-step"><span class="k-badge">Шаг 2</span><p>Ваша анкета будет проверена модераторами университета на соответствие компетенциям направления.</p></div>
             <div class="k-step"><span class="k-badge">Шаг 3</span><p>После проверки вы появитесь в каталоге. Вы сможете принимать заявки и назначать встречи студентам.</p></div>
-            <div class="k-section-cta"><a class="k-btn k-btn--gold" href="profile1.html">Стать наставником →</a></div>
+            <div class="k-section-cta"><a id="becomeCta" class="k-btn k-btn--gold" href="profile1.html">Стать наставником →</a></div>
         </div>
         <div class="k-features">
             <h3>Возможности платформы для наставников</h3>
@@ -51,6 +51,18 @@
 </main>
 
 <script src="shell.js"></script>
+<script>
+(function () {
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('vgm_current_user') || 'null'); } catch (e) {}
+    if (!u || !u.id) return;
+    var hero = document.getElementById('heroBecome');
+    var cta = document.getElementById('becomeCta');
+    if (hero) { hero.textContent = 'Мой кабинет →'; hero.setAttribute('href', 'profile1.html'); }
+    if (cta) { cta.textContent = 'Перейти в кабинет →'; }
+})();
+</script>
+
 
 </body>
 </html>

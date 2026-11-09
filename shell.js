@@ -19,6 +19,10 @@
   var active = body.getAttribute('data-k-active') || '';
   var ruHref = body.getAttribute('data-k-ru') || 'index.html';
   var enHref = body.getAttribute('data-k-en') || 'indexENG.html';
+  // у страниц с параметрами (например, ?id=5) переключатель языка должен их сохранять
+  var qs = location.search || '';
+  if (ruHref.indexOf('?') < 0) ruHref += qs;
+  if (enHref.indexOf('?') < 0) enHref += qs;
 
   var ICON = {
     home: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
@@ -83,7 +87,10 @@
 
   function cur(key) { return active === key ? ' aria-current="page"' : ''; }
   function navItem(key, icon) {
-    return '<li><a href="' + L[key] + '"' + cur(key) + '>' + ICON[icon] + T.nav[key] + '</a></li>';
+    var extra = '';
+    if (key === 'chats') extra = ' <span class="k-nav-badge" id="kChatsBadge" hidden></span>';
+    if (key === 'requests') extra = ' <span class="k-nav-badge" id="kReqBadge" hidden></span>';
+    return '<li><a href="' + L[key] + '"' + cur(key) + '>' + ICON[icon] + T.nav[key] + extra + '</a></li>';
   }
 
   var markSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
@@ -115,6 +122,10 @@
       '</div>' +
       '<span class="k-spacer"></span>' +
       '<div class="k-help"><span>' + T.helpTitle + '</span><a href="mailto:post@volgmed.ru">' + T.help + '</a></div>' +
+      '<button type="button" class="k-theme-btn" id="kThemeToggle" aria-label="' + (lang === 'en' ? 'Dark theme' : 'Тёмная тема') + '" title="' + (lang === 'en' ? 'Dark theme' : 'Тёмная тема') + '">' +
+        '<svg class="k-theme-icon k-theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.3A8.5 8.5 0 019.7 3a7 7 0 1011.3 11.3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '<svg class="k-theme-icon k-theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+      '</button>' +
       '<a class="k-user" href="' + L.account + '"><i>' + ICON.user + '</i><span>' + T.accountBtn + '</span></a>' +
     '</header>';
 
@@ -154,6 +165,7 @@
   var slot = shell.querySelector('#kSlot');
   slot.parentNode.replaceChild(main, slot);
 
+
   /* --- поведение меню --- */
   var btn = document.getElementById('kToggle');
   var backdrop = document.getElementById('kBackdrop');
@@ -174,6 +186,259 @@
   function sync() { shell.classList.remove('k-open'); btn.setAttribute('aria-expanded', String(isOpen())); }
   if (mq.addEventListener) mq.addEventListener('change', sync); else mq.addListener(sync);
   sync();
+
+  /* --- данные вошедшего пользователя: имя/фото в верхней панели и счётчик новых заявок --- */
+  (function () {
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('vgm_current_user') || 'null'); } catch (e) { user = null; }
+    if (!user || !user.id) return;
+
+    var chip = shell.querySelector('.k-user');
+    if (chip) {
+      var circle = chip.querySelector('i');
+      var label = chip.querySelector('span');
+      var name = String(user.name || '').trim();
+      if (typeof user.avatar === 'string' && /^(data:image\/|https?:\/\/)/i.test(user.avatar)) {
+        var img = document.createElement('img');
+        img.alt = ''; img.src = user.avatar;
+        circle.textContent = ''; circle.appendChild(img);
+      } else if (name) {
+        circle.textContent = name.split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+      }
+      if (name && label) label.textContent = name.split(/\s+/)[0];
+      if (name) chip.title = name;
+    }
+
+    var link = shell.querySelector('.k-sidebar a[href="' + L.requests + '"]');
+    if (!link || !window.fetch) return;
+    fetch('/api/requests/' + encodeURIComponent(user.id))
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (list) {
+        if (!Array.isArray(list)) return;
+        var n = list.filter(function (r) { return r.to_user_id === user.id && r.status === 'pending'; }).length;
+        if (!n) return;
+        var b = document.createElement('span');
+        b.className = 'k-badge-count';
+        b.textContent = n > 99 ? '99+' : String(n);
+        link.appendChild(b);
+        link.setAttribute('aria-label', link.textContent.replace(b.textContent, '').trim() + ', ' + (lang === 'en' ? 'new: ' : 'новых: ') + n);
+      })
+      .catch(function () { /* сервер недоступен — счётчик просто не показываем */ });
+  })();
+
+
+  /* --- панель инструментов как в Курсориуме --- */
+  (function () {
+    var A = {
+      ru: {
+        fab: 'Инструменты', title: 'Инструменты',
+        focus: 'Фокус', images: 'Изображения', on: 'Вкл', off: 'Выкл',
+        general: 'Общие настройки', cursor: 'Размер курсора', speak: 'Читать страницу', stopSpeak: 'Стоп',
+        color: 'Цвет', auto: 'Автоконтраст', light: 'Светлый', dark: 'Темный',
+        font: 'Шрифт', fontSize: 'Размер текста', serif: 'С засечками', sans: 'Без засечек',
+        motion: 'Без анимации', reset: 'Сбросить'
+      },
+      en: {
+        fab: 'Tools', title: 'Tools',
+        focus: 'Focus', images: 'Images', on: 'On', off: 'Off',
+        general: 'General', cursor: 'Cursor size', speak: 'Read page', stopSpeak: 'Stop',
+        color: 'Color', auto: 'Autocontrast', light: 'Light', dark: 'Dark',
+        font: 'Font', fontSize: 'Text size', serif: 'Serif', sans: 'Sans-serif',
+        motion: 'No animations', reset: 'Reset'
+      }
+    }[lang];
+
+    var KEY = 'k_a11y', MAXFS = 4, MAXCUR = 2;
+    var st = { fs: 0, cursor: 0, theme: 'light', serif: false, focus: false, images: true, motion: false };
+    try {
+      var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (saved) {
+        st.fs = Math.max(0, Math.min(MAXFS, +saved.fs || 0));
+        st.cursor = Math.max(0, Math.min(MAXCUR, +saved.cursor || 0));
+        if (saved.theme === 'dark' || saved.theme === 'contrast' || saved.theme === 'light') st.theme = saved.theme;
+        else if (saved.dark) st.theme = 'dark';
+        else if (saved.contrast) st.theme = 'contrast';
+        st.serif = !!saved.serif;
+        st.focus = !!saved.focus;
+        st.images = saved.images !== false;
+        st.motion = !!saved.motion;
+      }
+    } catch (e) {}
+
+    var root = document.documentElement;
+    var speaking = false;
+    var ico = {
+      cursor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l7 16 1.5-6L20 11.5z"/></svg>',
+      speak: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h4l5 4V6L7 10H3z"/><path d="M16 9a4 4 0 010 6"/><path d="M18.5 7a7 7 0 010 10"/></svg>',
+      contrast: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3a9 9 0 000 18V3z" fill="currentColor"/></svg>',
+      sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+      moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14.3A8.5 8.5 0 019.7 3a7 7 0 1011.3 11.3z"/></svg>',
+      text: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 18V7h5.5v11M8.5 18h5M14 11h4.5v7M15.5 14.5h2"/></svg>',
+      aa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18L9 6l5 12M6.2 13h5.6M15 18l3-8 3 8M16.6 14h3"/></svg>',
+      reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><path d="M3 5v7h7"/></svg>'
+    };
+
+    var fab = document.createElement('button');
+    fab.type = 'button'; fab.className = 'k-a11y-fab';
+    fab.setAttribute('aria-label', A.fab);
+    fab.setAttribute('aria-expanded', 'false');
+    fab.setAttribute('aria-controls', 'kA11yPanel');
+    fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5M9 21l3-6.5 3 6.5"/></svg>';
+
+    var panel = document.createElement('div');
+    panel.id = 'kA11yPanel'; panel.className = 'k-a11y-panel'; panel.hidden = true;
+    panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', A.title);
+    panel.innerHTML =
+      '<div class="k-a11y-head"><h2>' + A.title + '</h2><div class="k-a11y-head-actions">' +
+        '<button type="button" class="k-a11y-iconbtn" data-a="reset" title="' + A.reset + '" aria-label="' + A.reset + '">' + ico.reset + '</button>' +
+        '<button type="button" class="k-a11y-iconbtn k-a11y-close" data-a="close" aria-label="Close">×</button>' +
+      '</div></div>' +
+      '<div class="k-a11y-list">' +
+        '<div class="k-a11y-line"><span>' + A.focus + '</span><button type="button" class="k-switch" role="switch" data-a="focus" aria-checked="false"><span class="k-switch-label" data-a="focusLab">' + A.off + '</span></button></div>' +
+        '<div class="k-a11y-line"><span>' + A.images + '</span><button type="button" class="k-switch" role="switch" data-a="images" aria-checked="true"><span class="k-switch-label" data-a="imagesLab">' + A.on + '</span></button></div>' +
+        '<div class="k-a11y-line"><span>' + A.motion + '</span><button type="button" class="k-switch" role="switch" data-a="motion" aria-checked="false"><span class="k-switch-label" data-a="motionLab">' + A.off + '</span></button></div>' +
+      '</div>' +
+      '<div class="k-a11y-section"><div class="k-a11y-label">' + A.general + '</div><div class="k-a11y-tiles">' +
+        '<button type="button" class="k-a11y-tile" data-a="cursor"><span class="k-a11y-ico">' + ico.cursor + '</span><span>' + A.cursor + '</span><span class="k-a11y-meter" data-a="cursorMeter"></span></button>' +
+        '<button type="button" class="k-a11y-tile" data-a="speak"><span class="k-a11y-ico">' + ico.speak + '</span><span data-a="speakLabel">' + A.speak + '</span></button>' +
+      '</div></div>' +
+      '<div class="k-a11y-section"><div class="k-a11y-label">' + A.color + '</div><div class="k-a11y-tiles k-a11y-tiles--3">' +
+        '<button type="button" class="k-a11y-tile" data-a="theme" data-v="contrast"><span class="k-a11y-ico">' + ico.contrast + '</span><span>' + A.auto + '</span></button>' +
+        '<button type="button" class="k-a11y-tile" data-a="theme" data-v="light"><span class="k-a11y-ico">' + ico.sun + '</span><span>' + A.light + '</span></button>' +
+        '<button type="button" class="k-a11y-tile" data-a="theme" data-v="dark"><span class="k-a11y-ico">' + ico.moon + '</span><span>' + A.dark + '</span></button>' +
+      '</div></div>' +
+      '<div class="k-a11y-section"><div class="k-a11y-label">' + A.font + '</div><div class="k-a11y-tiles">' +
+        '<button type="button" class="k-a11y-tile" data-a="fontsize"><span class="k-a11y-ico">' + ico.text + '</span><span>' + A.fontSize + '</span><span class="k-a11y-meter" data-a="fsMeter"></span></button>' +
+        '<button type="button" class="k-a11y-tile" data-a="serif"><span class="k-a11y-ico">' + ico.aa + '</span><span data-a="serifLabel">' + A.sans + '</span></button>' +
+      '</div></div>';
+
+    body.appendChild(fab);
+    body.appendChild(panel);
+
+    function q(name) { return panel.querySelector('[data-a="' + name + '"]'); }
+    function meter(n, max) {
+      var s = '';
+      for (var i = 0; i <= max; i++) s += '<i class="' + (i <= n ? 'on' : '') + '"></i>';
+      return s;
+    }
+    function setSwitch(name, on) {
+      var el = q(name); if (!el) return;
+      el.setAttribute('aria-checked', String(!!on));
+      var lab = q(name + 'Lab'); if (lab) lab.textContent = on ? A.on : A.off;
+    }
+    function apply() {
+      root.style.fontSize = st.fs ? (100 + st.fs * 10) + '%' : '';
+      root.classList.toggle('k-contrast', st.theme === 'contrast');
+      root.classList.toggle('k-dark', st.theme === 'dark');
+      root.classList.toggle('k-nomotion', st.motion);
+      root.classList.toggle('k-serif', st.serif);
+      root.classList.toggle('k-focus', st.focus);
+      root.classList.toggle('k-noimages', !st.images);
+      root.classList.remove('k-cursor-1', 'k-cursor-2');
+      if (st.cursor === 1) root.classList.add('k-cursor-1');
+      if (st.cursor === 2) root.classList.add('k-cursor-2');
+      var cm = q('cursorMeter'); if (cm) cm.innerHTML = meter(st.cursor, MAXCUR);
+      var fm = q('fsMeter'); if (fm) fm.innerHTML = meter(st.fs, Math.min(3, MAXFS));
+      var sl = q('serifLabel'); if (sl) sl.textContent = st.serif ? A.serif : A.sans;
+      panel.querySelectorAll('[data-a="theme"]').forEach(function (btn) {
+        btn.classList.toggle('is-active', btn.getAttribute('data-v') === st.theme);
+      });
+      setSwitch('focus', st.focus);
+      setSwitch('images', st.images);
+      setSwitch('motion', st.motion);
+      var tb = document.getElementById('kThemeToggle');
+      if (tb) {
+        tb.classList.toggle('is-dark', st.theme === 'dark');
+        tb.setAttribute('aria-pressed', st.theme === 'dark' ? 'true' : 'false');
+      }
+      try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+    }
+    function setOpen(open) {
+      panel.hidden = !open;
+      fab.setAttribute('aria-expanded', String(open));
+    }
+    function stopSpeak() {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      speaking = false;
+      var lab = q('speakLabel'); if (lab) lab.textContent = A.speak;
+    }
+    function toggleSpeak() {
+      if (!window.speechSynthesis) return;
+      if (speaking) { stopSpeak(); return; }
+      var text = ((document.querySelector('main') || document.body).innerText || '').replace(/\s+/g, ' ').trim().slice(0, 8000);
+      if (!text) return;
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = lang === 'en' ? 'en-US' : 'ru-RU';
+      u.onend = function () { speaking = false; var lab = q('speakLabel'); if (lab) lab.textContent = A.speak; };
+      speaking = true;
+      var lab = q('speakLabel'); if (lab) lab.textContent = A.stopSpeak;
+      window.speechSynthesis.speak(u);
+    }
+
+    fab.addEventListener('click', function () { setOpen(panel.hidden); });
+    panel.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-a]');
+      if (!t) return;
+      var a = t.getAttribute('data-a');
+      if (a === 'close') setOpen(false);
+      else if (a === 'cursor') st.cursor = st.cursor >= MAXCUR ? 0 : st.cursor + 1;
+      else if (a === 'speak') toggleSpeak();
+      else if (a === 'theme') st.theme = t.getAttribute('data-v') || 'light';
+      else if (a === 'fontsize') st.fs = st.fs >= MAXFS ? 0 : st.fs + 1;
+      else if (a === 'serif') st.serif = !st.serif;
+      else if (a === 'focus') st.focus = !st.focus;
+      else if (a === 'images') st.images = !st.images;
+      else if (a === 'motion') st.motion = !st.motion;
+      else if (a === 'reset') {
+        st = { fs: 0, cursor: 0, theme: 'light', serif: false, focus: false, images: true, motion: false };
+        stopSpeak();
+      } else return;
+      apply();
+    });
+    document.addEventListener('click', function (e) {
+      if (!panel.hidden && !panel.contains(e.target) && !fab.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) { setOpen(false); fab.focus(); }
+    });
+
+    // кнопка луны в шапке
+    var themeBtn = document.getElementById('kThemeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        st.theme = (st.theme === 'dark') ? 'light' : 'dark';
+        apply();
+      });
+    }
+    apply();
+  })();
+
+  var stBadge = document.createElement('style');
+  stBadge.textContent = '.k-nav-badge{display:inline-flex;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:999px;background:#e11d48;color:#fff;font-size:11px;font-weight:800;align-items:center;justify-content:center;vertical-align:middle}.k-nav-badge[hidden]{display:none!important}';
+  document.head.appendChild(stBadge);
+
+  (function () {
+    try {
+      var u = JSON.parse(localStorage.getItem('vgm_current_user') || 'null');
+      if (!u || !u.id) return;
+      function setBadge(id, n) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (n > 0) { el.hidden = false; el.textContent = n > 99 ? '99+' : String(n); }
+        else { el.hidden = true; el.textContent = ''; }
+      }
+      function tick() {
+        fetch('/api/chats-unread-total/' + u.id, { headers: { 'x-user-id': String(u.id) } })
+          .then(function (r) { return r.json(); }).then(function (d) { setBadge('kChatsBadge', (d && d.total) || 0); }).catch(function () {});
+        fetch('/api/requests-pending-count/' + u.id, { headers: { 'x-user-id': String(u.id) } })
+          .then(function (r) { return r.json(); }).then(function (d) {
+            var c = (d && d.count) || 0; setBadge('kReqBadge', c);
+          }).catch(function () {});
+        fetch('/api/presence', { method: 'POST', headers: { 'x-user-id': String(u.id) } }).catch(function () {});
+      }
+      tick(); setInterval(tick, 15000);
+    } catch (e) {}
+  })();
 
   body.classList.add('k-ready');
 })();

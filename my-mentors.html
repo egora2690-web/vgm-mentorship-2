@@ -76,7 +76,16 @@ function collect(list, side) {
     });
     return [...map.values()]
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .map(r => ({ id: r[side + '_user_id'], name: r[side + '_name'], avatar: r[side + '_avatar'], chat: r.chat_link, date: r.created_at }));
+        .map(r => ({
+            id: r[side + '_user_id'],
+            name: r[side + '_name'],
+            avatar: r[side + '_avatar'],
+            chat: r.chat_link,
+            date: r.created_at,
+            requestId: r.id,
+            meeting_at: r.meeting_at,
+            meeting_note: r.meeting_note
+        }));
 }
 
 function personCard(p) {
@@ -87,6 +96,15 @@ function personCard(p) {
     const chatBtn = p.chat
         ? `<a class="k-btn k-btn--green k-btn--sm" href="${esc(safeHref(p.chat))}">💬 ${esc(I.chat)}</a>`
         : '';
+    const meetingLabel = p.meeting_at
+        ? new Date(p.meeting_at).toLocaleString(I.locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+        : 'не назначена';
+    const meetingBlock = `
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--k-line);font-size:.9rem;">
+            <div style="color:var(--k-muted);margin-bottom:6px;">📅 Встреча: <strong style="color:var(--k-text)">${esc(meetingLabel)}</strong></div>
+            ${p.meeting_note ? `<div style="margin-bottom:8px;color:var(--k-muted)">${esc(p.meeting_note)}</div>` : ''}
+            <button type="button" class="k-btn k-btn--soft k-btn--sm" onclick="setMeeting(${Number(p.requestId)})">Назначить / изменить</button>
+        </div>`;
     return `
         <article class="k-mentor">
             <div class="k-mentor-top">
@@ -100,7 +118,23 @@ function personCard(p) {
                 ${chatBtn}
                 <a class="k-btn k-btn--soft k-btn--sm" href="${PROFILE_URL}?id=${encodeURIComponent(p.id)}">${esc(I.profile)}</a>
             </div>
+            ${meetingBlock}
         </article>`;
+}
+
+async function setMeeting(requestId) {
+    const when = prompt('Дата и время встречи (ГГГГ-ММ-ДДTЧЧ:ММ), например 2026-11-10T15:00');
+    if (when === null) return;
+    const note = prompt('Комментарий к встрече (необязательно)') || '';
+    try {
+        const r = await fetch(`${API_URL}/requests/${requestId}/meeting`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-id': String(currentUser.id) },
+            body: JSON.stringify({ meeting_at: when || null, meeting_note: note })
+        });
+        if (r.ok) load();
+        else alert('Не удалось сохранить');
+    } catch (e) { alert('Ошибка сети'); }
 }
 
 function fill(gridId, emptyId, countId, people) {

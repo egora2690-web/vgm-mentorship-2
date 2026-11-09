@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль наставника | ВолгГМУ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="kursorium.css">
+    <script>document.documentElement.classList.add('k-js');setTimeout(function(){document.documentElement.classList.remove('k-js')},1500);</script>
     <style>
-        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
         .vgm-green { color: #007a5e; }
         .vgm-bg-green { background-color: #007a5e; }
         .avatar-placeholder {
@@ -16,29 +16,17 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-900">
+<body data-k-lang="ru" data-k-active="catalog" data-k-ru="profile-view.html" data-k-en="profile-viewENG.html">
 
-    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="catalog.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
-                ← Каталог
-            </a>
-            <h1 class="font-extrabold text-lg vgm-green">Профиль наставника</h1>
-            <div class="flex gap-3">
-                <a href="my-requests.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">📋 Заявки</a>
-                <a href="profile1.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">👤 Кабинет</a>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-10">
+    <main class="k-content">
         
         <div id="loadingState" class="text-center py-20">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
             <p class="text-slate-500 mt-4">Загрузка профиля...</p>
         </div>
 
-        <div id="profileCard" class="hidden bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+        <div id="profileCard" class="hidden w-full max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
             
             <div class="flex flex-col md:flex-row gap-6 items-center md:items-start mb-8">
                 <div id="avatar" class="w-32 h-32 rounded-3xl overflow-hidden avatar-placeholder flex-shrink-0"></div>
@@ -150,6 +138,8 @@
             </div>
         </div>
     </div>
+
+    <script src="shell.js"></script>
 
     <script>
         const API_URL = '/api';

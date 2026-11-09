@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentor Profile | VolgSMU</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="kursorium.css">
+    <script>document.documentElement.classList.add('k-js');setTimeout(function(){document.documentElement.classList.remove('k-js')},1500);</script>
     <style>
-        body { font-family: 'Manrope', sans-serif; background-color: #f8fafc; }
         .vgm-green { color: #007a5e; }
         .vgm-bg-green { background-color: #007a5e; }
         .avatar-placeholder {
@@ -16,29 +16,17 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-900">
+<body data-k-lang="en" data-k-active="catalog" data-k-ru="profile-view.html" data-k-en="profile-viewENG.html">
 
-    <header class="bg-white border-b border-slate-100 sticky top-0 z-20">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="catalogENG.html" class="text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
-                ← Catalog
-            </a>
-            <h1 class="font-extrabold text-lg vgm-green">Mentor Profile</h1>
-            <div class="flex gap-3">
-                <a href="my-requestsENG.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition hidden sm:block">📋 Requests</a>
-                <a href="profile1ENG.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition">👤 Account</a>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-10">
+    <main class="k-content">
         
         <div id="loadingState" class="text-center py-20">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
             <p class="text-slate-500 mt-4">Loading profile...</p>
         </div>
 
-        <div id="profileCard" class="hidden bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+        <div id="profileCard" class="hidden w-full max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
             
             <div class="flex flex-col md:flex-row gap-6 items-center md:items-start mb-8">
                 <div id="avatar" class="w-32 h-32 rounded-3xl overflow-hidden avatar-placeholder flex-shrink-0"></div>
@@ -50,8 +38,13 @@
             </div>
 
             <div id="directionDetails" class="bg-slate-50 rounded-2xl p-6 mb-8">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Direction</h3>
+                <h3 id="directionTitle" class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Direction</h3>
                 <div id="directionInfo"></div>
+            </div>
+
+            <div id="aboutBlock" class="hidden bg-white rounded-2xl p-6 mb-8 border border-slate-100">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">About Me</h3>
+                <p id="aboutText" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
             </div>
 
             <div class="bg-blue-50 rounded-2xl p-6 mb-8 border border-blue-100">
@@ -96,8 +89,14 @@
         </div>
     </div>
 
+    <script src="shell.js"></script>
+
     <script>
         const API_URL = '/api';
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
         let mentorData = null;
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -139,26 +138,55 @@
             document.getElementById('name').innerText = mentorData.name;
             document.getElementById('role').innerText = mentorData.role;
 
+            const d = mentorData.direction;
+
             const tagsEl = document.getElementById('directionTags');
-            if (mentorData.direction) {
-                tagsEl.innerHTML = `
-                    <span class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.level}</span>
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">${mentorData.direction.form}</span>
-                `;
+            if (d) {
+                tagsEl.innerHTML = `<span class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">${esc(d.level)}</span>`
+                    + (d.form ? `<span class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">${esc(d.form)}</span>` : '');
             }
 
+            const row = (label, value, extra = '') => value
+                ? `<div class="flex justify-between gap-4 py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">${label}</span><span class="font-bold text-right ${extra}">${esc(value)}</span></div>`
+                : '';
+
+            const titleEl = document.getElementById('directionTitle');
             const infoEl = document.getElementById('directionInfo');
-            if (mentorData.direction) {
-                const d = mentorData.direction;
+            if (d) {
                 let html = '';
-                if (d.name) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Direction</span><span class="font-bold">${d.name}</span></div>`;
-                if (d.code) html += `<div class="flex justify-between py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Code</span><span class="font-bold vgm-green font-mono text-sm">${d.code}</span></div>`;
-                if (d.description) html += `<p class="text-sm text-slate-600 mt-3 leading-relaxed">${d.description}</p>`;
-                if (d.duration) html += `<div class="flex justify-between py-2 border-b border-slate-200 mt-3"><span class="text-slate-500 font-semibold">Duration</span><span class="font-bold">${d.duration}</span></div>`;
+                if (d.statusType === 'doctor') {
+                    titleEl.innerText = 'Work';
+                    html += row('Status', d.status);
+                    html += row('Specialty', d.name);
+                    html += row('Place of work', d.workplace || d.form);
+                    html += row('Experience', d.experience ? d.experience + ' years' : '');
+                    html += row('Category', d.category);
+                } else if (d.statusType === 'science') {
+                    titleEl.innerText = 'Research Activity';
+                    html += row('Status', d.status);
+                    html += row('Research area', d.research || d.name);
+                    html += row('Academic degree', d.degree);
+                    if (/^https?:\/\//i.test(d.link || '')) {
+                        html += `<div class="flex justify-between gap-4 py-2 border-b border-slate-200"><span class="text-slate-500 font-semibold">Profile</span><a href="${esc(d.link)}" target="_blank" rel="noopener noreferrer" class="font-bold vgm-green underline">eLibrary / ORCID</a></div>`;
+                    }
+                } else {
+                    titleEl.innerText = 'Direction';
+                    html += row('Status', d.status);
+                    html += row('Direction', d.name);
+                    html += row('Code', d.code, 'vgm-green font-mono text-sm');
+                    html += row('Year of study', d.course);
+                    if (d.description) html += `<p class="text-sm text-slate-600 mt-3 leading-relaxed">${esc(d.description)}</p>`;
+                    if (d.duration) html += `<div class="flex justify-between py-2 border-b border-slate-200 mt-3"><span class="text-slate-500 font-semibold">Duration</span><span class="font-bold">${esc(d.duration)}</span></div>`;
+                }
                 infoEl.innerHTML = html;
             } else {
                 infoEl.innerHTML = '<p class="text-slate-400 italic">Direction not specified</p>';
             }
+
+            // About me
+            const aboutBlock = document.getElementById('aboutBlock');
+            document.getElementById('aboutText').innerText = (d && d.about) || '';
+            aboutBlock.classList.toggle('hidden', !(d && d.about));
         }
 
         function showError() {

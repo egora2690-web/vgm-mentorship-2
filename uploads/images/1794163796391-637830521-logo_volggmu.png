@@ -1,0 +1,957 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Account | VolgGMU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #ffffff;
+        }
+        .vgm-green { color: #007a5e; }
+        .vgm-bg-green { background-color: #007a5e; }
+        .card-shadow { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); }
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
+        .direction-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5rem;
+            padding-right: 3rem;
+        }
+        .direction-select optgroup {
+            font-weight: 800;
+            color: #007a5e;
+        }
+        .direction-select option {
+            font-weight: 400;
+            color: #1e293b;
+            padding: 8px;
+        }
+        .spec-details {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+        .spec-details.show {
+            display: block;
+        }
+        .spec-details .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .spec-details .detail-row:last-child {
+            border-bottom: none;
+        }
+        .spec-details .detail-label {
+            color: #64748b;
+            font-weight: 600;
+        }
+        .spec-details .detail-value {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .spec-details .detail-value.code {
+            color: #007a5e;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .spec-details .detail-description {
+            font-size: 13px;
+            color: #475569;
+            padding: 6px 0;
+            line-height: 1.5;
+        }
+        .tab-btn {
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background-color: #007a5e;
+            color: white;
+        }
+        .tab-btn:not(.active) {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+        .tab-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+        .auth-tab {
+            display: none;
+        }
+        .auth-tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <header class="p-4 flex items-center bg-white border-b border-slate-50 sticky top-0 z-10">
+        <button onclick="window.location.href='indexENG.html'" class="p-2 hover:bg-slate-50 rounded-full transition">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h1 class="ml-2 font-bold text-lg">Mentor Profile</h1>
+    </header>
+
+    <!-- AUTH / REGISTRATION BLOCK -->
+    <div id="authBlock" class="max-w-md mx-auto p-6 mt-8">
+        <div class="bg-white rounded-[40px] p-8 card-shadow border border-slate-50">
+            
+            <!-- Tabs -->
+            <div class="flex rounded-xl overflow-hidden mb-6 border border-slate-100">
+                <button onclick="switchAuthTab('login')" id="loginTabBtn" class="tab-btn active flex-1 py-3 text-sm font-bold">Login</button>
+                <button onclick="switchAuthTab('register')" id="registerTabBtn" class="tab-btn flex-1 py-3 text-sm font-bold">Register</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="loginTab" class="auth-tab active">
+                <h2 class="text-xl font-extrabold text-slate-800 mb-2">Login to Account</h2>
+                <p class="text-slate-400 text-sm mb-6">Enter your username and password</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter username" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+                
+                <button onclick="loginUser()" class="w-full mt-6 vgm-bg-green text-white font-bold py-4 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Sign In
+                </button>
+            </div>
+
+            <!-- REGISTRATION -->
+            <div id="registerTab" class="auth-tab">
+                <h2 class="text-xl font-extrabold text-slate-800 mb-2">Create Account</h2>
+                <p class="text-slate-400 text-sm mb-6">Fill in all fields to register</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Username (email or username)</label>
+                        <input type="text" id="reg-login" placeholder="ivanov@mail.ru" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
+                        <input type="text" id="reg-name" placeholder="Ivan Ivanov" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Role</label>
+                        <select id="reg-role" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                            <option value="Mentor VolgGMU">Mentor</option>
+                            <option value="Mentee">Mentee</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Direction</label>
+                        <select id="reg-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('reg')">
+                            <option value="">Select direction</option>
+                            
+                            <optgroup label="Bachelor's Degree">
+                                <option value='{"level":"Bachelor\'s Degree","name":"Biology","form":"Full-time","duration":"4 years"}'>Biology</option>
+                                <option value='{"level":"Bachelor\'s Degree","name":"Biotechnical Systems and Technologies","form":"Full-time","duration":"4 years"}'>Biotechnical Systems and Technologies</option>
+                            </optgroup>
+                            
+                            <optgroup label="Specialist Degree">
+                                <option value='{"level":"Specialist Degree","name":"General Medicine","form":"Full-time","duration":"6 years","code":"31.05.01","description":"Trains physicians to provide primary medical care and manage patients with chronic diseases."}'>General Medicine</option>
+                                <option value='{"level":"Specialist Degree","name":"Pediatrics","form":"Full-time","duration":"6 years","code":"31.05.02","description":"Trains pediatricians for prevention, diagnosis and treatment of diseases in children and adolescents."}'>Pediatrics</option>
+                                <option value='{"level":"Specialist Degree","name":"Dentistry","form":"Full-time","duration":"5 years","code":"31.05.03","description":"Trains dentists to provide quality medical care in the field of oral health."}'>Dentistry</option>
+                                <option value='{"level":"Specialist Degree","name":"Medical Biochemistry","form":"Full-time","duration":"6 years","code":"30.05.01","description":"Trains specialists for biochemical research and development of new medical technologies."}'>Medical Biochemistry</option>
+                                <option value='{"level":"Specialist Degree","name":"Public Health","form":"Full-time","duration":"6 years","code":"32.05.01","description":"Trains specialists in public health, epidemiology, sanitation and hygiene."}'>Public Health</option>
+                                <option value='{"level":"Specialist Degree","name":"Pharmacy","form":"Full-time","duration":"5 years","code":"33.05.01","description":"Trains pharmacists for creation, production and dispensing of medicines, patient counseling."}'>Pharmacy</option>
+                                <option value='{"level":"Specialist Degree","name":"Clinical Psychology","form":"Full-time","duration":"5 years 6 months","code":"37.05.01","description":"Trains clinical psychologists for diagnostics and psychotherapeutic treatment."}'>Clinical Psychology</option>
+                            </optgroup>
+                            
+                            <optgroup label="Master's Degree">
+                                <option value='{"level":"Master\'s Degree","name":"Biotechnical Systems and Technologies","form":"Full-time","duration":"2 years"}'>Biotechnical Systems and Technologies</option>
+                                <option value='{"level":"Master\'s Degree","name":"Management","form":"Part-time","duration":"2 years 6 months"}'>Management</option>
+                                <option value='{"level":"Master\'s Degree","name":"Public Health","form":"Part-time","duration":"2 years 6 months"}'>Public Health</option>
+                                <option value='{"level":"Master\'s Degree","name":"Biology","form":"Full-time","duration":"2 years"}'>Biology</option>
+                            </optgroup>
+
+                            <optgroup label="College (Vocational Education)">
+                                <option value='{"level":"College","name":"Medical Optics (Medical Optician-Optometrist)","form":"Full-time","duration":"1 year 10 months"}'>Medical Optics</option>
+                                <option value='{"level":"College","name":"Dental Medicine (Dental Assistant)","form":"Full-time","duration":"2 years 10 months"}'>Dental Medicine</option>
+                                <option value='{"level":"College","name":"Medical Administrator","form":"Part-time","duration":"1 year 3 months"}'>Medical Administrator</option>
+                                <option value='{"level":"College","name":"Nursing","form":"Part-time","duration":"2 years 10 months"}'>Nursing (part-time)</option>
+                                <option value='{"level":"College","name":"Nursing","form":"Full-time","duration":"1 year 10 months"}'>Nursing (full-time)</option>
+                                <option value='{"level":"College","name":"Pharmacy (Pharmacist)","form":"Full-time","duration":"1 year 10 months"}'>Pharmacy (Pharmacist)</option>
+                                <option value='{"level":"College","name":"Preventive Dentistry (Dental Hygienist)","form":"Full-time","duration":"1 year 10 months"}'>Preventive Dentistry</option>
+                                <option value='{"level":"College","name":"Orthopedic Dentistry (Dental Technician)","form":"Full-time","duration":"1 year 10 months"}'>Orthopedic Dentistry</option>
+                            </optgroup>
+                            
+                            <optgroup label="Residency">
+                                <option value='{"level":"Residency","name":"General Hygiene","form":"Full-time","duration":"2 years"}'>General Hygiene</option>
+                                <option value='{"level":"Residency","name":"X-ray Endovascular Diagnostics and Treatment","form":"Full-time","duration":"2 years"}'>X-ray Endovascular Diagnostics and Treatment</option>
+                                <option value='{"level":"Residency","name":"Nephrology","form":"Full-time","duration":"2 years"}'>Nephrology</option>
+                                <option value='{"level":"Residency","name":"Dietetics","form":"Full-time","duration":"2 years"}'>Dietetics</option>
+                                <option value='{"level":"Residency","name":"Occupational Hygiene","form":"Full-time","duration":"2 years"}'>Occupational Hygiene</option>
+                                <option value='{"level":"Residency","name":"Psychotherapy","form":"Full-time","duration":"2 years"}'>Psychotherapy</option>
+                                <option value='{"level":"Residency","name":"Physiotherapy","form":"Full-time","duration":"2 years"}'>Physiotherapy</option>
+                                <option value='{"level":"Residency","name":"Coloproctology","form":"Full-time","duration":"2 years"}'>Coloproctology</option>
+                                <option value='{"level":"Residency","name":"Physical and Rehabilitation Medicine","form":"Full-time","duration":"3 years"}'>Physical and Rehabilitation Medicine</option>
+                                <option value='{"level":"Residency","name":"Manual Therapy","form":"Full-time","duration":"2 years"}'>Manual Therapy</option>
+                                <option value='{"level":"Residency","name":"Geriatrics","form":"Full-time","duration":"2 years"}'>Geriatrics</option>
+                                <option value='{"level":"Residency","name":"Transfusiology","form":"Full-time","duration":"2 years"}'>Transfusiology</option>
+                                <option value='{"level":"Residency","name":"Reflexotherapy","form":"Full-time","duration":"2 years"}'>Reflexotherapy</option>
+                                <option value='{"level":"Residency","name":"Thoracic Surgery","form":"Full-time","duration":"2 years"}'>Thoracic Surgery</option>
+                                <option value='{"level":"Residency","name":"Pathological Anatomy","form":"Full-time","duration":"2 years"}'>Pathological Anatomy</option>
+                                <option value='{"level":"Residency","name":"Neurosurgery","form":"Full-time","duration":"3 years"}'>Neurosurgery</option>
+                                <option value='{"level":"Residency","name":"Gastroenterology","form":"Full-time","duration":"2 years"}'>Gastroenterology</option>
+                                <option value='{"level":"Residency","name":"Epidemiology","form":"Full-time","duration":"2 years"}'>Epidemiology</option>
+                                <option value='{"level":"Residency","name":"Maxillofacial Surgery","form":"Full-time","duration":"2 years"}'>Maxillofacial Surgery</option>
+                                <option value='{"level":"Residency","name":"Pharmacy Management and Economics","form":"Full-time","duration":"2 years"}'>Pharmacy Management and Economics</option>
+                                <option value='{"level":"Residency","name":"Surgical Dentistry","form":"Full-time","duration":"2 years"}'>Surgical Dentistry</option>
+                                <option value='{"level":"Residency","name":"Orthopedic Dentistry","form":"Full-time","duration":"2 years"}'>Orthopedic Dentistry</option>
+                                <option value='{"level":"Residency","name":"General Dentistry","form":"Full-time","duration":"2 years"}'>General Dentistry</option>
+                                <option value='{"level":"Residency","name":"Rheumatology","form":"Full-time","duration":"2 years"}'>Rheumatology</option>
+                                <option value='{"level":"Residency","name":"Orthodontics","form":"Full-time","duration":"2 years"}'>Orthodontics</option>
+                                <option value='{"level":"Residency","name":"Dermatovenereology","form":"Full-time","duration":"2 years"}'>Dermatovenereology</option>
+                                <option value='{"level":"Residency","name":"Endoscopy","form":"Full-time","duration":"2 years"}'>Endoscopy</option>
+                                <option value='{"level":"Residency","name":"Endocrinology","form":"Full-time","duration":"2 years"}'>Endocrinology</option>
+                                <option value='{"level":"Residency","name":"Surgery","form":"Full-time","duration":"2 years"}'>Surgery</option>
+                                <option value='{"level":"Residency","name":"Functional Diagnostics","form":"Full-time","duration":"2 years"}'>Functional Diagnostics</option>
+                                <option value='{"level":"Residency","name":"Phthisiology","form":"Full-time","duration":"2 years"}'>Phthisiology</option>
+                                <option value='{"level":"Residency","name":"Urology","form":"Full-time","duration":"2 years"}'>Urology</option>
+                                <option value='{"level":"Residency","name":"Ultrasound Diagnostics","form":"Full-time","duration":"2 years"}'>Ultrasound Diagnostics</option>
+                                <option value='{"level":"Residency","name":"Traumatology and Orthopedics","form":"Full-time","duration":"2 years"}'>Traumatology and Orthopedics</option>
+                                <option value='{"level":"Residency","name":"Therapy","form":"Full-time","duration":"2 years"}'>Therapy</option>
+                                <option value='{"level":"Residency","name":"Forensic Medical Examination","form":"Full-time","duration":"2 years"}'>Forensic Medical Examination</option>
+                                <option value='{"level":"Residency","name":"Therapeutic Dentistry","form":"Full-time","duration":"2 years"}'>Therapeutic Dentistry</option>
+                                <option value='{"level":"Residency","name":"Pediatric Dentistry","form":"Full-time","duration":"2 years"}'>Pediatric Dentistry</option>
+                                <option value='{"level":"Residency","name":"Emergency Medical Care","form":"Full-time","duration":"2 years"}'>Emergency Medical Care</option>
+                                <option value='{"level":"Residency","name":"Cardiovascular Surgery","form":"Full-time","duration":"3 years"}'>Cardiovascular Surgery</option>
+                                <option value='{"level":"Residency","name":"Radiology","form":"Full-time","duration":"2 years"}'>Radiology</option>
+                                <option value='{"level":"Residency","name":"Radiation Therapy","form":"Full-time","duration":"2 years"}'>Radiation Therapy</option>
+                                <option value='{"level":"Residency","name":"Pulmonology","form":"Full-time","duration":"2 years"}'>Pulmonology</option>
+                                <option value='{"level":"Residency","name":"Psychiatry-Narcology","form":"Full-time","duration":"2 years"}'>Psychiatry-Narcology</option>
+                                <option value='{"level":"Residency","name":"Psychiatry","form":"Full-time","duration":"2 years"}'>Psychiatry</option>
+                                <option value='{"level":"Residency","name":"Ophthalmology","form":"Full-time","duration":"2 years"}'>Ophthalmology</option>
+                                <option value='{"level":"Residency","name":"Otorhinolaryngology","form":"Full-time","duration":"2 years"}'>Otorhinolaryngology</option>
+                                <option value='{"level":"Residency","name":"Healthcare Organization and Public Health","form":"Full-time","duration":"2 years"}'>Healthcare Organization and Public Health</option>
+                                <option value='{"level":"Residency","name":"Oncology","form":"Full-time","duration":"2 years"}'>Oncology</option>
+                                <option value='{"level":"Residency","name":"General Medical Practice","form":"Full-time","duration":"2 years"}'>General Medical Practice</option>
+                                <option value='{"level":"Residency","name":"Neonatology","form":"Full-time","duration":"2 years"}'>Neonatology</option>
+                                <option value='{"level":"Residency","name":"Neurology","form":"Full-time","duration":"2 years"}'>Neurology</option>
+                                <option value='{"level":"Residency","name":"Physical Therapy and Sports Medicine","form":"Full-time","duration":"2 years"}'>Physical Therapy and Sports Medicine</option>
+                                <option value='{"level":"Residency","name":"Clinical Pharmacology","form":"Full-time","duration":"2 years"}'>Clinical Pharmacology</option>
+                                <option value='{"level":"Residency","name":"Clinical Laboratory Diagnostics","form":"Full-time","duration":"2 years"}'>Clinical Laboratory Diagnostics</option>
+                                <option value='{"level":"Residency","name":"Cardiology","form":"Full-time","duration":"2 years"}'>Cardiology</option>
+                                <option value='{"level":"Residency","name":"Infectious Diseases","form":"Full-time","duration":"2 years"}'>Infectious Diseases</option>
+                                <option value='{"level":"Residency","name":"Pediatric Endocrinology","form":"Full-time","duration":"2 years"}'>Pediatric Endocrinology</option>
+                                <option value='{"level":"Residency","name":"Pediatric Surgery","form":"Full-time","duration":"2 years"}'>Pediatric Surgery</option>
+                                <option value='{"level":"Residency","name":"Pediatric Oncology","form":"Full-time","duration":"2 years"}'>Pediatric Oncology</option>
+                                <option value='{"level":"Residency","name":"Pediatric Cardiology","form":"Full-time","duration":"2 years"}'>Pediatric Cardiology</option>
+                                <option value='{"level":"Residency","name":"Child and Adolescent Hygiene","form":"Full-time","duration":"2 years"}'>Child and Adolescent Hygiene</option>
+                                <option value='{"level":"Residency","name":"Hematology","form":"Full-time","duration":"2 years"}'>Hematology</option>
+                                <option value='{"level":"Residency","name":"Anesthesiology and Resuscitation","form":"Full-time","duration":"2 years"}'>Anesthesiology and Resuscitation</option>
+                                <option value='{"level":"Residency","name":"Allergology and Immunology","form":"Full-time","duration":"2 years"}'>Allergology and Immunology</option>
+                                <option value='{"level":"Residency","name":"Pediatrics","form":"Full-time","duration":"2 years"}'>Pediatrics</option>
+                                <option value='{"level":"Residency","name":"Obstetrics and Gynecology","form":"Full-time","duration":"2 years"}'>Obstetrics and Gynecology</option>
+                            </optgroup>
+                            
+                            <optgroup label="Postgraduate Studies">
+                                <option value='{"level":"Postgraduate","name":"Sociology of Culture","form":"Full-time","duration":"3 years"}'>Sociology of Culture</option>
+                                <option value='{"level":"Postgraduate","name":"Pharmaceutical Organization","form":"Full-time","duration":"3 years"}'>Pharmaceutical Organization</option>
+                                <option value='{"level":"Postgraduate","name":"Pharmaceutical Chemistry, Pharmacognosy","form":"Full-time","duration":"3 years"}'>Pharmaceutical Chemistry, Pharmacognosy</option>
+                                <option value='{"level":"Postgraduate","name":"Industrial Pharmacy and Drug Technology","form":"Full-time","duration":"3 years"}'>Industrial Pharmacy and Drug Technology</option>
+                                <option value='{"level":"Postgraduate","name":"Pharmacology, Clinical Pharmacology","form":"Full-time","duration":"4 years"}'>Pharmacology, Clinical Pharmacology</option>
+                                <option value='{"level":"Postgraduate","name":"Pathological Physiology","form":"Full-time","duration":"4 years"}'>Pathological Physiology</option>
+                                <option value='{"level":"Postgraduate","name":"Public Health, Organization and Sociology of Healthcare, Medical and Social Expertise","form":"Full-time","duration":"3 years"}'>Public Health, Organization and Sociology of Healthcare</option>
+                                <option value='{"level":"Postgraduate","name":"Hygiene","form":"Full-time","duration":"3 years"}'>Hygiene</option>
+                                <option value='{"level":"Postgraduate","name":"Neurology","form":"Full-time","duration":"3 years"}'>Neurology</option>
+                                <option value='{"level":"Postgraduate","name":"Pediatrics","form":"Full-time","duration":"3 years"}'>Pediatrics</option>
+                                <option value='{"level":"Postgraduate","name":"Internal Medicine","form":"Full-time","duration":"3 years"}'>Internal Medicine</option>
+                                <option value='{"level":"Postgraduate","name":"Surgery","form":"Full-time","duration":"3 years"}'>Surgery</option>
+                                <option value='{"level":"Postgraduate","name":"Dentistry","form":"Full-time","duration":"3 years"}'>Dentistry</option>
+                                <option value='{"level":"Postgraduate","name":"Ophthalmology","form":"Full-time","duration":"3 years"}'>Ophthalmology</option>
+                                <option value='{"level":"Postgraduate","name":"Obstetrics and Gynecology","form":"Full-time","duration":"3 years"}'>Obstetrics and Gynecology</option>
+                                <option value='{"level":"Postgraduate","name":"Otorhinolaryngology","form":"Full-time","duration":"3 years"}'>Otorhinolaryngology</option>
+                                <option value='{"level":"Postgraduate","name":"Cell Biology","form":"Full-time","duration":"4 years"}'>Cell Biology</option>
+                                <option value='{"level":"Postgraduate","name":"Microbiology","form":"Full-time","duration":"4 years"}'>Microbiology</option>
+                                <option value='{"level":"Postgraduate","name":"Human and Animal Physiology","form":"Full-time","duration":"4 years"}'>Human and Animal Physiology</option>
+                                <option value='{"level":"Postgraduate","name":"Chemistry of Organoelement Compounds","form":"Full-time","duration":"4 years"}'>Chemistry of Organoelement Compounds</option>
+                                <option value='{"level":"Postgraduate","name":"Organic Chemistry","form":"Full-time","duration":"4 years"}'>Organic Chemistry</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div id="reg-direction-details" class="spec-details"></div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+                        <input type="password" id="reg-password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirm Password</label>
+                        <input type="password" id="reg-password-confirm" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Profile Photo (optional)</label>
+                        <div class="flex items-center gap-3">
+                            <label class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl text-center text-slate-500 font-semibold text-sm cursor-pointer hover:bg-slate-100 transition">
+                                Choose photo
+                                <input type="file" id="reg-avatar-file" accept="image/*" class="hidden" onchange="previewAvatar(event, 'reg-avatar-preview')">
+                            </label>
+                            <div id="reg-avatar-preview" class="w-14 h-14 rounded-full border-2 border-slate-200 overflow-hidden flex-shrink-0 avatar-placeholder">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="registerUser()" class="w-full mt-6 vgm-bg-green text-white font-bold py-4 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Register
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN PROFILE -->
+    <div id="profileBlock" class="hidden">
+        <main class="max-w-md mx-auto p-6 pb-32">
+            
+            <div class="bg-white rounded-[40px] p-8 card-shadow border border-slate-50 text-center mb-8">
+                <div class="relative inline-block">
+                    <div id="avatar-container" class="w-32 h-32 rounded-[35px] mx-auto mb-6 overflow-hidden border-4 border-white shadow-sm avatar-placeholder">
+                        <img id="profile-avatar" src="#" alt="Avatar" class="w-full h-full object-cover hidden">
+                        <div id="avatar-placeholder-icon" class="w-full h-full flex items-center justify-center">
+                            <svg class="w-16 h-16 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-4 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                </div>
+                
+                <h2 id="profile-name" class="text-2xl font-extrabold text-slate-800">Egor Antonov</h2>
+                <p id="profile-status" class="text-slate-400 font-semibold text-sm uppercase tracking-widest mb-4">Mentor VolgGMU</p>
+                
+                <div class="flex justify-center gap-2 flex-wrap">
+                    <span id="profile-tag" class="bg-slate-50 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold">BTST</span>
+                    <span id="profile-level" class="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">Bachelor's Degree</span>
+                    <span class="bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold">⭐️ 5.0</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-400 uppercase tracking-widest px-2">Management</h3>
+                
+                <div role="button" class="w-full bg-white border border-slate-100 p-5 rounded-[24px] flex justify-between items-center card-shadow active:scale-[0.97] transition cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <span class="font-bold text-slate-700">Incoming Requests</span>
+                    </div>
+                    <span class="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-black">3</span>
+                </div>
+
+                <div role="button" onclick="openEditModal()" class="w-full bg-white border border-slate-100 p-5 rounded-[24px] flex justify-between items-center card-shadow active:scale-[0.97] transition cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </div>
+                        <span class="font-bold text-slate-700">Edit Profile</span>
+                    </div>
+                    <svg class="text-slate-300" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
+
+            <button onclick="logoutUser()" class="w-full mt-12 py-4 text-slate-400 font-bold text-sm hover:text-red-500 transition">
+                Log Out
+            </button>
+
+        </main>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden justify-center items-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl relative border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <h3 class="text-xl font-extrabold text-slate-800 mb-5">Edit Profile</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
+                    <input type="text" id="input-name" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Role</label>
+                    <select id="input-role" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition">
+                        <option value="Mentor VolgGMU">Mentor</option>
+                        <option value="Mentee">Mentee</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Direction</label>
+                    <select id="edit-direction" class="w-full bg-slate-50 border border-slate-100 p-3 rounded-xl font-semibold text-slate-700 outline-none focus:border-emerald-500 transition direction-select" onchange="updateDirectionDetails('edit')">
+                        <option value="">Select direction</option>
+                        <optgroup label="Bachelor's Degree">
+                            <option value='{"level":"Bachelor\'s Degree","name":"Biology","form":"Full-time","duration":"4 years"}'>Biology</option>
+                            <option value='{"level":"Bachelor\'s Degree","name":"Biotechnical Systems and Technologies","form":"Full-time","duration":"4 years"}'>Biotechnical Systems and Technologies</option>
+                        </optgroup>
+                        
+                        <optgroup label="Specialist Degree">
+                            <option value='{"level":"Specialist Degree","name":"General Medicine","form":"Full-time","duration":"6 years","code":"31.05.01","description":"Trains physicians to provide primary medical care and manage patients with chronic diseases."}'>General Medicine</option>
+                            <option value='{"level":"Specialist Degree","name":"Pediatrics","form":"Full-time","duration":"6 years","code":"31.05.02","description":"Trains pediatricians for prevention, diagnosis and treatment of diseases in children and adolescents."}'>Pediatrics</option>
+                            <option value='{"level":"Specialist Degree","name":"Dentistry","form":"Full-time","duration":"5 years","code":"31.05.03","description":"Trains dentists to provide quality medical care in the field of oral health."}'>Dentistry</option>
+                            <option value='{"level":"Specialist Degree","name":"Medical Biochemistry","form":"Full-time","duration":"6 years","code":"30.05.01","description":"Trains specialists for biochemical research and development of new medical technologies."}'>Medical Biochemistry</option>
+                            <option value='{"level":"Specialist Degree","name":"Public Health","form":"Full-time","duration":"6 years","code":"32.05.01","description":"Trains specialists in public health, epidemiology, sanitation and hygiene."}'>Public Health</option>
+                            <option value='{"level":"Specialist Degree","name":"Pharmacy","form":"Full-time","duration":"5 years","code":"33.05.01","description":"Trains pharmacists for creation, production and dispensing of medicines, patient counseling."}'>Pharmacy</option>
+                            <option value='{"level":"Specialist Degree","name":"Clinical Psychology","form":"Full-time","duration":"5 years 6 months","code":"37.05.01","description":"Trains clinical psychologists for diagnostics and psychotherapeutic treatment."}'>Clinical Psychology</option>
+                        </optgroup>
+                        
+                        <optgroup label="Master's Degree">
+                            <option value='{"level":"Master\'s Degree","name":"Biotechnical Systems and Technologies","form":"Full-time","duration":"2 years"}'>Biotechnical Systems and Technologies</option>
+                            <option value='{"level":"Master\'s Degree","name":"Management","form":"Part-time","duration":"2 years 6 months"}'>Management</option>
+                            <option value='{"level":"Master\'s Degree","name":"Public Health","form":"Part-time","duration":"2 years 6 months"}'>Public Health</option>
+                            <option value='{"level":"Master\'s Degree","name":"Biology","form":"Full-time","duration":"2 years"}'>Biology</option>
+                        </optgroup>
+
+                        <optgroup label="College (Vocational Education)">
+                            <option value='{"level":"College","name":"Medical Optics (Medical Optician-Optometrist)","form":"Full-time","duration":"1 year 10 months"}'>Medical Optics</option>
+                            <option value='{"level":"College","name":"Dental Medicine (Dental Assistant)","form":"Full-time","duration":"2 years 10 months"}'>Dental Medicine</option>
+                            <option value='{"level":"College","name":"Medical Administrator","form":"Part-time","duration":"1 year 3 months"}'>Medical Administrator</option>
+                            <option value='{"level":"College","name":"Nursing","form":"Part-time","duration":"2 years 10 months"}'>Nursing (part-time)</option>
+                            <option value='{"level":"College","name":"Nursing","form":"Full-time","duration":"1 year 10 months"}'>Nursing (full-time)</option>
+                            <option value='{"level":"College","name":"Pharmacy (Pharmacist)","form":"Full-time","duration":"1 year 10 months"}'>Pharmacy (Pharmacist)</option>
+                            <option value='{"level":"College","name":"Preventive Dentistry (Dental Hygienist)","form":"Full-time","duration":"1 year 10 months"}'>Preventive Dentistry</option>
+                            <option value='{"level":"College","name":"Orthopedic Dentistry (Dental Technician)","form":"Full-time","duration":"1 year 10 months"}'>Orthopedic Dentistry</option>
+                        </optgroup>
+                        
+                        <optgroup label="Residency">
+                            <option value='{"level":"Residency","name":"General Hygiene","form":"Full-time","duration":"2 years"}'>General Hygiene</option>
+                            <option value='{"level":"Residency","name":"X-ray Endovascular Diagnostics and Treatment","form":"Full-time","duration":"2 years"}'>X-ray Endovascular Diagnostics and Treatment</option>
+                            <option value='{"level":"Residency","name":"Nephrology","form":"Full-time","duration":"2 years"}'>Nephrology</option>
+                            <option value='{"level":"Residency","name":"Dietetics","form":"Full-time","duration":"2 years"}'>Dietetics</option>
+                            <option value='{"level":"Residency","name":"Occupational Hygiene","form":"Full-time","duration":"2 years"}'>Occupational Hygiene</option>
+                            <option value='{"level":"Residency","name":"Psychotherapy","form":"Full-time","duration":"2 years"}'>Psychotherapy</option>
+                            <option value='{"level":"Residency","name":"Physiotherapy","form":"Full-time","duration":"2 years"}'>Physiotherapy</option>
+                            <option value='{"level":"Residency","name":"Coloproctology","form":"Full-time","duration":"2 years"}'>Coloproctology</option>
+                            <option value='{"level":"Residency","name":"Physical and Rehabilitation Medicine","form":"Full-time","duration":"3 years"}'>Physical and Rehabilitation Medicine</option>
+                            <option value='{"level":"Residency","name":"Manual Therapy","form":"Full-time","duration":"2 years"}'>Manual Therapy</option>
+                            <option value='{"level":"Residency","name":"Geriatrics","form":"Full-time","duration":"2 years"}'>Geriatrics</option>
+                            <option value='{"level":"Residency","name":"Transfusiology","form":"Full-time","duration":"2 years"}'>Transfusiology</option>
+                            <option value='{"level":"Residency","name":"Reflexotherapy","form":"Full-time","duration":"2 years"}'>Reflexotherapy</option>
+                            <option value='{"level":"Residency","name":"Thoracic Surgery","form":"Full-time","duration":"2 years"}'>Thoracic Surgery</option>
+                            <option value='{"level":"Residency","name":"Pathological Anatomy","form":"Full-time","duration":"2 years"}'>Pathological Anatomy</option>
+                            <option value='{"level":"Residency","name":"Neurosurgery","form":"Full-time","duration":"3 years"}'>Neurosurgery</option>
+                            <option value='{"level":"Residency","name":"Gastroenterology","form":"Full-time","duration":"2 years"}'>Gastroenterology</option>
+                            <option value='{"level":"Residency","name":"Epidemiology","form":"Full-time","duration":"2 years"}'>Epidemiology</option>
+                            <option value='{"level":"Residency","name":"Maxillofacial Surgery","form":"Full-time","duration":"2 years"}'>Maxillofacial Surgery</option>
+                            <option value='{"level":"Residency","name":"Pharmacy Management and Economics","form":"Full-time","duration":"2 years"}'>Pharmacy Management and Economics</option>
+                            <option value='{"level":"Residency","name":"Surgical Dentistry","form":"Full-time","duration":"2 years"}'>Surgical Dentistry</option>
+                            <option value='{"level":"Residency","name":"Orthopedic Dentistry","form":"Full-time","duration":"2 years"}'>Orthopedic Dentistry</option>
+                            <option value='{"level":"Residency","name":"General Dentistry","form":"Full-time","duration":"2 years"}'>General Dentistry</option>
+                            <option value='{"level":"Residency","name":"Rheumatology","form":"Full-time","duration":"2 years"}'>Rheumatology</option>
+                            <option value='{"level":"Residency","name":"Orthodontics","form":"Full-time","duration":"2 years"}'>Orthodontics</option>
+                            <option value='{"level":"Residency","name":"Dermatovenereology","form":"Full-time","duration":"2 years"}'>Dermatovenereology</option>
+                            <option value='{"level":"Residency","name":"Endoscopy","form":"Full-time","duration":"2 years"}'>Endoscopy</option>
+                            <option value='{"level":"Residency","name":"Endocrinology","form":"Full-time","duration":"2 years"}'>Endocrinology</option>
+                            <option value='{"level":"Residency","name":"Surgery","form":"Full-time","duration":"2 years"}'>Surgery</option>
+                            <option value='{"level":"Residency","name":"Functional Diagnostics","form":"Full-time","duration":"2 years"}'>Functional Diagnostics</option>
+                            <option value='{"level":"Residency","name":"Phthisiology","form":"Full-time","duration":"2 years"}'>Phthisiology</option>
+                            <option value='{"level":"Residency","name":"Urology","form":"Full-time","duration":"2 years"}'>Urology</option>
+                            <option value='{"level":"Residency","name":"Ultrasound Diagnostics","form":"Full-time","duration":"2 years"}'>Ultrasound Diagnostics</option>
+                            <option value='{"level":"Residency","name":"Traumatology and Orthopedics","form":"Full-time","duration":"2 years"}'>Traumatology and Orthopedics</option>
+                            <option value='{"level":"Residency","name":"Therapy","form":"Full-time","duration":"2 years"}'>Therapy</option>
+                            <option value='{"level":"Residency","name":"Forensic Medical Examination","form":"Full-time","duration":"2 years"}'>Forensic Medical Examination</option>
+                            <option value='{"level":"Residency","name":"Therapeutic Dentistry","form":"Full-time","duration":"2 years"}'>Therapeutic Dentistry</option>
+                            <option value='{"level":"Residency","name":"Pediatric Dentistry","form":"Full-time","duration":"2 years"}'>Pediatric Dentistry</option>
+                            <option value='{"level":"Residency","name":"Emergency Medical Care","form":"Full-time","duration":"2 years"}'>Emergency Medical Care</option>
+                            <option value='{"level":"Residency","name":"Cardiovascular Surgery","form":"Full-time","duration":"3 years"}'>Cardiovascular Surgery</option>
+                            <option value='{"level":"Residency","name":"Radiology","form":"Full-time","duration":"2 years"}'>Radiology</option>
+                            <option value='{"level":"Residency","name":"Radiation Therapy","form":"Full-time","duration":"2 years"}'>Radiation Therapy</option>
+                            <option value='{"level":"Residency","name":"Pulmonology","form":"Full-time","duration":"2 years"}'>Pulmonology</option>
+                            <option value='{"level":"Residency","name":"Psychiatry-Narcology","form":"Full-time","duration":"2 years"}'>Psychiatry-Narcology</option>
+                            <option value='{"level":"Residency","name":"Psychiatry","form":"Full-time","duration":"2 years"}'>Psychiatry</option>
+                            <option value='{"level":"Residency","name":"Ophthalmology","form":"Full-time","duration":"2 years"}'>Ophthalmology</option>
+                            <option value='{"level":"Residency","name":"Otorhinolaryngology","form":"Full-time","duration":"2 years"}'>Otorhinolaryngology</option>
+                            <option value='{"level":"Residency","name":"Healthcare Organization and Public Health","form":"Full-time","duration":"2 years"}'>Healthcare Organization and Public Health</option>
+                            <option value='{"level":"Residency","name":"Oncology","form":"Full-time","duration":"2 years"}'>Oncology</option>
+                            <option value='{"level":"Residency","name":"General Medical Practice","form":"Full-time","duration":"2 years"}'>General Medical Practice</option>
+                            <option value='{"level":"Residency","name":"Neonatology","form":"Full-time","duration":"2 years"}'>Neonatology</option>
+                            <option value='{"level":"Residency","name":"Neurology","form":"Full-time","duration":"2 years"}'>Neurology</option>
+                            <option value='{"level":"Residency","name":"Physical Therapy and Sports Medicine","form":"Full-time","duration":"2 years"}'>Physical Therapy and Sports Medicine</option>
+                            <option value='{"level":"Residency","name":"Clinical Pharmacology","form":"Full-time","duration":"2 years"}'>Clinical Pharmacology</option>
+                            <option value='{"level":"Residency","name":"Clinical Laboratory Diagnostics","form":"Full-time","duration":"2 years"}'>Clinical Laboratory Diagnostics</option>
+                            <option value='{"level":"Residency","name":"Cardiology","form":"Full-time","duration":"2 years"}'>Cardiology</option>
+                            <option value='{"level":"Residency","name":"Infectious Diseases","form":"Full-time","duration":"2 years"}'>Infectious Diseases</option>
+                            <option value='{"level":"Residency","name":"Pediatric Endocrinology","form":"Full-time","duration":"2 years"}'>Pediatric Endocrinology</option>
+                            <option value='{"level":"Residency","name":"Pediatric Surgery","form":"Full-time","duration":"2 years"}'>Pediatric Surgery</option>
+                            <option value='{"level":"Residency","name":"Pediatric Oncology","form":"Full-time","duration":"2 years"}'>Pediatric Oncology</option>
+                            <option value='{"level":"Residency","name":"Pediatric Cardiology","form":"Full-time","duration":"2 years"}'>Pediatric Cardiology</option>
+                            <option value='{"level":"Residency","name":"Child and Adolescent Hygiene","form":"Full-time","duration":"2 years"}'>Child and Adolescent Hygiene</option>
+                            <option value='{"level":"Residency","name":"Hematology","form":"Full-time","duration":"2 years"}'>Hematology</option>
+                            <option value='{"level":"Residency","name":"Anesthesiology and Resuscitation","form":"Full-time","duration":"2 years"}'>Anesthesiology and Resuscitation</option>
+                            <option value='{"level":"Residency","name":"Allergology and Immunology","form":"Full-time","duration":"2 years"}'>Allergology and Immunology</option>
+                            <option value='{"level":"Residency","name":"Pediatrics","form":"Full-time","duration":"2 years"}'>Pediatrics</option>
+                            <option value='{"level":"Residency","name":"Obstetrics and Gynecology","form":"Full-time","duration":"2 years"}'>Obstetrics and Gynecology</option>
+                        </optgroup>
+                        
+                        <optgroup label="Postgraduate Studies">
+                            <option value='{"level":"Postgraduate","name":"Sociology of Culture","form":"Full-time","duration":"3 years"}'>Sociology of Culture</option>
+                            <option value='{"level":"Postgraduate","name":"Pharmaceutical Organization","form":"Full-time","duration":"3 years"}'>Pharmaceutical Organization</option>
+                            <option value='{"level":"Postgraduate","name":"Pharmaceutical Chemistry, Pharmacognosy","form":"Full-time","duration":"3 years"}'>Pharmaceutical Chemistry, Pharmacognosy</option>
+                            <option value='{"level":"Postgraduate","name":"Industrial Pharmacy and Drug Technology","form":"Full-time","duration":"3 years"}'>Industrial Pharmacy and Drug Technology</option>
+                            <option value='{"level":"Postgraduate","name":"Pharmacology, Clinical Pharmacology","form":"Full-time","duration":"4 years"}'>Pharmacology, Clinical Pharmacology</option>
+                            <option value='{"level":"Postgraduate","name":"Pathological Physiology","form":"Full-time","duration":"4 years"}'>Pathological Physiology</option>
+                            <option value='{"level":"Postgraduate","name":"Public Health, Organization and Sociology of Healthcare, Medical and Social Expertise","form":"Full-time","duration":"3 years"}'>Public Health, Organization and Sociology of Healthcare</option>
+                            <option value='{"level":"Postgraduate","name":"Hygiene","form":"Full-time","duration":"3 years"}'>Hygiene</option>
+                            <option value='{"level":"Postgraduate","name":"Neurology","form":"Full-time","duration":"3 years"}'>Neurology</option>
+                            <option value='{"level":"Postgraduate","name":"Pediatrics","form":"Full-time","duration":"3 years"}'>Pediatrics</option>
+                            <option value='{"level":"Postgraduate","name":"Internal Medicine","form":"Full-time","duration":"3 years"}'>Internal Medicine</option>
+                            <option value='{"level":"Postgraduate","name":"Surgery","form":"Full-time","duration":"3 years"}'>Surgery</option>
+                            <option value='{"level":"Postgraduate","name":"Dentistry","form":"Full-time","duration":"3 years"}'>Dentistry</option>
+                            <option value='{"level":"Postgraduate","name":"Ophthalmology","form":"Full-time","duration":"3 years"}'>Ophthalmology</option>
+                            <option value='{"level":"Postgraduate","name":"Obstetrics and Gynecology","form":"Full-time","duration":"3 years"}'>Obstetrics and Gynecology</option>
+                            <option value='{"level":"Postgraduate","name":"Otorhinolaryngology","form":"Full-time","duration":"3 years"}'>Otorhinolaryngology</option>
+                            <option value='{"level":"Postgraduate","name":"Cell Biology","form":"Full-time","duration":"4 years"}'>Cell Biology</option>
+                            <option value='{"level":"Postgraduate","name":"Microbiology","form":"Full-time","duration":"4 years"}'>Microbiology</option>
+                            <option value='{"level":"Postgraduate","name":"Human and Animal Physiology","form":"Full-time","duration":"4 years"}'>Human and Animal Physiology</option>
+                            <option value='{"level":"Postgraduate","name":"Chemistry of Organoelement Compounds","form":"Full-time","duration":"4 years"}'>Chemistry of Organoelement Compounds</option>
+                            <option value='{"level":"Postgraduate","name":"Organic Chemistry","form":"Full-time","duration":"4 years"}'>Organic Chemistry</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="edit-direction-details" class="spec-details"></div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Profile Photo</label>
+                    <div class="flex items-center gap-3">
+                        <label class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl text-center text-slate-500 font-semibold text-sm cursor-pointer hover:bg-slate-100 transition">
+                            Choose photo
+                            <input type="file" id="edit-avatar-file" accept="image/*" class="hidden" onchange="previewAvatar(event, 'edit-avatar-preview')">
+                        </label>
+                        <div id="edit-avatar-preview" class="w-14 h-14 rounded-full border-2 border-slate-200 overflow-hidden flex-shrink-0 avatar-placeholder">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveChanges()" class="flex-1 vgm-bg-green text-white font-bold py-3 rounded-xl active:scale-[0.97] transition shadow-sm">
+                    Save
+                </button>
+                <button onclick="closeEditModal()" class="flex-1 bg-slate-100 text-slate-500 font-bold py-3 rounded-xl active:scale-[0.97] transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-slate-50 p-4 flex justify-around items-center z-10">
+        <button onclick="window.location.href='indexENG.html'" class="text-slate-300">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+        <button class="text-emerald-700 font-bold">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        let regAvatarDataURL = null;
+        let editAvatarDataURL = null;
+        let selectedDirectionData = null;
+        let currentUserLogin = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            checkAuth();
+        });
+
+        // Switch tabs
+        function switchAuthTab(tab) {
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.remove('active');
+            document.getElementById('loginTabBtn').classList.remove('active');
+            document.getElementById('registerTabBtn').classList.remove('active');
+            
+            if (tab === 'login') {
+                document.getElementById('loginTab').classList.add('active');
+                document.getElementById('loginTabBtn').classList.add('active');
+            } else {
+                document.getElementById('registerTab').classList.add('active');
+                document.getElementById('registerTabBtn').classList.add('active');
+            }
+        }
+
+        // Get users database
+        function getUsers() {
+            try {
+                return JSON.parse(localStorage.getItem('vgm_users')) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        // Save users database
+        function saveUsers(users) {
+            localStorage.setItem('vgm_users', JSON.stringify(users));
+        }
+
+        // Find user by login
+        function findUserByLogin(login) {
+            const users = getUsers();
+            return users.find(u => u.login.toLowerCase() === login.toLowerCase());
+        }
+
+        function updateDirectionDetails(prefix) {
+            const select = document.getElementById(prefix + '-direction');
+            const detailsDiv = document.getElementById(prefix + '-direction-details');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (!selectedOption || !selectedOption.value) {
+                detailsDiv.classList.remove('show');
+                detailsDiv.innerHTML = '';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(selectedOption.value);
+                selectedDirectionData = data;
+                
+                let html = `<div class="detail-row"><span class="detail-label">Level</span><span class="detail-value">${data.level}</span></div>`;
+                html += `<div class="detail-row"><span class="detail-label">Direction</span><span class="detail-value">${data.name}</span></div>`;
+                
+                if (data.code) {
+                    html += `<div class="detail-row"><span class="detail-label">Direction Code</span><span class="detail-value code">${data.code}</span></div>`;
+                }
+                
+                if (data.description) {
+                    html += `<div class="detail-description">${data.description}</div>`;
+                }
+                
+                html += `<div class="detail-row"><span class="detail-label">Study Format</span><span class="detail-value">${data.form}</span></div>`;
+                html += `<div class="detail-row"><span class="detail-label">Study Duration</span><span class="detail-value">${data.duration}</span></div>`;
+                
+                detailsDiv.innerHTML = html;
+                detailsDiv.classList.add('show');
+            } catch (e) {
+                detailsDiv.classList.remove('show');
+                detailsDiv.innerHTML = '';
+            }
+        }
+
+        function previewAvatar(event, previewId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataURL = e.target.result;
+                const previewEl = document.getElementById(previewId);
+                previewEl.innerHTML = `<img src="${dataURL}" class="w-full h-full object-cover">`;
+                if (previewId === 'reg-avatar-preview') {
+                    regAvatarDataURL = dataURL;
+                } else if (previewId === 'edit-avatar-preview') {
+                    editAvatarDataURL = dataURL;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // REGISTRATION
+        function registerUser() {
+            const login = document.getElementById("reg-login").value.trim();
+            const name = document.getElementById("reg-name").value.trim();
+            const role = document.getElementById("reg-role").value;
+            const password = document.getElementById("reg-password").value;
+            const passwordConfirm = document.getElementById("reg-password-confirm").value;
+            const select = document.getElementById("reg-direction");
+            const selectedOption = select.options[select.selectedIndex];
+
+            if (!login || !name || !password || !passwordConfirm) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters!");
+                return;
+            }
+
+            if (!selectedOption || !selectedOption.value) {
+                alert("Please select a direction!");
+                return;
+            }
+
+            // Check if user already exists
+            if (findUserByLogin(login)) {
+                alert("A user with this login already exists!");
+                return;
+            }
+
+            let directionData;
+            try {
+                directionData = JSON.parse(selectedOption.value);
+            } catch (e) {
+                alert("Error in direction data!");
+                return;
+            }
+
+            const users = getUsers();
+            const newUser = {
+                login: login,
+                name: name,
+                password: password,
+                role: role,
+                direction: directionData,
+                avatar: regAvatarDataURL || null,
+                status: role,
+                created: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            saveUsers(users);
+
+            // Auto-login after registration
+            loginUserDirect(login, name, role, directionData, newUser.avatar);
+        }
+
+        // LOGIN
+        function loginUser() {
+            const login = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value;
+
+            if (!login || !password) {
+                alert("Enter username and password!");
+                return;
+            }
+
+            const user = findUserByLogin(login);
+            if (!user) {
+                alert("User not found!");
+                return;
+            }
+
+            if (user.password !== password) {
+                alert("Incorrect password!");
+                return;
+            }
+
+            loginUserDirect(login, user.name, user.role || user.status, user.direction, user.avatar);
+        }
+
+        // Direct login (without checks)
+        function loginUserDirect(login, name, role, directionData, avatar) {
+            currentUserLogin = login;
+            
+            localStorage.setItem("vgm_logged_in", "true");
+            localStorage.setItem("vgm_current_user", login);
+            localStorage.setItem("vgm_name", name);
+            localStorage.setItem("vgm_tag", directionData.name);
+            localStorage.setItem("vgm_level", directionData.level);
+            localStorage.setItem("vgm_status", role || "Mentor VolgGMU");
+            localStorage.setItem("vgm_direction", JSON.stringify(directionData));
+            
+            if (avatar) {
+                localStorage.setItem("vgm_avatar", avatar);
+            } else {
+                localStorage.removeItem("vgm_avatar");
+            }
+
+            checkAuth();
+        }
+
+        // LOGOUT
+        function logoutUser() {
+            localStorage.setItem("vgm_logged_in", "false");
+            localStorage.removeItem("vgm_current_user");
+            currentUserLogin = null;
+            checkAuth();
+        }
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem("vgm_logged_in");
+            
+            if (isLoggedIn === "true") {
+                document.getElementById("authBlock").classList.add("hidden");
+                document.getElementById("profileBlock").classList.remove("hidden");
+                
+                if (localStorage.getItem("vgm_name")) {
+                    document.getElementById("profile-name").innerText = localStorage.getItem("vgm_name");
+                }
+                if (localStorage.getItem("vgm_status")) {
+                    document.getElementById("profile-status").innerText = localStorage.getItem("vgm_status");
+                }
+                if (localStorage.getItem("vgm_tag")) {
+                    document.getElementById("profile-tag").innerText = localStorage.getItem("vgm_tag");
+                }
+                if (localStorage.getItem("vgm_level")) {
+                    document.getElementById("profile-level").innerText = localStorage.getItem("vgm_level");
+                }
+                const avatar = localStorage.getItem("vgm_avatar");
+                updateProfileAvatar(avatar);
+            } else {
+                document.getElementById("authBlock").classList.remove("hidden");
+                document.getElementById("profileBlock").classList.add("hidden");
+                
+                // Clear fields
+                document.getElementById("reg-login").value = '';
+                document.getElementById("reg-name").value = '';
+                document.getElementById("reg-password").value = '';
+                document.getElementById("reg-password-confirm").value = '';
+                document.getElementById("login-username").value = '';
+                document.getElementById("login-password").value = '';
+                document.getElementById("reg-avatar-file").value = '';
+                regAvatarDataURL = null;
+                
+                const preview = document.getElementById('reg-avatar-preview');
+                preview.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+                
+                document.getElementById('reg-direction').value = '';
+                document.getElementById('reg-direction-details').classList.remove('show');
+                document.getElementById('reg-direction-details').innerHTML = '';
+            }
+        }
+
+        function updateProfileAvatar(dataURL) {
+            const img = document.getElementById('profile-avatar');
+            const placeholder = document.getElementById('avatar-placeholder-icon');
+            const container = document.getElementById('avatar-container');
+            if (dataURL && dataURL !== 'null' && dataURL !== '') {
+                img.src = dataURL;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                container.classList.remove('avatar-placeholder');
+            } else {
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                container.classList.add('avatar-placeholder');
+            }
+        }
+
+        function openEditModal() {
+            document.getElementById("input-name").value = document.getElementById("profile-name").innerText;
+            
+            // Set current role in select
+            const currentStatus = document.getElementById("profile-status").innerText;
+            const roleSelect = document.getElementById("input-role");
+            if (currentStatus.includes("Mentor")) {
+                roleSelect.value = "Mentor VolgGMU";
+            } else {
+                roleSelect.value = "Mentee";
+            }
+            
+            const editSelect = document.getElementById("edit-direction");
+            const currentTag = document.getElementById("profile-tag").innerText;
+            const currentLevel = document.getElementById("profile-level").innerText;
+            
+            for (let i = 0; i < editSelect.options.length; i++) {
+                const opt = editSelect.options[i];
+                if (opt.value) {
+                    try {
+                        const data = JSON.parse(opt.value);
+                        if (data.name === currentTag && data.level === currentLevel) {
+                            editSelect.value = opt.value;
+                            updateDirectionDetails('edit');
+                            break;
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            const currentAvatar = localStorage.getItem("vgm_avatar");
+            const previewEl = document.getElementById('edit-avatar-preview');
+            if (currentAvatar && currentAvatar !== 'null' && currentAvatar !== '') {
+                previewEl.innerHTML = `<img src="${currentAvatar}" class="w-full h-full object-cover">`;
+                editAvatarDataURL = currentAvatar;
+            } else {
+                previewEl.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+                editAvatarDataURL = null;
+            }
+            document.getElementById('edit-avatar-file').value = '';
+            
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        function saveChanges() {
+            const newName = document.getElementById("input-name").value.trim();
+            const newRole = document.getElementById("input-role").value;
+            
+            if (newName) document.getElementById("profile-name").innerText = newName;
+            document.getElementById("profile-status").innerText = newRole;
+            
+            const editSelect = document.getElementById("edit-direction");
+            const selectedOption = editSelect.options[editSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                try {
+                    const data = JSON.parse(selectedOption.value);
+                    document.getElementById("profile-tag").innerText = data.name;
+                    document.getElementById("profile-level").innerText = data.level;
+                    localStorage.setItem("vgm_tag", data.name);
+                    localStorage.setItem("vgm_level", data.level);
+                    localStorage.setItem("vgm_direction", JSON.stringify(data));
+                    
+                    // Update in users database
+                    const users = getUsers();
+                    const currentLogin = localStorage.getItem("vgm_current_user");
+                    const userIndex = users.findIndex(u => u.login === currentLogin);
+                    if (userIndex !== -1) {
+                        users[userIndex].name = newName || users[userIndex].name;
+                        users[userIndex].role = newRole;
+                        users[userIndex].status = newRole;
+                        users[userIndex].direction = data;
+                        if (editAvatarDataURL) {
+                            users[userIndex].avatar = editAvatarDataURL;
+                        }
+                        saveUsers(users);
+                    }
+                } catch(e) {}
+            }
+
+            if (editAvatarDataURL) {
+                localStorage.setItem("vgm_avatar", editAvatarDataURL);
+                updateProfileAvatar(editAvatarDataURL);
+            }
+
+            localStorage.setItem("vgm_name", newName);
+            localStorage.setItem("vgm_status", newRole);
+
+            closeEditModal();
+        }
+
+        // Close modal on background click
+        window.onclick = function(event) {
+            const modal = document.getElementById("editModal");
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+
+</body>
+</html>

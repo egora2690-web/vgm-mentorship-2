@@ -152,7 +152,7 @@ node server.js
 |---|---|---|
 | `PORT` | `3000` | Порт HTTP-сервера |
 | `DB_PATH` | `./database.db` | Путь к файлу БД (для Persistent Disk) |
-| `UPLOAD_DIR` | `uploads` | Папка для загруженных файлов |
+| `UPLOAD_DIR` | `uploads` | Папка для загруженных файлов (внутри неё создаются `images` и `files`) |
 
 `.env`-файл **не используется**. Render задаёт переменные через Dashboard → Environment.
 
@@ -168,10 +168,10 @@ PORT=8080 npm start
 
 **СУБД:** SQLite 5.1.7
 **Файл:** `database.db` (по умолчанию в корне проекта)
-**Путь:** захардкожен в `database.js`:
+**Путь:** задаётся через `DB_PATH`; если переменная не указана, используется `database.db` в корне проекта:
 
 ```js
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'database.db');
+const DB_PATH = path.resolve(process.env.DB_PATH || path.join(__dirname, 'database.db'));
 ```
 
 **Особенности SQLite:**
@@ -404,6 +404,9 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 | GET | `/api/messages/:requestId` | Получить |
 
 ### Чаты
+
+Для API нового мессенджера сервер проверяет участие пользователя в чате. Клиент передаёт `x-user-id`; это ограничивает случайный доступ к чужим чатам, но не заменяет полноценную серверную сессионную авторизацию. Перед публичным запуском необходимо внедрить сессии или токены и отказаться от доверия к ID из `localStorage`/заголовков.
+
 
 | Метод | Endpoint | Описание |
 |---|---|---|

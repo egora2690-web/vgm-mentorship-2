@@ -17,7 +17,7 @@
             <h1>Your path to medicine: more confident with a mentor</h1>
             <div class="k-actions">
                 <a class="k-btn k-btn--white" href="#how-to-find">Find a mentor →</a>
-                <a class="k-btn k-btn--ghost" href="#how-to-become">Become a mentor →</a>
+                <a id="heroBecome" class="k-btn k-btn--ghost" href="#how-to-become">Become a mentor →</a>
             </div>
         </div>
     </section>
@@ -39,7 +39,7 @@
             <div class="k-step"><span class="k-badge">Step 1</span><p>Click “Become a mentor”. Register, choosing your field of activity and describing your experience.</p></div>
             <div class="k-step"><span class="k-badge">Step 2</span><p>Your profile will be reviewed by university moderators for compliance with the competencies of the field.</p></div>
             <div class="k-step"><span class="k-badge">Step 3</span><p>After review you will appear in the catalog. You will be able to accept requests and schedule meetings with students.</p></div>
-            <div class="k-section-cta"><a class="k-btn k-btn--gold" href="profile1ENG.html">Become a mentor →</a></div>
+            <div class="k-section-cta"><a id="becomeCta" class="k-btn k-btn--gold" href="profile1ENG.html">Become a mentor →</a></div>
         </div>
         <div class="k-features">
             <h3>Platform features for mentors</h3>
@@ -51,6 +51,18 @@
 </main>
 
 <script src="shell.js"></script>
+<script>
+(function () {
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('vgm_current_user') || 'null'); } catch (e) {}
+    if (!u || !u.id) return;
+    var hero = document.getElementById('heroBecome');
+    var cta = document.getElementById('becomeCta');
+    if (hero) { hero.textContent = 'My account →'; hero.setAttribute('href', 'profile1ENG.html'); }
+    if (cta) { cta.textContent = 'Go to my account →'; }
+})();
+</script>
+
 
 </body>
 </html>
